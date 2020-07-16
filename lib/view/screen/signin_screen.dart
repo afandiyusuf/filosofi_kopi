@@ -1,9 +1,10 @@
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
 
 class SignInScreen extends StatelessWidget {
-  static const tag = '/sign-in';
+  static final String tag = '/sign-in';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +41,9 @@ class SignInScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.8,
                 height: 40,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _gotoLoginScreen(context);
+                  },
                   color: Style.secondaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -59,5 +62,8 @@ class SignInScreen extends StatelessWidget {
   }
   _goToCreateAccount(BuildContext context){
     Navigator.pushNamed(context, CreateAccountScreen.tag);
+  }
+  _gotoLoginScreen(BuildContext context){
+    Navigator.pushNamed(context, LoginScreen.tag);
   }
 }

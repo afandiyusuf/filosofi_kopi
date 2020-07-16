@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
 
 class OnBoardingScreen extends StatefulWidget {
-  static const tag = '/on-boarding';
+  static final String tag = '/on-boarding';
 
   @override
   _OnBoardingScreenState createState() => _OnBoardingScreenState();

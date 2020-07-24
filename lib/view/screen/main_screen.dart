@@ -1,5 +1,10 @@
+import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:filkop_mobile_apps/view/component/cart_bottom.dart';
+import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
+import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/home.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/menu.dart';
+import 'package:filkop_mobile_apps/view/screen/pages/merchandise.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +39,7 @@ class _MainScreenState extends State<MainScreen> {
     List<Widget> screens = [
       HomePage(),
       Menu(),
+      MerchandisePage()
     ];
 
     return Scaffold(
@@ -72,6 +78,13 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
+      floatingActionButton: CartBottom(
+        total: "3",
+        price: "200.000",
+        onPressed: (){
+          _showBottomSheet(context);
+      },),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -82,11 +95,42 @@ class _MainScreenState extends State<MainScreen> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      //
-      //
       //using this page controller you can make beautiful animation effects
       _pageController.animateToPage(index,
           duration: Duration(milliseconds: 500), curve: Curves.easeOut);
     });
+  }
+  void _goToConfirmButton(context){
+    Navigator.pushNamed(context, ConfirmOrder.tag);
+  }
+  void _showBottomSheet(context){
+    ProductModel pm = new ProductModel();
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc){
+          return Container(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: pm.getTotal(),
+                      itemBuilder: (BuildContext context, int index){
+                        Product p = pm.getByIndex(index);
+                        return ListTileOrder(name:p.name, price: p.price.toString(), total: 2.toString(), image: p.image,);
+                      },
+                    ),
+                  ),
+                  CartBottom(onPressed: (){
+                    _goToConfirmButton(context);
+                  },total: "30", price: "20.000.000",
+                  marginBottom: 0,)
+                ],
+              )
+            ));
+        }
+    );
   }
 }

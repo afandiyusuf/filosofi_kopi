@@ -46,7 +46,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image.asset('images/logo.png'),
+                Container(
+                  width:100,
+                    child: Image.asset('images/logo.png')),
                 Container(
                   margin: EdgeInsets.only(top: 0, bottom: 20),
                   child: Text(

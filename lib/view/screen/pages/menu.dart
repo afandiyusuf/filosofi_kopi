@@ -1,6 +1,8 @@
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:filkop_mobile_apps/view/component/category_button.dart';
 import 'package:filkop_mobile_apps/view/component/product_card.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
 import 'package:flutter/material.dart';
 
 class Menu extends StatefulWidget {
@@ -9,30 +11,8 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-  CategoryProductModel categoryModel = CategoryProductModel();
+  CategoryProductModel categoryProductModel = CategoryProductModel();
   ProductModel products = ProductModel();
-  TextStyle selectedTextStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 12,
-      fontWeight: FontWeight.bold
-  );
-  TextStyle idleTextStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 12,
-      fontWeight: FontWeight.bold
-  );
-  BoxDecoration selectedBoxDecoration = BoxDecoration(
-      color: Colors.black,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(width: 2, color: Colors.black)
-  );
-  BoxDecoration idleBoxDecoration = BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(width: 2, color: Colors.black)
-  );
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -53,28 +33,12 @@ class _MenuState extends State<Menu> {
               height: 30,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: categoryModel.count(),
+                  itemCount: categoryProductModel.count(),
                   itemBuilder: (BuildContext context, int index) {
-                    Category category = categoryModel.getByIndex(index);
-                    return InkWell(
-                      onTap: () {
-                        _selectCategory(index);
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(left: 5, right: 5),
-                        width: 80,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 15, left: 15),
-                          child: Center(child: Text(category.name,
-                            style: category.selected == true
-                                ? selectedTextStyle
-                                : idleTextStyle,)),
-                        ),
-                        decoration: category.selected == true
-                            ? selectedBoxDecoration
-                            : idleBoxDecoration,
-                      ),
-                    );
+                    CategoryProduct category = categoryProductModel.getByIndex(index);
+                    return CategoryButton(name:category.name, selected:category.selected, onTap: (){
+                      _selectCategory(index);
+                    },);
                   }
               ),
             ),
@@ -93,7 +57,10 @@ class _MenuState extends State<Menu> {
                         name:_product.name,
                         price:_product.price,
                         category: _product.category,
-                        image: _product.image
+                        image: _product.image,
+                        onTap: (){
+                          _goToDetail(_product, context);
+                        },
                       );
                     })),
               ),
@@ -103,10 +70,16 @@ class _MenuState extends State<Menu> {
       ),
     );
   }
-
+  _goToDetail(Product product, BuildContext context){
+    Navigator.pushNamed(context, DetailPageScreen.tag, arguments: {
+      DetailPageScreen.argTitle: product.name,
+      DetailPageScreen.argImage: product.image,
+      DetailPageScreen.argPrice: product.price.toString()
+    });
+  }
   _selectCategory(int index) {
     setState(() {
-      categoryModel.select(index);
+      categoryProductModel.select(index);
       if(index != 0)
         {
           products.setByCateogory(index);

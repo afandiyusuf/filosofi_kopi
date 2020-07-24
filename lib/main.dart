@@ -1,4 +1,6 @@
+import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/on_boarding_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
@@ -21,7 +23,9 @@ void main() {
       CreateAccountScreen.tag : (context) => CreateAccountScreen(),
       VerifyPhoneScreen.tag : (context) => VerifyPhoneScreen(),
       LoginScreen.tag : (context) => LoginScreen(),
-      PickOurStoresScreen.tag : (context) => PickOurStoresScreen()
+      PickOurStoresScreen.tag : (context) => PickOurStoresScreen(),
+      DetailPageScreen.tag : (context) => DetailPageScreen(),
+      ConfirmOrder.tag : (context) => ConfirmOrder(),
     },
   ));
 }

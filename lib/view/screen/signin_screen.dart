@@ -14,6 +14,7 @@ class SignInScreen extends StatelessWidget {
           children: <Widget>[
             Container(
                 child: Image.asset('images/logo.png'),
+                width: 220,
                 margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.4),
             ),
             Center(

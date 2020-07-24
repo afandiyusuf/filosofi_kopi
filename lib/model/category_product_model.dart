@@ -1,9 +1,9 @@
 class CategoryProductModel {
-  List<Category> _list = [
-    Category(id:0,name:"All",selected: true),
-    Category(id:1,name:"Coffe"),
-    Category(id:2,name:"Snack"),
-    Category(id:3,name:"Food"),
+  List<CategoryProduct> _list = [
+    CategoryProduct(id:0,name:"All",selected: true),
+    CategoryProduct(id:1,name:"Coffe"),
+    CategoryProduct(id:2,name:"Snack"),
+    CategoryProduct(id:3,name:"Food"),
   ];
   int _selected = 0;
   int getSelected() {
@@ -17,13 +17,13 @@ class CategoryProductModel {
     _selected = selected;
   }
 
-  List<Category> getCategories(){
+  List<CategoryProduct> getCategories(){
     return _list;
   }
-  Category getByIndex(int index){
+  CategoryProduct getByIndex(int index){
     return _list[index];
   }
-  Category getById(int id){
+  CategoryProduct getById(int id){
     return _list.firstWhere((category) => category.id == id);
   }
   select(int index){
@@ -32,9 +32,9 @@ class CategoryProductModel {
     _list[index].selected = true;
   }
 }
-class Category{
+class CategoryProduct{
   String name;
   int id;
   bool selected = false;
-  Category({this.id,this.name,this.selected});
+  CategoryProduct({this.id,this.name,this.selected});
 }

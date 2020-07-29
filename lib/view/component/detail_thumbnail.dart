@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DetailThumbnail extends StatelessWidget {
-  String image;
+  final String image;
 
   DetailThumbnail({this.image});
 

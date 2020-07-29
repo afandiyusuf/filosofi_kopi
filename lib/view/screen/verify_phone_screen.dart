@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
@@ -15,7 +14,6 @@ class VerifyPhoneScreen extends StatefulWidget {
 
 class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
   TextEditingController textEditingController = TextEditingController();
-  StreamController<ErrorAnimationType> errorController;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
   bool hasError = false;

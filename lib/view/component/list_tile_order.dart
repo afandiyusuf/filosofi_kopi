@@ -15,12 +15,12 @@ class ListTileOrder extends StatelessWidget {
       subtitle: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text("${total} barang"),
-          Text("Rp ${price}", style: TextStyle(
+          Text("$total barang"),
+          Text("Rp $price", style: TextStyle(
               fontSize: 18
           ),)
         ],
       ),
-    );;
+    );
   }
 }

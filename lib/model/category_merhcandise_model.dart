@@ -46,7 +46,6 @@ class CategoryMerchandiseModel {
     ]),
   ];
   int _selected = 0;
-  int _subSelected = 0;
 
   int getSelected() {
     return _selected;
@@ -65,7 +64,6 @@ class CategoryMerchandiseModel {
   }
 
   void setSelectedSub(int selected){
-    _subSelected = selected;
   }
 
   List<CategoryMerchandise> getCategories() {
@@ -93,7 +91,6 @@ class CategoryMerchandiseModel {
   }
 
   selectSub(int index){
-    _subSelected = index;
     _list[_selected].subCategoryMerchandise.forEach((element) {
       element.selected = false;
     });

@@ -9,9 +9,7 @@ class DetailPageScreen extends StatefulWidget {
   static final String argTitle = 'title';
   static final String argImage = 'images';
   static final String argPrice = 'price';
-  String title;
-  String image;
-  String price;
+
 
   @override
   _DetailPageScreenState createState() => _DetailPageScreenState();
@@ -21,6 +19,10 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
   bool noteAdded = false;
   int _total = 0;
   TextEditingController _nominalTextController;
+  String title;
+  String image;
+  String price;
+
   @override
   void initState(){
     super.initState();
@@ -33,14 +35,14 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
 
     final Size size = MediaQuery.of(context).size;
     if (arguments != null) {
-      widget.title = arguments[DetailPageScreen.argTitle];
-      widget.image = arguments[DetailPageScreen.argImage];
-      widget.price = arguments[DetailPageScreen.argPrice];
+      title = arguments[DetailPageScreen.argTitle];
+      image = arguments[DetailPageScreen.argImage];
+      price = arguments[DetailPageScreen.argPrice];
     }
 
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: widget.title,
+        titleText: title,
       ),
       body: Container(
         alignment: Alignment.center,
@@ -50,12 +52,12 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
             scrollDirection: Axis.vertical,
             children: <Widget>[
               DetailThumbnail(
-                image: widget.image,
+                image: image,
               ),
               Container(
                 margin: EdgeInsets.only(top: 20),
                 child: Text(
-                  widget.title.toUpperCase(),
+                  title.toUpperCase(),
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -65,7 +67,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               Container(
                 margin: EdgeInsets.only(top: 10),
                 child: Text(
-                  "Rp. ${widget.price}",
+                  "Rp. $price",
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -75,7 +77,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
               Container(
                 margin: EdgeInsets.only(top: 10),
                 child: Text(
-                  widget.title,
+                  title,
                   style: TextStyle(color: Colors.black, fontSize: 15),
                 ),
               ),
@@ -128,7 +130,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                               width: 30,
                               height: 30,
                               child: Center(
-                                child: Text("${_total}", style: TextStyle(
+                                child: Text("$_total", style: TextStyle(
                                   fontSize: 18
                                 ),
                                 ),
@@ -182,7 +184,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
         _total = 0;
         _nominalTextController.text = _total.toString();
       }
-      print("total is ${_total}");
+      print("total is $_total");
     });
   }
 }

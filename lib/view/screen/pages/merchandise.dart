@@ -1,6 +1,5 @@
 import 'package:filkop_mobile_apps/model/category_merhcandise_model.dart';
 import 'package:filkop_mobile_apps/model/mechandise_model.dart';
-import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/category_button.dart';
 import 'package:filkop_mobile_apps/view/component/product_card.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';

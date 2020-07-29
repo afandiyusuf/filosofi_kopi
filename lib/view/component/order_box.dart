@@ -1,10 +1,10 @@
-import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
 
 
 class OrderBox extends StatelessWidget {
   final Function onPressed;
-  OrderBox({this.onPressed});
+  final String location;
+  OrderBox({this.onPressed, this.location = "Pilih kedai kami"});
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class OrderBox extends StatelessWidget {
                                         size: 12,
                                       )),
                                   Text(
-                                    "Pilih kedai kami",
+                                    "${location.toUpperCase()}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold),
                                   ),

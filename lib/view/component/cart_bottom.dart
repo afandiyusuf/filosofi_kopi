@@ -26,12 +26,12 @@ class CartBottom extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Estimasi Harga | ${total} barang", style: TextStyle(
+                Text("Estimasi Harga | $total barang", style: TextStyle(
                   fontSize: 12,
                 ),),
                 Container(
                   margin: EdgeInsets.only(top: 5),
-                  child: Text("Rp ${price}", style: TextStyle(
+                  child: Text("Rp $price", style: TextStyle(
                       fontSize: 25
                   ),),
                 )

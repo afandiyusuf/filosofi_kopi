@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 class CategoryButton extends StatefulWidget {
-  String name;
-  bool selected;
-  Function onTap;
-  double width;
+  final String name;
+  final bool selected;
+  final Function onTap;
+  final double width;
   CategoryButton({this.name, this.selected, this.onTap, this.width});
   @override
   _CategoryButtonState createState() => _CategoryButtonState();

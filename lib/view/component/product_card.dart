@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 class ProductCard extends StatelessWidget {
   final String image;
   final int id;
-  final int price;
+  final String price;
   final String name;
   final int category;
-  Function onTap;
+  final Function onTap;
 
   ProductCard({this.id, this.name, this.price, this.category, this.image, this.onTap});
   @override
@@ -41,7 +41,7 @@ class ProductCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(this.name, style: titleStyle,),
-                    Text("RP ${this.price.toString()}")
+                    Text("RP $this.price")
                   ],
                 )),
 

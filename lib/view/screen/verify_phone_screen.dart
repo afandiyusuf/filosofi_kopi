@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';

@@ -1,10 +1,14 @@
+import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:flutter/material.dart';
 
 
 class OrderBox extends StatelessWidget {
   final Function onPressed;
   final String location;
-  OrderBox({this.onPressed, this.location = "Pilih kedai kami"});
+  final int stateButton;
+  final Function onPressedAmbilSendiri;
+  final Function onPressedDikirim;
+  OrderBox({this.onPressed, this.location = "Pilih kedai kami", this.stateButton = 0, this.onPressedAmbilSendiri, this.onPressedDikirim});
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +20,13 @@ class OrderBox extends StatelessWidget {
           Row(children: <Widget>[
             Expanded(
               child: Material(
-                color: Colors.grey,
+                color: (stateButton == OrderBoxModel.DIKIRIM) ? Colors.black : Colors.grey,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10))),
                 child: InkWell(
                   onTap: () {
-                    print("YO");
+                    onPressedDikirim();
                   },
                   child: Container(
                     child: Padding(
@@ -32,7 +36,7 @@ class OrderBox extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            color: Colors.white ),
                       ),
                     ),
                   ),
@@ -44,10 +48,10 @@ class OrderBox extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(10))),
-                color: Colors.black,
+                color: (stateButton == OrderBoxModel.AMBIL_SENDIRI) ? Colors.black : Colors.grey,
                 child: InkWell(
                   onTap: () {
-                    print("YO");
+                    onPressedAmbilSendiri();
                   },
                   child: Container(
                     child: Padding(
@@ -56,7 +60,7 @@ class OrderBox extends StatelessWidget {
                         "Ambil Sendiri",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            color: Colors.white,
+                            color:  Colors.white ,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -91,7 +95,9 @@ class OrderBox extends StatelessWidget {
                                           .height *
                                           0.05),
                                   child: Text(
-                                    "Ambil pesanan KAMU di:",
+                                    (stateButton == OrderBoxModel.AMBIL_SENDIRI)?
+                                    "Ambil pesanan KAMU di:" :
+                                    "Pesanan kamu dikirim dari:",
                                     style: TextStyle(fontSize: 10),
                                   )),
                               Row(
@@ -129,14 +135,13 @@ class OrderBox extends StatelessWidget {
                               color: Colors.black,
                               child: InkWell(
                                 onTap: () {
-                                  print("YO");
                                 },
                                 child: Container(
                                   child: Padding(
                                     padding:
                                     const EdgeInsets.all(12.0),
                                     child: Text(
-                                      "Ambil Sendiri",
+                                      (stateButton == OrderBoxModel.AMBIL_SENDIRI) ?"Ambil Sendiri" : "Dikirim",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Colors.white,

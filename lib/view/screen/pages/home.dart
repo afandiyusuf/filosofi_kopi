@@ -1,6 +1,7 @@
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
+import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/view/component/order_box.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
@@ -95,33 +96,48 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      BlocProvider(
-        create: (context) => orderBoxBloc,
-        child: BlocBuilder<OrderBoxBloc, OrderBoxState>(
-            builder: (context, state) {
-              if (state is OrderBoxUpdated) {
-                return OrderBox(
-                  onPressed: () {
-                    _gotoPickOurStoresScreen(context);
-                  },
-                  location: state.orderBox.location,
-                );
-              }else{
-                return OrderBox(
-                  onPressed: () {
-                    _gotoPickOurStoresScreen(context);
-                  },
-                );
-              }
+      BlocBuilder<OrderBoxBloc, OrderBoxState>(
+          builder: (context, state) {
+            if(state is OrderBoxUpdating){
+              return CircularProgressIndicator();
             }
-        ))
+            if (state is OrderBoxUpdated) {
+              return OrderBox(
+                onPressed: () {
+                  _gotoPickOurStoresScreen(context);
+                },
+                location: state.orderBox.location,
+                stateButton: state.orderBox.stateButton,
+                onPressedDikirim: (){
+                  context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(stateButton: OrderBoxModel.DIKIRIM));
+                },
+                onPressedAmbilSendiri: (){
+                  context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(stateButton: OrderBoxModel.AMBIL_SENDIRI));
+                },
+              );
+            }else{
+              return OrderBox(
+                location:"Pick your store",
+                onPressed: () {
+                  _gotoPickOurStoresScreen(context);
+                },
+                onPressedAmbilSendiri: (){
+                  _gotoPickOurStoresScreen(context);
+                },
+                onPressedDikirim: (){
+                  _gotoPickOurStoresScreen(context);
+                },
+                stateButton: 0,
+              );
+            }
+          }
+      )
         ],
       ),
     );
   }
 
   _gotoPickOurStoresScreen(BuildContext context) {
-    Navigator.pushNamed(context, PickOurStoresScreen.tag,
-        arguments: {'bloc': orderBoxBloc});
+    Navigator.pushNamed(context, PickOurStoresScreen.tag);
   }
 }

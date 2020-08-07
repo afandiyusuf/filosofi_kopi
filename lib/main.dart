@@ -1,3 +1,7 @@
+import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
+import 'package:filkop_mobile_apps/repository/cart_repository.dart';
+import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
@@ -9,27 +13,49 @@ import 'package:filkop_mobile_apps/view/screen/verify_phone_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filkop_mobile_apps/view/screen/signin_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-
-  const rootRoute = '/';
-  var rootScreen = OnBoardingScreen();
-
-  runApp(MaterialApp(
-    initialRoute: rootRoute,
-    routes: {
-      rootRoute : (context) => rootScreen,
-      SignInScreen.tag : (context) => SignInScreen(),
-      MainScreen.tag : (context) => MainScreen(),
-      CreateAccountScreen.tag : (context) => CreateAccountScreen(),
-      VerifyPhoneScreen.tag : (context) => VerifyPhoneScreen(),
-      LoginScreen.tag : (context) => LoginScreen(),
-      PickOurStoresScreen.tag : (context) => PickOurStoresScreen(),
-      DetailPageScreen.tag : (context) => DetailPageScreen(),
-      ConfirmOrder.tag : (context) => ConfirmOrder(),
-      ReferralCodeScreen.tag : (context) => ReferralCodeScreen()
-    },
-  ));
+  runApp(MainApp());
 }
+class MainApp extends StatefulWidget {
+  @override
+  _MainAppState createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  final rootRoute = '/';
+  final rootScreen = OnBoardingScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<OrderBoxBloc>(
+        create: (_) => OrderBoxBloc(),
+        ),
+        BlocProvider<CartBloc>(
+          create: (_) => CartBloc(cartRepository: CartRepository(apiService: ApiService())),
+        ),
+      ],
+      child: MaterialApp(
+        initialRoute: rootRoute,
+        routes: {
+          rootRoute : (context) => rootScreen,
+          SignInScreen.tag : (context) => SignInScreen(),
+          MainScreen.tag : (context) => MainScreen(),
+          CreateAccountScreen.tag : (context) => CreateAccountScreen(),
+          VerifyPhoneScreen.tag : (context) => VerifyPhoneScreen(),
+          LoginScreen.tag : (context) => LoginScreen(),
+          PickOurStoresScreen.tag : (context) => PickOurStoresScreen(),
+          DetailPageScreen.tag : (context) => DetailPageScreen(),
+          ConfirmOrder.tag : (context) => ConfirmOrder(),
+          ReferralCodeScreen.tag : (context) => ReferralCodeScreen()
+        },
+      ),
+    );
+  }
+}
+
+
 

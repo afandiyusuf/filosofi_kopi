@@ -1,7 +1,8 @@
+import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
 import 'package:filkop_mobile_apps/bloc/main_page/main_page_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/store_data/store_data_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/store_selected/store_selected_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/cart_bottom.dart';
 import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
@@ -13,26 +14,35 @@ import 'package:filkop_mobile_apps/view/screen/pages/profile.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   static final String tag = '/main';
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final PageController _pageController = PageController();
-  final MainPageBloc _mainPageBloc = MainPageBloc();
-  final StoreSelectedBloc _storeSelectedBloc = StoreSelectedBloc();
-  final OrderBoxBloc _orderBoxBloc = OrderBoxBloc();
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  PageController _pageController = PageController();
+  List<Widget> screens;
+
+  @override
+  void initState() {
+    super.initState();
+     screens = [
+      HomePage(),
+      Menu(),
+      MerchandisePage(),
+      Profile()
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> screens = [HomePage(orderBoxBloc: _orderBoxBloc,), Menu(), MerchandisePage(), Profile()];
-
     return MultiBlocProvider(
         providers: [
           BlocProvider<MainPageBloc>(
-            create: (_) => _mainPageBloc,
-          ),
-          BlocProvider<StoreSelectedBloc>(
-            create: (_) => _storeSelectedBloc,
+            create: (_) => MainPageBloc(),
           )
         ],
         child: BlocBuilder<MainPageBloc, int>(
@@ -42,7 +52,6 @@ class MainScreen extends StatelessWidget {
                 controller: _pageController,
                 physics: NeverScrollableScrollPhysics(),
                 onPageChanged: (index) {
-                  print("ho");
                   context.bloc<MainPageBloc>().add(index);
                 },
                 children: screens,
@@ -58,7 +67,6 @@ class MainScreen extends StatelessWidget {
                 onTap: (index){
                   context.bloc<MainPageBloc>().add(index);
                   _onItemTapped(context, index);
-
                 },
                 items: [
                   BottomNavigationBarItem(
@@ -79,15 +87,23 @@ class MainScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              floatingActionButton: Visibility(
-                visible: false,
-                child: CartBottom(
-                  total: "3",
-                  price: "200.000",
-                  onPressed: () {
-                    _showBottomSheet(context);
-                  },
-                ),
+              floatingActionButton: BlocBuilder<CartBloc,CartState>(
+                builder: (context, state) {
+                  if (state is CartUpdated) {
+                    print("updated bos");
+                    int totalItems = state.cartModel.getTotalItems();
+                    int totalPrice = state.cartModel.getTotalPrice();
+                    return CartBottom(
+                      total: "$totalItems",
+                      price: "$totalPrice",
+                      onPressed: () {
+                        _showBottomSheet(context);
+                      },
+                    );
+                  } else {
+                    return Container();
+                  }
+                }
               ),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerDocked,
@@ -100,19 +116,16 @@ class MainScreen extends StatelessWidget {
     return TextStyle(fontSize: 9);
   }
 
-  Future<void> _onItemTapped(BuildContext context, int index) async {
-    final SharedPreferences prefs = await _prefs;
-    final int selectedStore = prefs.getInt("selectedStore");
-    print(selectedStore);
-    if (selectedStore == 0 && (index == 1 || index == 2)) {
-      Navigator.pushNamed(context, PickOurStoresScreen.tag,arguments: {
-        'bloc':_orderBoxBloc
-      });
-    } else {
-       context.bloc<MainPageBloc>().add(index);
-       //using this page controller you can make beautiful animation effect
-      _pageController.jumpToPage(index);
-    }
+  _onItemTapped(BuildContext context, int index){
+      if (context.bloc<OrderBoxBloc>().state is OrderBoxDefault && (index == 1 || index == 2)) {
+        Navigator.pushNamed(context, PickOurStoresScreen.tag);
+        _pageController.jumpToPage(0);
+        context.bloc<MainPageBloc>().add(0);
+      } else {
+        context.bloc<MainPageBloc>().add(index);
+        _pageController.jumpToPage(index);
+      }
+
   }
 
   void _goToConfirmButton(context) {

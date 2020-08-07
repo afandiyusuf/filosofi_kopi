@@ -27,7 +27,6 @@ class MerchandiseModel {
   ];
   List<Merchandise> _finalList;
   List<Merchandise> _initProducts;
-  int _categorySelected = 0;
   int _subCategorySelected = 0;
 
   MerchandiseModel(){
@@ -45,7 +44,6 @@ class MerchandiseModel {
     return _finalList[index];
   }
   setByCateogory(int category){
-    _categorySelected = category;
     _subCategorySelected = 0;
     if(category == 0){
       reset();
@@ -54,12 +52,9 @@ class MerchandiseModel {
           _initProducts.where((element) => element.category == category));
       _finalList = List.of(_list);
     }
-    print(_list);
   }
   setBySubCategory(int subCategory){
     _subCategorySelected = subCategory;
-    print(subCategory);
-    print(_categorySelected);
     if(_subCategorySelected != 0)
       _finalList = List.of(_list.where((element) => element.subCategory == subCategory));
     else

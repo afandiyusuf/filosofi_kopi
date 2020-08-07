@@ -13,11 +13,9 @@ class StoreDataBloc extends Bloc<StoreDataEvent, StoreDataState>{
   @override
   Stream<StoreDataState> mapEventToState(StoreDataEvent event) async * {
     if (event is FetchStoreData){
-      print("hello there");
       yield StoreDataLoading();
       try{
         final StoreDatas  storeDatas = await repository.fetchStore();
-        print("hello there");
         yield StoreDataLoaded(storeDatas:  storeDatas);
       }catch(_){
         yield StoreDataError();

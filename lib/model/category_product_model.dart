@@ -1,40 +1,83 @@
 class CategoryProductModel {
-  List<CategoryProduct> _list = [
-    CategoryProduct(id:0,name:"All",selected: true),
-    CategoryProduct(id:1,name:"Coffe"),
-    CategoryProduct(id:2,name:"Snack"),
-    CategoryProduct(id:3,name:"Food"),
-  ];
   int _selected = 0;
+  List<CategoryProduct> categoryProducts;
+  CategoryProductModel({this.categoryProducts});
+
+  factory CategoryProductModel.fromJson(data){
+
+    List<CategoryProduct> listCategoryProduct = List<CategoryProduct>.from(
+        data.map((item) => CategoryProduct.fromJson(item))
+    );
+    //add all category
+    listCategoryProduct.insert(0,CategoryProduct(
+      id:0,
+      name: "All",
+      selected: true,
+    ));
+
+    return CategoryProductModel(
+        categoryProducts: listCategoryProduct
+    );
+  }
+
   int getSelected() {
     return _selected;
   }
+
   int count(){
-    return _list.length;
+    return categoryProducts.length;
   }
 
-  void setSelected(int selected){
+  void setSelected(String categoryName){
+    int selected = 0;
+    for(int i=0;i<categoryProducts.length;i++){
+      if(categoryProducts[i].name == categoryName){
+        selected = i;
+      }
+    }
     _selected = selected;
   }
 
   List<CategoryProduct> getCategories(){
-    return _list;
+    return categoryProducts;
   }
+
   CategoryProduct getByIndex(int index){
-    return _list[index];
+    return categoryProducts[index];
   }
+
   CategoryProduct getById(int id){
-    return _list.firstWhere((category) => category.id == id);
+    return categoryProducts.firstWhere((category) => category.id == id);
   }
-  select(int index){
-    _selected = index;
-    _list.forEach((element) {element.selected = false;});
-    _list[index].selected = true;
+
+  int getIndexByName(String categoryName){
+    for(int i=0;i<categoryProducts.length;i++){
+      if(categoryProducts[i].name == categoryName){
+        return categoryProducts[i].id;
+      }
+    }
+    return 0;
+  }
+
+  select(String categoryName){
+    _selected = getIndexByName(categoryName);
+    categoryProducts.forEach((element) {element.selected = false;});
+    categoryProducts[_selected].selected = true;
   }
 }
+
 class CategoryProduct{
-  String name;
-  int id;
-  bool selected = false;
-  CategoryProduct({this.id,this.name,this.selected});
+  final String name;
+  final int id;
+  bool selected;
+
+  CategoryProduct({this.id,this.name,this.selected = false});
+
+  factory CategoryProduct.fromJson(Map<String, dynamic> map){
+    return CategoryProduct(
+      name: map['category_name'],
+      id: map['category_id'],
+        selected: false
+    );
+  }
 }

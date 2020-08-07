@@ -1,7 +1,10 @@
+import 'package:filkop_mobile_apps/service/api_service.dart';
+import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   static final String tag = '/on-boarding';
@@ -21,7 +24,29 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   List _stateBool = [true, false, false];
   List _colors = [Colors.black, Colors.white, Colors.white];
   bool _visibleNextButton = true;
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+  void checkLogin(BuildContext context) async{
+    SharedPreferences pref = await _prefs;
+    if(pref.getString("token") != null){
+      String token = pref.getString("token");
+      int response = await ApiService().checkLogin({"token":token});
+      if(response == 1){
+        Navigator.pushNamed(context, MainScreen.tag);
+      }else if(response == 0){
+        //logout
+      }else{
+        //something went wrong
+      }
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    new Future.delayed(Duration.zero,() {
+      checkLogin(context);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

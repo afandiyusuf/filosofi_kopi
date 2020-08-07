@@ -106,9 +106,6 @@ class _MerchandisePageState extends State<MerchandisePage> {
 
   _goToDetail(Merchandise product, BuildContext context){
     Navigator.pushNamed(context, DetailPageScreen.tag, arguments: {
-      DetailPageScreen.argTitle: product.name,
-      DetailPageScreen.argImage: product.image,
-      DetailPageScreen.argPrice: product.price.toString()
     });
   }
 }

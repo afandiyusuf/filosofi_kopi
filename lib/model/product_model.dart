@@ -1,62 +1,73 @@
-import 'package:filkop_mobile_apps/config.dart';
 class ProductModel {
-  List<Product> _products = [
-    Product(id:1,name:"Perfecto Iced Black",image:"https://picsum.photos/250?image=1",price: "75000",category: 1),
-    Product(id:2,name:"Snack",image:"https://picsum.photos/250?image=1",price: "75000",category: 2),
-    Product(id:3,name:"Perfecto Iced Black",image:"https://picsum.photos/250?image=1",price: "75000",category: 1),
-    Product(id:4,name:"Perfecto Iced Black",image:"https://picsum.photos/250?image=1",price: "75000",category: 1),
-    Product(id:5,name:"Snack",image:"https://picsum.photos/250?image=1",price: "75000",category: 2),
-    Product(id:6,name:"Perfecto Iced Black",image:"https://picsum.photos/250?image=1",price: "75000",category: 1),
-    Product(id:7,name:"Food",image:"https://picsum.photos/250?image=1",price: "75000",category: 3),
-    Product(id:8,name:"Food",image:"https://picsum.photos/250?image=1",price: "75000",category: 3),
-  ];
+  List<Product> products;
   List<Product> _initProducts;
-  ProductModel(){
-    _initProducts = List.of(_products);
+  ProductModel({this.products}){
+    _initProducts = List.of(products);
   }
+  factory ProductModel.fromJson(data){
+    return ProductModel(
+        products: List<Product>.from(data.map((item) {
+          return Product.fromJson(item);
+        }))
+    );
+  }
+
   int getTotal(){
-    return _products.length;
+    return products.length;
   }
 
   List<Product> getByCategory(int category){
-    _products =  _products.where((element) => element.id == category);
-    return _products;
+    products =  products.where((element) => element.id == category.toString());
+    return products;
   }
   List<Product> all(){
-    _products = List.of(_initProducts);
-    return _products;
+    products = List.of(_initProducts);
+    return products;
   }
   List<Product> active(){
-    return _products;
+    return products;
   }
   Product getById(int id){
-    return _products.firstWhere((element) => element.id == id);
+    return products.firstWhere((element) => element.id == id.toString());
   }
   Product getByIndex(int index){
-    return _products[index];
+    return products[index];
   }
-  setByCateogory(int category){
-    _products = List.of(_initProducts.where((element) => element.category == category));
-    print(_products);
+  setByCategory(String category){
+    if(category == "All"){
+      reset();
+    }else {
+      products = List.of(
+          _initProducts.where((element) => element.categoryText == category));
+    }
   }
   reset(){
-    _products = List.of(_initProducts);
+    products = List.of(_initProducts);
   }
 
 }
 
 class Product{
-  final int id;
+  final String id;
   final String name;
-  final String image;
-  final String code;
+  final String description;
   final String discount;
   final String price;
+  final String originalPrice;
+  final String stock;
+  final String jenis;
+  final String avail;
+  final String image;
+  final String code;
   final String discPrice;
+  final String categoryText;
   final int category;
+  String notes = "";
 
-  Product({this.id, this.name, this.image, this.price, this.category, this.code, this.discount, this.discPrice});
+  Product({this.id, this.name, this.image, this.price, this.category, this.code, this.discount, this.discPrice, this.description, this.originalPrice, this.avail , this.jenis, this.stock, this.categoryText});
+
   factory Product.fromJson(Map<String, dynamic> map){
+    print(map['description']);
     return Product(
       id: map['id'],
       code: map['code'],
@@ -64,8 +75,14 @@ class Product{
       discount: map['discount'],
       price: map['price'],
       discPrice: map['disc_price'],
-      category: map['cat_id']['category_id'],
-      image: imageBaseUrl+map['image']['name'],
+      category: 0,
+      image: "https://www.filosofikopi.id/upload/images/product/${map['photo']}",
+      stock: map['stock'],
+      avail: map['avail'],
+      originalPrice: map['original_price'],
+      jenis: map['jenis'],
+      description: map['description'],
+      categoryText: map['category'],
     );
   }
 }

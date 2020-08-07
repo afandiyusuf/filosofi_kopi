@@ -3,7 +3,6 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/store_data//store_data_event.dart';
 import 'package:filkop_mobile_apps/bloc/store_data/store_data_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/store_data/store_data_state.dart';
-import 'package:filkop_mobile_apps/model/order_box.dart';
 import 'package:filkop_mobile_apps/model/store_datas.dart';
 import 'package:filkop_mobile_apps/repository/store_data_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
@@ -13,16 +12,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PickOurStoresScreen extends StatelessWidget {
   static final String tag = '/pick-our-stores';
-  final StoreDataRepository repository =
-  new StoreDataRepository(apiService: ApiService());
+  final StoreDataRepository repository = StoreDataRepository(apiService: ApiService());
 
   @override
   Widget build(BuildContext context) {
-    final Map arguments = ModalRoute
-        .of(context)
-        .settings
-        .arguments as Map;
-    final OrderBoxBloc _orderBoxBloc = arguments['bloc'];
 
     var size = MediaQuery
         .of(context)
@@ -34,9 +27,8 @@ class PickOurStoresScreen extends StatelessWidget {
         create: (context) => StoreDataBloc(repository: repository),
         child: BlocBuilder<StoreDataBloc, StoreDataState>(
             builder: (context, state) {
-              print("Yo");
+
               if (state is StoreDataEmpty) {
-                print("Empty");
                 BlocProvider.of<StoreDataBloc>(context).add(FetchStoreData());
               }
               if (state is StoreDataError) {
@@ -60,7 +52,7 @@ class PickOurStoresScreen extends StatelessWidget {
                                   index);
                               return InkWell(
                                 onTap: () {
-                                  setStore(context, store.location, _orderBoxBloc);
+                                  setStore(context, store.location,store.id);
                                 },
                                 child: Stack(
                                   alignment: Alignment.bottomCenter,
@@ -114,9 +106,8 @@ class PickOurStoresScreen extends StatelessWidget {
             }));
   }
 
-  Future<void> setStore(BuildContext context, String location,
-      OrderBoxBloc bloc) async {
-    bloc.add(OrderBoxUpdateLocation(location: location));
+  Future<void> setStore(BuildContext context, String location, int storeId) async {
+    context.bloc<OrderBoxBloc>().add(OrderBoxUpdateLocation(location: location, storeId: storeId));
     Navigator.pop(context);
   }
 }

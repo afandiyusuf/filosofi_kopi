@@ -1,3 +1,4 @@
+import 'package:filkop_mobile_apps/model/base_response.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field_decoration.dart';
@@ -5,6 +6,7 @@ import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   static final String tag = "/login";
@@ -16,12 +18,19 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   TextEditingController _usernameTxt = TextEditingController(text:"");
   TextEditingController _passwordTxt = TextEditingController(text:"");
-  Future<String> response;
+
+  @override
+  void initState(){
+    super.initState();
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: _scaffoldKey,
         appBar: CustomAppBar(titleText: "Login"),
@@ -96,25 +105,30 @@ class _LoginScreenState extends State<LoginScreen> {
   _attempLogin(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
-    setState(() {
-      response = ApiService().login(_usernameTxt.text, _passwordTxt.text);
-      response.then((value) => {
-        _handleLogin(context, value)
-      });
-     
+    _scaffoldKey?.currentState?.showSnackBar(SnackBar(
+      content: Text("Logging in..."),
+    ));
+
+    Future<BaseResponse> response = ApiService().login(_usernameTxt.text, _passwordTxt.text);
+      response.then((value) =>
+    {
+      if(value.success == true){
+          _saveToken(context,value.data.token)
+      }else{
+        _scaffoldKey?.currentState?.showSnackBar(SnackBar(
+          content: Text(value.msg),
+        ))
+      }
     });
 
-  }
-  _handleLogin(BuildContext context, String text)
-  {
-    if(text == "Successfully"){
-      Navigator.pushNamed(context, MainScreen.tag);
-    }else{
-      _scaffoldKey?.currentState?.showSnackBar(SnackBar(
-        content: Text(text),
-      ));
 
-    }
+
+  }
+  _saveToken(BuildContext context, String token) async
+  {
+    SharedPreferences pref = await _prefs;
+    pref.setString("token", token);
+    Navigator.pushNamed(context, MainScreen.tag);
   }
 
 }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ProductCard extends StatelessWidget {
@@ -22,16 +23,20 @@ class ProductCard extends StatelessWidget {
           onTap();
         },
         child: Container(
-            height: 150,
-            width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: Image.network(
-                    image,
-                    fit: BoxFit.cover,
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CachedNetworkImage(
+                      imageUrl: image,
+                      placeholder: (context, url) => Padding(
+                        padding: const EdgeInsets.all(25.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error)
+                    ),
                   ),
                 ),
                 Container(
@@ -40,8 +45,8 @@ class ProductCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(this.name, style: titleStyle,),
-                    Text("RP $this.price")
+                    Text(name, style: titleStyle,),
+                    Text("$price")
                   ],
                 )),
 

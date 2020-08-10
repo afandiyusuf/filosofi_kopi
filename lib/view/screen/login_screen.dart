@@ -106,6 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusScope.of(context).unfocus();
 
     _scaffoldKey?.currentState?.showSnackBar(SnackBar(
+      duration: Duration(minutes: 1),
       content: Text("Logging in..."),
     ));
 

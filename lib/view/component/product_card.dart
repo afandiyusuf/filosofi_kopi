@@ -8,8 +8,9 @@ class ProductCard extends StatelessWidget {
   final String name;
   final int category;
   final Function onTap;
+  final int total;
 
-  ProductCard({this.id, this.name, this.price, this.category, this.image, this.onTap});
+  ProductCard({this.id, this.name, this.price, this.category, this.image, this.onTap, this.total});
   @override
   Widget build(BuildContext context) {
     TextStyle titleStyle = TextStyle(
@@ -22,36 +23,59 @@ class ProductCard extends StatelessWidget {
         onTap: (){
           onTap();
         },
-        child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: image,
-                      placeholder: (context, url) => Padding(
-                        padding: const EdgeInsets.all(25.0),
-                        child: CircularProgressIndicator(),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error)
-                    ),
-                  ),
-                ),
-                Container(
-                  margin:EdgeInsets.only(top: 20),
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          children: [
+            Container(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(name, style: titleStyle,),
-                    Text("$price")
+                    Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          imageUrl: image,
+                          placeholder: (context, url) => Padding(
+                            padding: const EdgeInsets.all(25.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) => Icon(Icons.error)
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin:EdgeInsets.only(top: 20),
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(name, style: titleStyle,),
+                        Text("$price")
+                      ],
+                    )),
+
                   ],
                 )),
-
-              ],
-            )),
+            Visibility(
+              visible: (total > 0)?true:false,
+              child: Positioned(
+                right: 5,
+                bottom: 80,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100)
+                  ),
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    child: Center(child: Text("$total", style: TextStyle(
+                      fontWeight: FontWeight.bold
+                    ),)),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

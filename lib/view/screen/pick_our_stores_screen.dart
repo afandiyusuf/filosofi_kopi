@@ -9,6 +9,7 @@ import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PickOurStoresScreen extends StatelessWidget {
   static final String tag = '/pick-our-stores';
@@ -108,6 +109,8 @@ class PickOurStoresScreen extends StatelessWidget {
 
   Future<void> setStore(BuildContext context, String location, int storeId) async {
     context.bloc<OrderBoxBloc>().add(OrderBoxUpdateLocation(location: location, storeId: storeId));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('location', location);
     Navigator.pop(context);
   }
 }

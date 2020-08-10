@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:filkop_mobile_apps/model/base_response.dart';
+import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/model/store_datas.dart';
@@ -85,30 +86,85 @@ class ApiService {
     }
   }
 
-  Future<bool> addToCart(String userId, String productId, String total,
+  Future<bool> addToCart(String productId, String total,
       String notes, String store) async {
     SharedPreferences pref = await _prefs;
     final body = {
       'token': pref.getString('token'),
-      'user_id': userId,
       'menu_id': productId,
       'qty': total,
       'notes': notes,
       'store': store
     };
+
+    print(body);
+
     final response =
         await client.post("$baseUrl/restApi/add_to_cart_fnb", body: body);
 
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
+        //refresh cart if success
+        await client.post("$baseUrl/restApi/get_cart_fnb", body: body);
         return true;
       } else {
+        print(response.body);
         return false;
       }
     } else {
       print(response.statusCode);
       print(response.body);
+      return false;
+    }
+  }
+
+  Future<CartModel> getCart(String store) async {
+    SharedPreferences pref = await _prefs;
+    String location = pref.getString('location');
+    final body = {
+      'token': pref.getString('token'),
+      'store': store
+    };
+
+    final response =
+    await client.post("$baseUrl/restApi/get_cart_fnb", body: body);
+
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      if (parsed['success'] == true) {
+        print("result success");
+        print(parsed['data']);
+        return CartModel.fromJson(parsed['data'],location);
+      } else {
+        print(response.body);
+        return null;
+      }
+    } else {
+      print(response.statusCode);
+      print(response.body);
+      return null;
+    }
+  }
+
+  Future<bool> deleteItemFromCart(String cartId) async{
+    SharedPreferences pref = await _prefs;
+    final body = {
+      'token': pref.getString('token'),
+      'cart_id': cartId
+    };
+
+    final response =
+    await client.post("$baseUrl/restApi/remove_cart_fnb", body: body);
+
+    if(response.statusCode == 200){
+      final parsed = json.decode(response.body);
+      if(parsed['success']){
+        return true;
+      }else{
+        return false;
+      }
+    }else{
       return false;
     }
   }

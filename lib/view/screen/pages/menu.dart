@@ -8,6 +8,7 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_state.dart';
+import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
@@ -16,6 +17,7 @@ import 'package:filkop_mobile_apps/repository/product_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/category_button.dart';
 import 'package:filkop_mobile_apps/view/component/product_card.dart';
+import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,7 +73,6 @@ class _MenuState extends State<Menu> {
                 }
                 if (state is CategoryProductUpdated) {
                   categoryProductModel = state.categoryProductModel;
-
                   return Container(
                     margin: EdgeInsets.only(top: 50, bottom: 0),
                     height: 30,
@@ -120,25 +121,26 @@ class _MenuState extends State<Menu> {
                           childAspectRatio: (itemWidth / itemHeight),
                           children: List.generate(products.getTotal(), (index) {
                             Product _product = products.getByIndex(index);
-
-                            FlutterMoneyFormatter fmf = FlutterMoneyFormatter(
-                                amount: double.parse(_product.price));
-                            String priceFormatted = fmf
-                                .copyWith(
-                                    symbol: 'Rp.',
-                                    symbolAndNumberSeparator: ' ')
-                                .output
-                                .symbolOnLeft;
-
-                            return ProductCard(
-                              id: int.parse(_product.id),
-                              name: _product.name,
-                              price: priceFormatted,
-                              category: _product.category,
-                              image: _product.image,
-                              onTap: () {
-                                _goToDetail(_product, context);
-                              },
+                            String priceFormatted = Rupiah(double.parse(_product.price));
+                            return BlocBuilder<CartBloc, CartState>(
+                              builder: (context, state) {
+                                int total = 0;
+                                if(state is CartUpdated){
+                                  CartModel cartModel = state.cartModel;
+                                  total = cartModel.getTotalItemsByIndex(_product.id);
+                                }
+                                return ProductCard(
+                                  id: int.parse(_product.id),
+                                  name: _product.name,
+                                  price: priceFormatted,
+                                  category: _product.category,
+                                  image: _product.image,
+                                  total: total,
+                                  onTap: () {
+                                    _goToDetail(_product, context);
+                                  },
+                                );
+                              }
                             );
                           })),
                     ),
@@ -165,7 +167,6 @@ class _MenuState extends State<Menu> {
   _goToDetail(Product product, BuildContext context) {
     int total = 0;
     if (context.bloc<CartBloc>().state is CartUpdated) {
-      print(context.bloc<CartBloc>().state);
       CartUpdated state = context.bloc<CartBloc>().state;
       if (state.cartModel != null) {
         //get total menu

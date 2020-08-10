@@ -44,7 +44,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
             .output
             .symbolOnLeft;
         _total = state.orderBox.selectedTotal;
-
+        print(_total);
         return Scaffold(
           appBar: CustomAppBar(
             titleText: product.name,
@@ -164,6 +164,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                               ),
                             );
                           }
+
                           return InkWell(
                             onTap: () {
                               _updateCart(context, product, state.orderBox.location);
@@ -212,6 +213,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     super.dispose();
   }
   _updateCart(BuildContext context,Product product,String location) {
+    print("total is $_total");
     context.bloc<CartBloc>().add(UpdateCart(
         product: product,
         total: _total,

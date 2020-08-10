@@ -1,79 +1,125 @@
 import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:supercharged/supercharged.dart';
 
-class CartModel{
-  List<CartItem> _allItems = [];
-  List<CartItem> get  allItem => _allItems;
+class CartModel {
+  List<CartItem> allItems = [];
   List<CartItem> lastHistory;
 
-  int getTotalItems(){
+  CartModel({this.allItems});
+
+  factory CartModel.fromJson(data, location){
+    return CartModel(
+        allItems: List<CartItem>.from(data.map((item) {
+          return CartItem.fromJson(item);
+        }))
+    );
+  }
+
+  int getTotalItems() {
     int total = 0;
-    _allItems.forEach((element) {
-      total += element.total;
+    allItems.forEach((element) {
+      total += element.qty.toInt();
     });
     return total;
   }
 
-  int getTotalPrice(){
+  int getTotalTypeItems() {
+    return allItems.length;
+  }
+
+  CartItem getCartItemByIndex(int index) {
+    return allItems[index];
+  }
+
+
+  int getTotalPrice() {
     int totalPrice = 0;
-    _allItems.forEach((element) {
-      int totalPerProduct = element.total * int.parse(element.product.price);
+    allItems.forEach((element) {
+      int totalPerProduct = element.qty.toInt() * int.parse(element.menuPrice);
       totalPrice += totalPerProduct;
     });
     return totalPrice;
   }
-  void rollBack(){
-    _allItems = List.of(lastHistory);
+
+  void rollBack() {
+    allItems = List.of(lastHistory);
   }
-  int addItem(Product product, int total){
-    lastHistory = List.of(_allItems);
+
+
+  int getDiffTotal(Product product, int total) {
+    lastHistory = List.of(allItems);
     int diffTotal = 0;
-    if(_allItems.length != 0) {
-      CartItem cartItem = _allItems.firstWhere((el) =>
-      el.productId == product.id, orElse: () => null);
+
+    if (allItems.length != 0) {
+      CartItem cartItem = allItems.firstWhere((el) =>
+      el.menuId == product.id, orElse: () => null);
       print(cartItem);
       if (cartItem != null) {
-        _allItems.forEach((element) {
-          if (element.productId == product.id) {
-            element.total = total;
-            diffTotal = total-element.total;
+        allItems.forEach((element) {
+          if (element.menuId == product.id) {
+            diffTotal = total - element.qty.toInt();
+            element.qty = total.toString();
           }
         }
         );
-      }else{
-        _allItems.add(CartItem(
-            productId: product.id,
-            product: product,
-            total: total
-        ));
+      } else {
         diffTotal = total;
       }
-    }else{
-      _allItems.add(CartItem(
-          productId: product.id,
-          product: product,
-          total: total
-      ));
+    } else {
       diffTotal = total;
     }
-    _allItems.removeWhere((element) => element.total == 0);
     return diffTotal;
   }
 
-  int getTotalItemsByIndex(String id){
-    CartItem cartItem = _allItems.firstWhere((el) =>
-    el.productId == id, orElse: () => null);
-    if(cartItem != null){
-      print("item ada");
-      print(cartItem.total);
-      return cartItem.total;
-    }else{
+  int getTotalItemsByIndex(String id) {
+    CartItem cartItem = allItems.firstWhere((el) =>
+    el.menuId == id, orElse: () => null);
+    if (cartItem != null) {
+      print(cartItem.qty);
+      return cartItem.qty.toInt();
+    } else {
       return 0;
     }
   }
 }
-class CartItem{
-  String productId;
-  int total;
-  Product product;
-  CartItem({this.total, this.product, this.productId});
+
+class CartItem {
+  final String cartId;
+  final String menuId;
+  String notes;
+  String qty;
+  final String menuPrice;
+  final String menuDiscount;
+  final String name;
+  final String photo;
+  final String description;
+  String total;
+
+  CartItem(
+      {this.photo, this.total, this.menuPrice, this.menuDiscount, this.name, this.qty, this.menuId, this.cartId, this.notes, this.description});
+
+  factory CartItem.fromJson(data){
+    return CartItem(
+        cartId: data['cart_id'],
+        notes: data['notes'],
+        menuId: data['menu_id'],
+        qty: data['qty'],
+        menuPrice: data['menu_price'],
+        menuDiscount: data['menu_discount'],
+        name: data['name'],
+        photo: "https://www.filosofikopi.id/upload/images/product/${data['photo']}",
+        total: data['total'],
+        description: data['description']
+    );
+  }
+
+  Product convertToProduct() {
+    return Product(
+      id: menuId,
+      name: name,
+      price: menuPrice,
+      image: photo,
+      description: description,
+    );
+  }
 }

@@ -42,6 +42,7 @@ dependencies:
   flutter_html: ^1.0.0-pre.1
   simple_animations: ^2.2.1
   sa_multi_tween: ^1.1.1
+  animated_dialog_box: ^0.0.2
 
 
 

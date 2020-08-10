@@ -13,6 +13,12 @@ class UpdateCart extends CartEvent{
   final String store;
   UpdateCart({@required this.product, @required this.total, @required this.store});
 }
+class DeleteItemFromCart extends CartEvent{
+  final String cartId;
+  final String store;
+
+  DeleteItemFromCart({this.cartId, this.store});
+}
 
 class DisposeCartEvent extends CartEvent{}
 

@@ -31,7 +31,7 @@ class CartBottom extends StatelessWidget {
                 ),),
                 Container(
                   margin: EdgeInsets.only(top: 5),
-                  child: Text("Rp $price", style: TextStyle(
+                  child: Text("$price", style: TextStyle(
                       fontSize: 25
                   ),),
                 )

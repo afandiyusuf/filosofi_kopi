@@ -7,5 +7,5 @@ class RegisterEvent extends Equatable{
 }
 
 class Registering extends RegisterEvent{
-  String
+
 }

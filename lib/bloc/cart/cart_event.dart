@@ -20,5 +20,10 @@ class DeleteItemFromCart extends CartEvent{
   DeleteItemFromCart({this.cartId, this.store});
 }
 
+class FetchCart extends CartEvent{
+  final String location;
+  FetchCart({this.location});
+}
+
 class DisposeCartEvent extends CartEvent{}
 

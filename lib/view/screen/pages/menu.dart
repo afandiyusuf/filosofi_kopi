@@ -50,10 +50,6 @@ class _MenuState extends State<Menu> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ProductBloc>(
-          create: (_) => ProductBloc(
-              repository: ProductRepository(apiService: ApiService())),
-        ),
         BlocProvider(
             create: (_) => CategoryProductBloc(
                 repository:
@@ -71,6 +67,10 @@ class _MenuState extends State<Menu> {
                       .bloc<CategoryProductBloc>()
                       .add(FetchCategoryProduct());
                 }
+                if(state is CategoryProductUpdating){
+                  return Center(child: CircularProgressIndicator(),);
+                }
+
                 if (state is CategoryProductUpdated) {
                   categoryProductModel = state.categoryProductModel;
                   return Container(
@@ -107,8 +107,17 @@ class _MenuState extends State<Menu> {
                     child: CircularProgressIndicator(),
                   );
                 }
+                print(context.bloc<CartBloc>().state.toString());
                 if (state is ProductDataLoaded) {
                   products = state.products;
+                  if(context.bloc<CartBloc>().state is CartUpdated){
+                    print("sort boss");
+                    CartUpdated state = context.bloc<CartBloc>().state;
+                    CartModel cm = state.cartModel;
+                    products.sortByBought(cm);
+                  }else{
+                    print("not sort");
+                  }
 
                   return Expanded(
                     child: Container(
@@ -167,12 +176,15 @@ class _MenuState extends State<Menu> {
   _goToDetail(Product product, BuildContext context) {
     int total = 0;
     if (context.bloc<CartBloc>().state is CartUpdated) {
+      print("result is");
+      print(context.bloc<CartBloc>().state is CartUpdated);
       CartUpdated state = context.bloc<CartBloc>().state;
       if (state.cartModel != null) {
         //get total menu
         total = state.cartModel.getTotalItemsByIndex(product.id);
       }
     }
+    print("total is $total");
     context
         .bloc<OrderBoxBloc>()
         .add(OrderBoxSelectProduct(selectedProduct: product, total: total));

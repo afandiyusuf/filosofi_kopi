@@ -6,6 +6,8 @@ import 'package:filkop_mobile_apps/bloc/main_page/main_page_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
+import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
 import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/cart_bottom.dart';
@@ -48,68 +50,75 @@ class _MainScreenState extends State<MainScreen> {
             create: (_) => MainPageBloc(),
           )
         ],
-        child: BlocBuilder<MainPageBloc, int>(
-          builder: (context, state) {
-            return Scaffold(
-              body: PageView(
-                controller: _pageController,
-                physics: NeverScrollableScrollPhysics(),
-                onPageChanged: (index) {
-                  context.bloc<MainPageBloc>().add(index);
-                },
-                children: screens,
-              ),
-              bottomNavigationBar: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                selectedItemColor: Colors.black,
-                selectedLabelStyle: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-                currentIndex: state,
-                onTap: (index) {
-                  context.bloc<MainPageBloc>().add(index);
-                  _onItemTapped(context, index);
-                },
-                items: [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    title: Text("HOME", style: _bottomNavBarStyle()),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.restaurant_menu),
-                    title: Text("MENU", style: _bottomNavBarStyle()),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.show_chart),
-                    title: Text("MERCHANDHISE", style: _bottomNavBarStyle()),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.menu),
-                    title: Text("PROFILE", style: _bottomNavBarStyle()),
-                  ),
-                ],
-              ),
-              floatingActionButton:
-                  BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-                if (state is CartUpdated) {
-                  int totalItems = state.cartModel.getTotalItems();
-                  int totalPrice = state.cartModel.getTotalPrice();
-                  return CartBottom(
-                    total: "$totalItems",
-                    price: "${Rupiah(totalPrice.toDouble())}",
-                    onPressed: () {
-                      _showBottomSheet(context);
-                    },
-                  );
-                } else {
-                  return Container();
-                }
-              }),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-            );
+        child: BlocListener<CartBloc, CartState>(
+          listener: (context, state){
+            if(state is CartUpdated){
+              context.bloc<ProductBloc>().add(RefreshProduct());
+            }
           },
+          child: BlocBuilder<MainPageBloc, int>(
+            builder: (context, state) {
+              return Scaffold(
+                body: PageView(
+                  controller: _pageController,
+                  physics: NeverScrollableScrollPhysics(),
+                  onPageChanged: (index) {
+                    context.bloc<MainPageBloc>().add(index);
+                  },
+                  children: screens,
+                ),
+                bottomNavigationBar: BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  selectedItemColor: Colors.black,
+                  selectedLabelStyle: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  currentIndex: state,
+                  onTap: (index) {
+                    context.bloc<MainPageBloc>().add(index);
+                    _onItemTapped(context, index);
+                  },
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      title: Text("HOME", style: _bottomNavBarStyle()),
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.restaurant_menu),
+                      title: Text("MENU", style: _bottomNavBarStyle()),
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.show_chart),
+                      title: Text("MERCHANDHISE", style: _bottomNavBarStyle()),
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.menu),
+                      title: Text("PROFILE", style: _bottomNavBarStyle()),
+                    ),
+                  ],
+                ),
+                floatingActionButton:
+                    BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                  if (state is CartUpdated) {
+                    int totalItems = state.cartModel.getTotalItems();
+                    int totalPrice = state.cartModel.getTotalPrice();
+                    return CartBottom(
+                      total: "$totalItems",
+                      price: "${Rupiah(totalPrice.toDouble())}",
+                      onPressed: () {
+                        _showBottomSheet(context);
+                      },
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+              );
+            },
+          ),
         ));
   }
 
@@ -132,12 +141,26 @@ class _MainScreenState extends State<MainScreen> {
   void _goToConfirmButton(context) {
     Navigator.pushNamed(context, ConfirmOrder.tag);
   }
-
+  void fetchCart(BuildContext context) async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String location = pref.getString('location');
+    context.bloc<CartBloc>().add(FetchCart(location:location));
+  }
   void _showBottomSheet(context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
           return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+            if(state is CartInitState){
+              fetchCart(context);
+            }
+
+            if(state is CartEmptyState){
+              return Container(
+                child: Center(child: Text("Cart Kosong")),
+              );
+            }
+
             if (state is CartUpdated) {
               CartModel cartModel = state.cartModel;
               return Container(
@@ -164,7 +187,7 @@ class _MainScreenState extends State<MainScreen> {
                                 return ListTileOrder(
                                     name: cartItem.name,
                                     price: Rupiah(cartItem.total.toDouble()),
-                                    total: cartItem.qty,
+                                    total: cartItem.qty.toString(),
                                     image: cartItem.photo,
                                     onTap: () {
                                       _goToDetail(
@@ -189,11 +212,17 @@ class _MainScreenState extends State<MainScreen> {
                         ],
                       )));
             }
+
             if(state is CartUpdating){
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
+
+            if(state is CartEmptyState){
+              return Container();
+            }
+
             return Center(
               child: CircularProgressIndicator(),
             );

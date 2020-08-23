@@ -6,7 +6,7 @@ class CartState extends Equatable{
   @override
   List<Object> get props => [];
 }
-
+class CartInitState extends CartState{}
 class CartEmptyState extends CartState{}
 
 class CartUpdated extends CartState{

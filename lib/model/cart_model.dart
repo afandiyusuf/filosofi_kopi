@@ -58,7 +58,7 @@ class CartModel {
         allItems.forEach((element) {
           if (element.menuId == product.id) {
             diffTotal = total - element.qty.toInt();
-            element.qty = total.toString();
+            element.qty = total;
           }
         }
         );
@@ -87,7 +87,7 @@ class CartItem {
   final String cartId;
   final String menuId;
   String notes;
-  String qty;
+  int qty;
   final String menuPrice;
   final String menuDiscount;
   final String name;
@@ -103,7 +103,7 @@ class CartItem {
         cartId: data['cart_id'],
         notes: data['notes'],
         menuId: data['menu_id'],
-        qty: data['qty'],
+        qty: int.parse(data['qty']),
         menuPrice: data['menu_price'],
         menuDiscount: data['menu_discount'],
         name: data['name'],

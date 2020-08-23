@@ -1,6 +1,8 @@
 import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/repository/cart_repository.dart';
+import 'package:filkop_mobile_apps/repository/product_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
@@ -37,6 +39,10 @@ class _MainAppState extends State<MainApp> {
         BlocProvider<CartBloc>(
           create: (_) => CartBloc(cartRepository: CartRepository(apiService: ApiService())),
         ),
+        BlocProvider<ProductBloc>(
+          create: (_) => ProductBloc(
+              repository: ProductRepository(apiService: ApiService())),
+        )
       ],
       child: MaterialApp(
         initialRoute: rootRoute,

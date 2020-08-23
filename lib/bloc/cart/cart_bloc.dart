@@ -7,21 +7,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc({this.cartRepository}) : super(CartEmptyState());
   CartModel _cartModel = CartModel();
+  CartModel get cartModel => _cartModel;
   CartRepository cartRepository;
 
   @override
   Stream<CartState> mapEventToState(CartEvent event) async* {
     yield CartUpdating();
     if (event is UpdateCart) {
-      print("Start update local database");
       int diffTotal = event.total;
       try {
         diffTotal = _cartModel.getDiffTotal(event.product, event.total);
       } catch (_) {
-        print("get diff total error");
         yield CartUpdateError(cartModel: null);
       }
-      print("get diff success");
+
       bool status = false;
       try {
         status = await cartRepository.addToCartFnb(event.product.id.toString(),
@@ -37,7 +36,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         if (_cartModel != null) {
           yield CartUpdated(cartModel: _cartModel);
         } else {
-          yield CartUpdated(cartModel: _cartModel);
+          yield CartEmptyState();
         }
       } else {
         _cartModel.rollBack();
@@ -58,11 +57,25 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       newestCartModel = await cartRepository.getCart(event.store);
       if (newestCartModel != null) {
         print("finish update cart here");
+        _cartModel = newestCartModel;
+        yield CartUpdated(cartModel: _cartModel);
+      } else {
+        print("cart empty");
+        _cartModel = null;
+        yield CartEmptyState();
+      }
+    }
+
+    if(event is FetchCart){
+      CartModel newestCartModel;
+      newestCartModel = await cartRepository.getCart(event.location);
+      if (newestCartModel != null) {
+        print("finish update cart here");
+        _cartModel = newestCartModel;
         yield CartUpdated(cartModel: newestCartModel);
       } else {
-        yield CartUpdated(cartModel: _cartModel);
+        yield CartEmptyState();
       }
-
     }
 
     if (event is DisposeCartEvent) {

@@ -13,6 +13,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState>{
 
   @override
   Stream<ProductState> mapEventToState(ProductEvent event) async* {
+    yield ProductDataLoading();
+
     if(event is FetchProduct){
       yield ProductDataLoading();
       try{
@@ -33,6 +35,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState>{
         print(_.toString());
         yield ProductDataError();
       }
+    }
+
+    if(event is RefreshProduct){
+      print("refreeees");
+      yield ProductDataLoaded(products: _productModel);
     }
   }
   

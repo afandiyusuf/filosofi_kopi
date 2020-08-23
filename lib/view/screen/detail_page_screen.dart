@@ -4,6 +4,8 @@ import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
+import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/add_note_button.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
@@ -191,6 +193,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                   BlocListener<CartBloc, CartState>(
                     listener: (context, state) {
                       if(state is CartUpdated){
+                        context.bloc<ProductBloc>().add(RefreshProduct());
                         Navigator.of(context).pop();
                       }
                       // do stuff here based on BlocA's state
@@ -213,6 +216,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     super.dispose();
   }
   _updateCart(BuildContext context,Product product,String location) {
+
     print("total is $_total");
     context.bloc<CartBloc>().add(UpdateCart(
         product: product,

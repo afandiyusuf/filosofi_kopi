@@ -15,3 +15,5 @@ class SetProductsByCategory extends ProductEvent{
   final String categoryName;
   const SetProductsByCategory({this.categoryName});
 }
+
+class RefreshProduct extends ProductEvent{}

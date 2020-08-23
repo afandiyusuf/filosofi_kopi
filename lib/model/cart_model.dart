@@ -1,5 +1,4 @@
 import 'package:filkop_mobile_apps/model/product_model.dart';
-import 'package:supercharged/supercharged.dart';
 
 class CartModel {
   List<CartItem> allItems = [];

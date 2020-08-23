@@ -168,4 +168,30 @@ class ApiService {
       return false;
     }
   }
+
+  Future<String> register(String username, String email, String password, String dob, String gender, String province, String city, String phone, String pin) async{
+    final body = {
+      'username' : username,
+      'email' : email,
+      'password' : password,
+      'dob' : dob,
+      'gender' : gender,
+      'province' : province,
+      'city' : city,
+      'phone' : phone,
+      'pin' : pin
+    };
+    final response =
+        await client.post("$baseUrl/restApi/register", body: body);
+    if(response.statusCode == 200){
+      final parsed = json.decode(response.body);
+      if(parsed['success']){
+        return 'success';
+      }else{
+        return parsed['msg'];
+      }
+    }else{
+      return 'error';
+    }
+  }
 }

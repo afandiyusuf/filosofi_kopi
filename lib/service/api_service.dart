@@ -30,6 +30,32 @@ class ApiService {
     }
   }
 
+  Future<int> register(String username, String email, String password, String dob, String gender, String province, String city, String phone, String pin) async{
+    final requestBody = {
+      'username':username,
+      'email' : email,
+      'password' : password,
+      'dob' : dob,
+      'gender' : gender,
+      'province' : province,
+      'city' : city,
+      'phone' : phone,
+      'pin' : pin
+    };
+    final response = await client.post('$baseUrl/register',body: requestBody);
+
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      if (parsed['success'] == true) {
+        return 1;
+      } else {
+        return 0;
+      }
+    } else {
+      return null;
+    }
+  }
+
   Future<StoreDatas> getStoreData() async {
     final response = await client.post("$baseUrl/restApi/get_store");
 

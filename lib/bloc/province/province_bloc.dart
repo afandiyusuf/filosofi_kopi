@@ -10,6 +10,8 @@ class ProvinceBloc extends Bloc<ProvinceEvent, ProvinceState>{
 
   @override
   Stream<ProvinceState> mapEventToState(ProvinceEvent event) async* {
+    yield ProvinceLoading();
+    
     if(event is FetchProvince){
       List<Province> data = await rajaOngkirRepository.fetchProvince();
       if(data != null){

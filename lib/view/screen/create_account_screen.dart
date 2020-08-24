@@ -1,6 +1,10 @@
+import 'package:filkop_mobile_apps/bloc/city/city_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/city/city_event.dart';
+import 'package:filkop_mobile_apps/bloc/city/city_state.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_event.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_state.dart';
+import 'package:filkop_mobile_apps/model/city_model.dart';
 import 'package:filkop_mobile_apps/model/province_model.dart';
 import 'package:filkop_mobile_apps/repository/rajaongkir_repository.dart';
 import 'package:filkop_mobile_apps/service/rajaongkir_service.dart';
@@ -29,7 +33,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   TextEditingController _passwordTxt = TextEditingController(text: "");
   TextEditingController _cPasswordTxt = TextEditingController(text: "");
-  String dropDownValue;
+  String provinceValue;
+  String cityValue;
+
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
@@ -44,10 +50,20 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ProvinceBloc(
-          rajaOngkirRepository:
-              RajaOngkirRepository(rajaOngkirService: RajaOngkirService())),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => ProvinceBloc(
+              rajaOngkirRepository:
+                  RajaOngkirRepository(rajaOngkirService: RajaOngkirService())),
+        ),
+        BlocProvider(
+          create: (_) => CityBloc(
+            rajaOngkirRepository:
+                RajaOngkirRepository(rajaOngkirService: RajaOngkirService()),
+          ),
+        )
+      ],
       child: Scaffold(
         appBar: CustomAppBar(titleText: "Create account"),
         body: Form(
@@ -155,6 +171,116 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   ),
                   Container(
                       margin: EdgeInsets.only(top: 40, bottom: 5),
+                      child: Text("Provinsi",
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  BlocBuilder<ProvinceBloc, ProvinceState>(
+                      builder: (context, state) {
+                    if (state is ProvinceInit) {
+                      context.bloc<ProvinceBloc>().add(FetchProvince());
+                    }
+                    if (state is ProvinceReady) {
+                      List<Province> datas = state.province;
+                      List<DropdownMenuItem<String>> dropDownItem = datas
+                          .map<DropdownMenuItem<String>>((Province province) {
+                        return DropdownMenuItem<String>(
+                          value: province.name,
+                          child: Text(province.name),
+                        );
+                      }).toList();
+                      if (provinceValue == null) {
+                        provinceValue = datas[0].name;
+                        context
+                            .bloc<CityBloc>()
+                            .add(FetchCity(province_id: datas[0].id));
+                      }
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.grey.shade200,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 0, bottom: 0, left: 12, right: 12),
+                          child: DropdownButton<String>(
+                            underline: Container(),
+                            onChanged: (String newValue) {
+                              Province selectedProvince = datas.firstWhere(
+                                  (element) => element.name == newValue);
+                              setState(() {
+                                provinceValue = newValue;
+                                cityValue = null;
+                                context.bloc<CityBloc>().add(FetchCity(
+                                    province_id: selectedProvince.id));
+                              });
+                            },
+                            value: provinceValue,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            items: dropDownItem,
+                          ),
+                        ),
+                      );
+                    }
+                    return Container();
+                  }),
+                  Container(
+                      margin: EdgeInsets.only(top: 40, bottom: 5),
+                      child: Text("Kota",
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.grey.shade200,
+                      ),
+                      child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 0, bottom: 0, left: 12, right: 12),
+                          child: BlocBuilder<CityBloc, CityState>(
+                            builder: (context, state) {
+                              if (state is CityEmpty) {
+                                return Container(
+                                  child: Center(
+                                    child:
+                                        Text("Pilih provinsi terlebih dahulu"),
+                                  ),
+                                );
+                              }
+                              if (state is CityLoading) {
+                                return Container(
+                                    child: Center(
+                                        child: CircularProgressIndicator()));
+                              }
+                              if (state is CityReady) {
+                                List<City> citiesData = state.cities;
+                                List<DropdownMenuItem<String>> dropDownItem =
+                                    citiesData.map<DropdownMenuItem<String>>(
+                                        (City city) {
+                                  return DropdownMenuItem<String>(
+                                    value: city.name,
+                                    child: Text(city.name),
+                                  );
+                                }).toList();
+
+                                cityValue = citiesData[0].name;
+
+                                return DropdownButton<String>(
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      cityValue = newValue;
+                                    });
+                                  },
+                                  value: cityValue,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 24,
+                                  items: dropDownItem,
+                                  underline: Container(),
+                                );
+                              }
+                              return Container();
+                            },
+                          ))),
+                  Container(
+                      margin: EdgeInsets.only(top: 40, bottom: 5),
                       child: Text("Password",
                           style: TextStyle(fontWeight: FontWeight.bold))),
                   TextFormField(
@@ -168,35 +294,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       return "";
                     },
                   ),
-                  BlocBuilder<ProvinceBloc, ProvinceState>(
-                      builder: (context, state) {
-                        if(state is ProvinceInit){
-                          context.bloc<ProvinceBloc>().add(FetchProvince());
-                        }
-                        if(state is ProvinceReady){
-                          List<Province> datas = state.province;
-                          List<DropdownMenuItem<String>> dropDownItem = datas
-                              .map<DropdownMenuItem<String>>((Province province) {
-                            return DropdownMenuItem<String>(
-                              value: province.name,
-                              child: Text(province.name),
-                            );
-                          }).toList();
-
-                          return DropdownButton<String>(
-                            onChanged: (String newValue) {
-                              setState(() {
-                                dropDownValue = newValue;
-                              });
-                            },
-                            value: dropDownValue,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 24,
-                            items: dropDownItem,
-                          );
-                        }
-                        return Container();
-                      }),
                   Container(
                       margin: EdgeInsets.only(top: 40, bottom: 5),
                       child: Text("Confirm Password",

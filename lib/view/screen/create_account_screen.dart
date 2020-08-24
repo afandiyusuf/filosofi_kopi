@@ -4,16 +4,22 @@ import 'package:filkop_mobile_apps/bloc/city/city_state.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_event.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_state.dart';
+import 'package:filkop_mobile_apps/bloc/register/register_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/register/register_event.dart';
+import 'package:filkop_mobile_apps/bloc/register/register_state.dart';
 import 'package:filkop_mobile_apps/model/city_model.dart';
 import 'package:filkop_mobile_apps/model/province_model.dart';
 import 'package:filkop_mobile_apps/repository/rajaongkir_repository.dart';
+import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/service/rajaongkir_service.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field_decoration.dart';
+import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/verify_phone_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supercharged/supercharged.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   static final String tag = '/create-account';
@@ -33,8 +39,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   TextEditingController _passwordTxt = TextEditingController(text: "");
   TextEditingController _cPasswordTxt = TextEditingController(text: "");
+  TextEditingController _pinTxt = TextEditingController(text: "");
   String provinceValue;
   String cityValue;
+  String gender = "Laki - laki";
+  List<String> genders = ['Laki - laki', 'Perempuan'];
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -62,6 +71,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             rajaOngkirRepository:
                 RajaOngkirRepository(rajaOngkirService: RajaOngkirService()),
           ),
+        ),
+        BlocProvider(
+          create: (_) => RegisterBloc(apiService: ApiService()),
         )
       ],
       child: Scaffold(
@@ -81,10 +93,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   TextFormField(
                     controller: _usernameTxt,
                     validator: (value) {
-                      if (value == "") {
+                      if (value.isEmpty) {
                         return "Username can not be null";
                       } else {
-                        return "";
+                        return null;
                       }
                     },
                     decoration: CustomTextFieldDecoration.create(),
@@ -94,13 +106,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       child: Text("Email",
                           style: TextStyle(fontWeight: FontWeight.bold))),
                   TextFormField(
+                    keyboardType: TextInputType.emailAddress,
                     controller: _emailTxt,
                     decoration: CustomTextFieldDecoration.create(),
                     validator: (value) {
-                      if (value == "") {
+                      if (value.isEmpty) {
                         return "Email can not be null";
                       } else {
-                        return "";
+                        return null;
                       }
                     },
                   ),
@@ -111,11 +124,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   TextFormField(
                     controller: _phoneTxt,
                     decoration: CustomTextFieldDecoration.create(),
+                    keyboardType: TextInputType.number,
                     validator: (value) {
-                      if (value == "") {
+                      if (value.isEmpty) {
                         return "Phone Number can not be null";
                       } else {
-                        return "";
+                        return null;
                       }
                     },
                   ),
@@ -127,10 +141,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     controller: _fullName,
                     decoration: CustomTextFieldDecoration.create(),
                     validator: (value) {
-                      if (value == "") {
+                      if (value.isEmpty) {
                         return "Fullname can not be null";
                       } else {
-                        return "";
+                        return null;
                       }
                     },
                   ),
@@ -168,6 +182,38 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   TextFormField(
                     controller: _referalCode,
                     decoration: CustomTextFieldDecoration.create(),
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(top: 40, bottom: 5),
+                      child: Text("Jenis Kelamin",
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.grey.shade200,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 0, bottom: 0, left: 12, right: 12),
+                      child: DropdownButton<String>(
+                        underline: Container(),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            gender = newValue;
+                          });
+                        },
+                        value: gender,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 24,
+                        items: genders
+                            .map<DropdownMenuItem<String>>((String data) {
+                          return DropdownMenuItem<String>(
+                            value: data,
+                            child: Text(data),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ),
                   Container(
                       margin: EdgeInsets.only(top: 40, bottom: 5),
@@ -284,14 +330,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       child: Text("Password",
                           style: TextStyle(fontWeight: FontWeight.bold))),
                   TextFormField(
+                    obscureText: true,
                     controller: _passwordTxt,
                     decoration: CustomTextFieldDecoration.create(),
                     validator: (value) {
+                      print(value.length);
                       if (value.length <= 5) {
                         return "password must be 6 character or more";
                       }
 
-                      return "";
+                      return null;
                     },
                   ),
                   Container(
@@ -299,6 +347,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       child: Text("Confirm Password",
                           style: TextStyle(fontWeight: FontWeight.bold))),
                   TextFormField(
+                    obscureText: true,
                     controller: _cPasswordTxt,
                     decoration: CustomTextFieldDecoration.create(),
                     validator: (value) {
@@ -306,24 +355,69 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         return "password confirmation must be same with your password";
                       }
 
-                      return "";
+                      return null;
                     },
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 60),
-                    child: RaisedButton(
-                      onPressed: () {
-                        _register(context);
-                      },
-                      color: Style.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        "Next",
-                        style: TextStyle(color: Style.primaryTextColor),
-                      ),
-                    ),
+                      margin: EdgeInsets.only(top: 40, bottom: 5),
+                      child: Text("PIN (6 digit)",
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  TextFormField(
+                    controller: _pinTxt,
+                    keyboardType: TextInputType.number,
+                    decoration: CustomTextFieldDecoration.create(),
+                    validator: (value) {
+                      return null;
+                    },
+                  ),
+                  BlocBuilder<RegisterBloc, RegisterState>(
+                    builder: (context, state) {
+                      
+                      if(state is Registering){
+                        return Center(child: CircularProgressIndicator(),);
+                      }
+
+                      return Container(
+                        margin: EdgeInsets.only(top: 60,bottom: 60),
+                        child: RaisedButton(
+                          onPressed: () {
+                            _register(context);
+                          },
+                          color: Style.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            "Next",
+                            style: TextStyle(color: Style.primaryTextColor),
+                          ),
+                        ),
+                      );
+                    }
+                  ),
+                  BlocListener<RegisterBloc, RegisterState>(
+                    listener: (registerContext, registerState) {
+                      if (registerState is Registering) {
+                        Scaffold.of(registerContext).showSnackBar(SnackBar(
+                          content: Text('Registering'),
+                          duration: 2.seconds,
+                        ));
+                      } else if (registerState is RegisterSuccess) {
+                        Scaffold.of(registerContext).showSnackBar(SnackBar(
+                          content: Text('Success'),
+                          duration: 2.seconds,
+                        ));
+                        Future.delayed(Duration(seconds: 2), () {
+                          Navigator.pushNamed(registerContext, MainScreen.tag);
+                        });
+                      } else if (registerState is RegisterError) {
+                        Scaffold.of(registerContext).showSnackBar(SnackBar(
+                          content: Text(registerState.message),
+                          duration: 2.seconds,
+                        ));
+                      }
+                    },
+                    child: Container(),
                   )
                 ],
               ),
@@ -339,6 +433,24 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   _register(BuildContext context) {
-    if (_formKey.currentState.validate()) {}
+    if (_formKey.currentState.validate()) {
+      String parsedGender = (gender == 'laki - laki') ? 'M' : 'F';
+      print('registering');
+      print(_pinTxt.text);
+      context.bloc<RegisterBloc>().add(SendDataRegister(
+            birthDate: selectedDate.toLocal().toString(),
+            username: _usernameTxt.text,
+            password: _passwordTxt.text,
+            gender: parsedGender,
+            province: provinceValue,
+            city: cityValue,
+            phoneNumber: _phoneTxt.text,
+            pin: _pinTxt.text,
+            email: _emailTxt.text,
+            fullName: _fullName.text,
+          ));
+    }else{
+      print('error bosque');
+    }
   }
 }

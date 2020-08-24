@@ -21,35 +21,12 @@ class ApiService {
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
-        return BaseResponse.fromJsonSuccess(parsed);
+        SharedPreferences pref = await _prefs;
+        BaseResponse baseResponse = BaseResponse.fromJsonSuccess(parsed);
+        pref.setString('token', baseResponse.data.token);
+        return baseResponse;
       } else {
         return BaseResponse.fromJsonFail(parsed);
-      }
-    } else {
-      return null;
-    }
-  }
-
-  Future<int> register(String username, String email, String password, String dob, String gender, String province, String city, String phone, String pin) async{
-    final requestBody = {
-      'username':username,
-      'email' : email,
-      'password' : password,
-      'dob' : dob,
-      'gender' : gender,
-      'province' : province,
-      'city' : city,
-      'phone' : phone,
-      'pin' : pin
-    };
-    final response = await client.post('$baseUrl/register',body: requestBody);
-
-    if (response.statusCode == 200) {
-      final parsed = json.decode(response.body);
-      if (parsed['success'] == true) {
-        return 1;
-      } else {
-        return 0;
       }
     } else {
       return null;
@@ -112,8 +89,8 @@ class ApiService {
     }
   }
 
-  Future<bool> addToCart(String productId, String total,
-      String notes, String store) async {
+  Future<bool> addToCart(
+      String productId, String total, String notes, String store) async {
     SharedPreferences pref = await _prefs;
     final body = {
       'token': pref.getString('token'),
@@ -148,20 +125,17 @@ class ApiService {
   Future<CartModel> getCart(String store) async {
     SharedPreferences pref = await _prefs;
     String location = pref.getString('location');
-    final body = {
-      'token': pref.getString('token'),
-      'store': store
-    };
+    final body = {'token': pref.getString('token'), 'store': store};
 
     final response =
-    await client.post("$baseUrl/restApi/get_cart_fnb", body: body);
+        await client.post("$baseUrl/restApi/get_cart_fnb", body: body);
 
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
         print("result success");
         print(parsed['data']);
-        return CartModel.fromJson(parsed['data'],location);
+        return CartModel.fromJson(parsed['data'], location);
       } else {
         print(response.body);
         return null;
@@ -173,50 +147,55 @@ class ApiService {
     }
   }
 
-  Future<bool> deleteItemFromCart(String cartId) async{
+  Future<bool> deleteItemFromCart(String cartId) async {
     SharedPreferences pref = await _prefs;
-    final body = {
-      'token': pref.getString('token'),
-      'cart_id': cartId
-    };
+    final body = {'token': pref.getString('token'), 'cart_id': cartId};
 
     final response =
-    await client.post("$baseUrl/restApi/remove_cart_fnb", body: body);
+        await client.post("$baseUrl/restApi/remove_cart_fnb", body: body);
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
-      if(parsed['success']){
+      if (parsed['success']) {
         return true;
-      }else{
+      } else {
         return false;
       }
-    }else{
+    } else {
       return false;
     }
   }
 
-  Future<String> register(String username, String email, String password, String dob, String gender, String province, String city, String phone, String pin) async{
+  Future<String> register(
+      String username,
+      String email,
+      String password,
+      String dob,
+      String gender,
+      String province,
+      String city,
+      String phone,
+      String pin) async {
     final body = {
-      'username' : username,
-      'email' : email,
-      'password' : password,
-      'dob' : dob,
-      'gender' : gender,
-      'province' : province,
-      'city' : city,
-      'phone' : phone,
-      'pin' : pin
+      'username': username,
+      'email': email,
+      'password': password,
+      'dob': dob,
+      'gender': gender,
+      'province': province,
+      'city': city,
+      'phone': phone,
+      'pin': pin
     };
-    final response =
-        await client.post("$baseUrl/restApi/register", body: body);
-    if(response.statusCode == 200){
+    final response = await client.post("$baseUrl/restApi/register", body: body);
+    if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
-      if(parsed['success']){
+      if (parsed['success']) {
         return 'success';
-      }else{
+      } else {
         return parsed['msg'];
       }
-    }else{
+    } else {
       return 'error';
     }
   }

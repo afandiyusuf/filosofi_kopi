@@ -106,30 +106,18 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusScope.of(context).unfocus();
 
     _scaffoldKey?.currentState?.showSnackBar(SnackBar(
-      duration: Duration(minutes: 1),
+      duration: Duration(seconds: 3),
       content: Text("Logging in..."),
     ));
 
-    Future<BaseResponse> response = ApiService().login(_usernameTxt.text, _passwordTxt.text);
-      response.then((value) =>
-    {
-      if(value.success == true){
-          _saveToken(context,value.data.token)
+    BaseResponse response = await ApiService().login(_usernameTxt.text, _passwordTxt.text);
+    
+      if(response.success == true){
+         Navigator.pushNamed(context, MainScreen.tag);
       }else{
         _scaffoldKey?.currentState?.showSnackBar(SnackBar(
-          content: Text(value.msg),
-        ))
+          content: Text(response.msg),
+        ));
       }
-    });
-
-
-
   }
-  _saveToken(BuildContext context, String token) async
-  {
-    SharedPreferences pref = await _prefs;
-    pref.setString("token", token);
-    Navigator.pushNamed(context, MainScreen.tag);
-  }
-
 }

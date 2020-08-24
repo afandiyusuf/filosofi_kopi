@@ -105,7 +105,6 @@ class Product{
   Product({this.id, this.name, this.image, this.price, this.category, this.code, this.discount, this.discPrice, this.description, this.originalPrice, this.avail , this.jenis, this.stock, this.categoryText});
 
   factory Product.fromJson(Map<String, dynamic> map){
-    print(map['description']);
     return Product(
       id: map['id'],
       code: map['code'],

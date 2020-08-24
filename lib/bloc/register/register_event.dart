@@ -6,6 +6,13 @@ class RegisterEvent extends Equatable{
   List<Object> get props => [];
 }
 
-class Registering extends RegisterEvent{
-
+class SendDataRegister extends RegisterEvent{
+  final String username;
+  final String email;
+  final String phoneNumber;
+  final String fullName;
+  final String birthDate;
+  final String refferalCode;
+  final String password;
+  SendDataRegister({this.username, this.email, this.phoneNumber, this.fullName, this.birthDate, this.refferalCode, this.password});
 }

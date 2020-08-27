@@ -43,6 +43,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   String provinceValue;
   String cityValue;
   String realCityValue;
+
   String gender = "Laki - laki";
   List<String> genders = ['Laki - laki', 'Perempuan'];
 
@@ -437,9 +438,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   _register(BuildContext context) {
     if (_formKey.currentState.validate()) {
       String parsedGender = (gender == 'laki - laki') ? 'M' : 'F';
-      print('registering');
-      print(_pinTxt.text);
-      print(realCityValue);
       context.bloc<RegisterBloc>().add(SendDataRegister(
             birthDate: selectedDate.toLocal().toString(),
             username: _usernameTxt.text,

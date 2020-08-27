@@ -188,7 +188,6 @@ class ApiService {
       'pin': pin
     };
     final response = await client.post("$baseUrl/restApi/register", body: body);
-    print(body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success']) {

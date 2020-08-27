@@ -42,6 +42,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   TextEditingController _pinTxt = TextEditingController(text: "");
   String provinceValue;
   String cityValue;
+  String realCityValue;
+
   String gender = "Laki - laki";
   List<String> genders = ['Laki - laki', 'Perempuan'];
 
@@ -308,11 +310,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 }).toList();
 
                                 cityValue = citiesData[0].name;
+                                realCityValue = citiesData[0].realCityName;
 
                                 return DropdownButton<String>(
                                   onChanged: (String newValue) {
                                     setState(() {
                                       cityValue = newValue;
+                                      realCityValue = citiesData.firstWhere((city) => city.name == newValue).realCityName;
                                     });
                                   },
                                   value: cityValue,
@@ -338,7 +342,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       if (value.length <= 5) {
                         return "password must be 6 character or more";
                       }
-
                       return null;
                     },
                   ),
@@ -435,15 +438,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   _register(BuildContext context) {
     if (_formKey.currentState.validate()) {
       String parsedGender = (gender == 'laki - laki') ? 'M' : 'F';
-      print('registering');
-      print(_pinTxt.text);
       context.bloc<RegisterBloc>().add(SendDataRegister(
             birthDate: selectedDate.toLocal().toString(),
             username: _usernameTxt.text,
             password: _passwordTxt.text,
             gender: parsedGender,
             province: provinceValue,
-            city: cityValue,
+            city: realCityValue,
             phoneNumber: _phoneTxt.text,
             pin: _pinTxt.text,
             email: _emailTxt.text,

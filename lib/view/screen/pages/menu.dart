@@ -13,7 +13,6 @@ import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/repository/category_product_repository.dart';
-import 'package:filkop_mobile_apps/repository/product_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/category_button.dart';
 import 'package:filkop_mobile_apps/view/component/product_card.dart';
@@ -21,7 +20,6 @@ import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
 class Menu extends StatefulWidget {
   final OrderBoxBloc orderBoxBloc;
@@ -130,7 +128,7 @@ class _MenuState extends State<Menu> {
                           childAspectRatio: (itemWidth / itemHeight),
                           children: List.generate(products.getTotal(), (index) {
                             Product _product = products.getByIndex(index);
-                            String priceFormatted = Rupiah(double.parse(_product.price));
+                            String priceFormatted = rupiah(double.parse(_product.price));
                             return BlocBuilder<CartBloc, CartState>(
                               builder: (context, state) {
                                 int total = 0;

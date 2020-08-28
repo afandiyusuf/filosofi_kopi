@@ -1,6 +1,6 @@
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
-String Rupiah(double total){
+String rupiah(double total){
   FlutterMoneyFormatter fmf = FlutterMoneyFormatter(
       amount: total);
   return fmf

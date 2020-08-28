@@ -7,7 +7,12 @@ class CityEvent extends Equatable {
 }
 
 class FetchCity extends CityEvent {
-  final String province_id;
+  final String provinceId;
 
-  FetchCity({this.province_id});
+  FetchCity({this.provinceId});
+}
+class SelectCity extends CityEvent{
+  final String selectedCity;
+  final String realCityName;
+  SelectCity(this.selectedCity,this.realCityName);
 }

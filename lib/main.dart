@@ -1,9 +1,17 @@
+import 'package:filkop_mobile_apps/bloc/adress/address_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/city/city_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/province/province_bloc.dart';
+import 'package:filkop_mobile_apps/model/address_model.dart';
 import 'package:filkop_mobile_apps/repository/cart_repository.dart';
 import 'package:filkop_mobile_apps/repository/product_repository.dart';
+import 'package:filkop_mobile_apps/repository/rajaongkir_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
+import 'package:filkop_mobile_apps/service/rajaongkir_service.dart';
+import 'package:filkop_mobile_apps/view/screen/address_pick.dart';
+import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
@@ -42,12 +50,29 @@ class _MainAppState extends State<MainApp> {
         BlocProvider<ProductBloc>(
           create: (_) => ProductBloc(
               repository: ProductRepository(apiService: ApiService())),
-        )
+        ),
+        BlocProvider<AddressBloc>(
+          create: (_)=>AddressBloc(
+            addressModel: UserAddressModel()
+          ),
+        ),
+        BlocProvider<ProvinceBloc>(
+          create: (_) => ProvinceBloc(
+              rajaOngkirRepository:
+              RajaOngkirRepository(rajaOngkirService: RajaOngkirService())),
+        ),
+        BlocProvider<CityBloc>(
+          create: (_) => CityBloc(
+            rajaOngkirRepository:
+            RajaOngkirRepository(rajaOngkirService: RajaOngkirService()),
+          ),
+        ),
       ],
       child: MaterialApp(
         initialRoute: rootRoute,
         routes: {
           rootRoute : (context) => rootScreen,
+          AddressPage.tag : (context) => AddressPage(),
           SignInScreen.tag : (context) => SignInScreen(),
           MainScreen.tag : (context) => MainScreen(),
           CreateAccountScreen.tag : (context) => CreateAccountScreen(),

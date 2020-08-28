@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-import 'package:equatable/equatable.dart';
 import 'package:filkop_mobile_apps/model/city_model.dart';
 
 class CityState extends Equatable {
@@ -15,9 +13,11 @@ class CityLoading extends CityState {}
 
 class CityReady extends CityState {
   final List<City> cities;
-
-  CityReady({this.cities});
+  final String selectedCities;
+  final String realCityName;
+  CityReady({this.cities, this.selectedCities,this.realCityName});
 }
+
 
 class CityError extends CityState {
   final String message;

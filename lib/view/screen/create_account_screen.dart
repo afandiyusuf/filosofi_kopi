@@ -9,13 +9,10 @@ import 'package:filkop_mobile_apps/bloc/register/register_event.dart';
 import 'package:filkop_mobile_apps/bloc/register/register_state.dart';
 import 'package:filkop_mobile_apps/model/city_model.dart';
 import 'package:filkop_mobile_apps/model/province_model.dart';
-import 'package:filkop_mobile_apps/repository/rajaongkir_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
-import 'package:filkop_mobile_apps/service/rajaongkir_service.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field_decoration.dart';
 import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
-import 'package:filkop_mobile_apps/view/screen/verify_phone_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,18 +60,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => ProvinceBloc(
-              rajaOngkirRepository:
-                  RajaOngkirRepository(rajaOngkirService: RajaOngkirService())),
-        ),
-        BlocProvider(
-          create: (_) => CityBloc(
-            rajaOngkirRepository:
-                RajaOngkirRepository(rajaOngkirService: RajaOngkirService()),
-          ),
-        ),
-        BlocProvider(
+        BlocProvider<RegisterBloc>(
           create: (_) => RegisterBloc(apiService: ApiService()),
         )
       ],
@@ -239,7 +225,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         provinceValue = datas[0].name;
                         context
                             .bloc<CityBloc>()
-                            .add(FetchCity(province_id: datas[0].id));
+                            .add(FetchCity(provinceId: datas[0].id));
                       }
                       return Container(
                         decoration: BoxDecoration(
@@ -258,7 +244,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 provinceValue = newValue;
                                 cityValue = null;
                                 context.bloc<CityBloc>().add(FetchCity(
-                                    province_id: selectedProvince.id));
+                                    provinceId: selectedProvince.id));
                               });
                             },
                             value: provinceValue,
@@ -309,14 +295,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   );
                                 }).toList();
 
-                                cityValue = citiesData[0].name;
-                                realCityValue = citiesData[0].realCityName;
+                                cityValue = state.selectedCities;
+                                realCityValue = state.realCityName;
 
                                 return DropdownButton<String>(
                                   onChanged: (String newValue) {
                                     setState(() {
                                       cityValue = newValue;
                                       realCityValue = citiesData.firstWhere((city) => city.name == newValue).realCityName;
+                                      context.bloc<CityBloc>().add(SelectCity(newValue,realCityValue));
                                     });
                                   },
                                   value: cityValue,
@@ -429,10 +416,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
       ),
     );
-  }
-
-  _goToNextScreen(BuildContext context) {
-    Navigator.pushNamed(context, VerifyPhoneScreen.tag);
   }
 
   _register(BuildContext context) {

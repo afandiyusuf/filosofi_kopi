@@ -105,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
                     int totalPrice = state.cartModel.getTotalPrice();
                     return CartBottom(
                       total: "$totalItems",
-                      price: "${Rupiah(totalPrice.toDouble())}",
+                      price: "${rupiah(totalPrice.toDouble())}",
                       onPressed: () {
                         _showBottomSheet(context);
                       },
@@ -186,7 +186,7 @@ class _MainScreenState extends State<MainScreen> {
                                     cartModel.getCartItemByIndex(index);
                                 return ListTileOrder(
                                     name: cartItem.name,
-                                    price: Rupiah(cartItem.total.toDouble()),
+                                    price: rupiah(cartItem.total.toDouble()),
                                     total: cartItem.qty.toString(),
                                     image: cartItem.photo,
                                     onTap: () {
@@ -206,7 +206,7 @@ class _MainScreenState extends State<MainScreen> {
                               _goToConfirmButton(context);
                             },
                             total: cartModel.getTotalItems().toString(),
-                            price: Rupiah(cartModel.getTotalPrice().toDouble()),
+                            price: rupiah(cartModel.getTotalPrice().toDouble()),
                             marginBottom: 0,
                           )
                         ],

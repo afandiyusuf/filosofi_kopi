@@ -1,6 +1,7 @@
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
 import 'package:filkop_mobile_apps/view/component/profile_button.dart';
+import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -61,6 +62,17 @@ class Profile extends StatelessWidget {
                   top: BorderSide(color: Colors.black26),
                   bottom: BorderSide(color: Colors.black26)),
               onTap: () {},
+            ),
+            ProfileButton(
+              leadingIcon: Icons.map,
+              label: "Manage Address",
+              rightIcon: Icon(Icons.navigate_next),
+              border: Border(
+                  top: BorderSide(color: Colors.black26),
+                  bottom: BorderSide(color: Colors.black26)),
+              onTap: () {
+                Navigator.pushNamed(context, AddressPage.tag);
+              },
             ),
             ProfileButton(
               leadingIcon: Icons.star,

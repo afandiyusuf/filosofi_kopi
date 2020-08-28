@@ -6,7 +6,6 @@ import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   static final String tag = "/login";
@@ -18,7 +17,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   TextEditingController _usernameTxt = TextEditingController(text:"");
   TextEditingController _passwordTxt = TextEditingController(text:"");
 

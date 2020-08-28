@@ -1,5 +1,4 @@
 import 'package:filkop_mobile_apps/model/cart_model.dart';
-import 'package:supercharged/supercharged.dart';
 
 class ProductModel {
   List<Product> products;

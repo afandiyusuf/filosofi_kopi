@@ -2,6 +2,7 @@ import 'package:filkop_mobile_apps/bloc/adress/address_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/adress/address_event.dart';
 import 'package:filkop_mobile_apps/bloc/adress/address_state.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
+import 'package:filkop_mobile_apps/view/component/add_new_address_card.dart';
 import 'package:filkop_mobile_apps/view/component/address_card.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/screen/address_pick.dart';
@@ -37,24 +38,12 @@ class _AddressPageState extends State<AddressPage> {
       body: Container(
           child: Column(
         children: [
-          InkWell(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => AddressPick(userAddress: null,)
-              ));
-            },
-            child: Card(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [Icon(Icons.add), Text("Add new address")],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          AddNewAddressCard(onTap: (){
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => AddressPick(userAddress: null,)
+            ));
+          },)
+          ,
           BlocBuilder<AddressBloc, AddressState>(builder: (context, state) {
             if (state is AddressUpdating) {
               print("UPDATING");

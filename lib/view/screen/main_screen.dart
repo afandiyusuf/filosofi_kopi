@@ -51,8 +51,8 @@ class _MainScreenState extends State<MainScreen> {
           )
         ],
         child: BlocListener<CartBloc, CartState>(
-          listener: (context, state){
-            if(state is CartUpdated){
+          listener: (context, state) {
+            if (state is CartUpdated) {
               context.bloc<ProductBloc>().add(RefreshProduct());
             }
           },
@@ -141,21 +141,23 @@ class _MainScreenState extends State<MainScreen> {
   void _goToConfirmButton(context) {
     Navigator.pushNamed(context, ConfirmOrder.tag);
   }
-  void fetchCart(BuildContext context) async{
+
+  void fetchCart(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String location = pref.getString('location');
-    context.bloc<CartBloc>().add(FetchCart(location:location));
+    context.bloc<CartBloc>().add(FetchCart(location: location));
   }
+
   void _showBottomSheet(context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
           return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-            if(state is CartInitState){
+            if (state is CartInitState) {
               fetchCart(context);
             }
 
-            if(state is CartEmptyState){
+            if (state is CartEmptyState) {
               return Container(
                 child: Center(child: Text("Cart Kosong")),
               );
@@ -194,9 +196,12 @@ class _MainScreenState extends State<MainScreen> {
                                           cartItem.convertToProduct(), context);
                                     },
                                     onDeleteTap: () async {
-                                      SharedPreferences pref = await SharedPreferences.getInstance();
-                                      String location = pref.getString('location');
-                                      _showAlertDelete(context, cartItem.name, cartItem.cartId, location);
+                                      SharedPreferences pref =
+                                          await SharedPreferences.getInstance();
+                                      String location =
+                                          pref.getString('location');
+                                      _showAlertDelete(context, cartItem.name,
+                                          cartItem.cartId, location);
                                     });
                               },
                             ),
@@ -213,13 +218,13 @@ class _MainScreenState extends State<MainScreen> {
                       )));
             }
 
-            if(state is CartUpdating){
+            if (state is CartUpdating) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
 
-            if(state is CartEmptyState){
+            if (state is CartEmptyState) {
               return Container();
             }
 
@@ -230,7 +235,8 @@ class _MainScreenState extends State<MainScreen> {
         });
   }
 
-  _showAlertDelete(BuildContext context, String name, String cartId, String store) async {
+  _showAlertDelete(
+      BuildContext context, String name, String cartId, String store) async {
     print("here");
     print("$cartId, $store");
     await animated_dialog_box.showInOutDailog(
@@ -245,10 +251,9 @@ class _MainScreenState extends State<MainScreen> {
           color: Colors.red,
           child: Text('Ya, Hapus!'),
           onPressed: () {
-            context.bloc<CartBloc>().add(DeleteItemFromCart(
-              cartId: cartId,
-              store: store
-            ));
+            context
+                .bloc<CartBloc>()
+                .add(DeleteItemFromCart(cartId: cartId, store: store));
             Navigator.of(context).pop();
           },
         ),
@@ -269,7 +274,8 @@ class _MainScreenState extends State<MainScreen> {
         ),
         // IF YOU WANT TO ADD ICON
         yourWidget: Container(
-          child: Text('Apa kamu yakin ingin menghapus ($name) dari keranjang belanjaan kamu?'),
+          child: Text(
+              'Apa kamu yakin ingin menghapus ($name) dari keranjang belanjaan kamu?'),
         ));
   }
 

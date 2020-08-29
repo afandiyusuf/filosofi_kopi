@@ -10,7 +10,6 @@ import 'package:filkop_mobile_apps/repository/product_repository.dart';
 import 'package:filkop_mobile_apps/repository/rajaongkir_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/service/rajaongkir_service.dart';
-import 'package:filkop_mobile_apps/view/screen/address_pick.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';

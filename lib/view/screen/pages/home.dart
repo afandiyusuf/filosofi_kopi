@@ -102,18 +102,21 @@ class HomePage extends StatelessWidget {
               return CircularProgressIndicator();
             }
             if (state is OrderBoxUpdated) {
-              return OrderBox(
-                onPressed: () {
-                  _gotoPickOurStoresScreen(context);
-                },
-                location: state.orderBox.location,
-                stateButton: state.orderBox.stateButton,
-                onPressedDikirim: (){
-                  context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(stateButton: OrderBoxModel.DIKIRIM));
-                },
-                onPressedAmbilSendiri: (){
-                  context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(stateButton: OrderBoxModel.AMBIL_SENDIRI));
-                },
+              return Container(
+                margin: EdgeInsets.only(top: 30),
+                child: OrderBox(
+                  onPressed: () {
+                    _gotoPickOurStoresScreen(context);
+                  },
+                  location: state.orderBox.location,
+                  stateButton: state.orderBox.stateButton,
+                  onPressedDikirim: (){
+                    context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(stateButton: OrderBoxModel.DIKIRIM));
+                  },
+                  onPressedAmbilSendiri: (){
+                    context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(stateButton: OrderBoxModel.AMBIL_SENDIRI));
+                  },
+                ),
               );
             }else{
               return OrderBox(

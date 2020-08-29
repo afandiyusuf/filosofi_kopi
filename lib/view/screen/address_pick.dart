@@ -152,7 +152,7 @@ class _AddressPickState extends State<AddressPick> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Current address:"),
+                        Text("Alamat:"),
                         Divider(height: 5,),
                         Text(currentAddress),
                       ],
@@ -163,7 +163,7 @@ class _AddressPickState extends State<AddressPick> {
                 ),
                 Container(
                     width: MediaQuery.of(context).size.width * 0.9,
-                    child: PrimaryButton(label: 'Use this',onPressed: (){
+                    child: PrimaryButton(label: 'Pilih',onPressed: (){
                      gotoDetailAddress(context);
                     },)),
               ],

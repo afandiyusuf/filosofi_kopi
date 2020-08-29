@@ -13,7 +13,7 @@ class OrderBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Container(
-      margin: EdgeInsets.only(top: 30, left: 30, right: 30,bottom: 0),
+      margin: EdgeInsets.only(top: 0, left: 30, right: 30,bottom: 0),
       width: MediaQuery.of(context).size.width * 0.8,
       child: Column(
         children: <Widget>[

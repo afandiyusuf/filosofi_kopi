@@ -20,14 +20,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class AddressForm extends StatefulWidget {
   final UserAddress address;
   final bool isUpdate;
-  const AddressForm({Key key, this.address,this.isUpdate = false});
+
+  const AddressForm({Key key, this.address, this.isUpdate = false});
 
   @override
   _AddressFormState createState() => _AddressFormState();
 }
 
 class _AddressFormState extends State<AddressForm> {
-  GoogleMapController _controller;
   CameraPosition _cameraPosition;
   final LatLng _center = const LatLng(45.521563, -122.677433);
   final Set<Marker> _markers = {};
@@ -46,8 +46,6 @@ class _AddressFormState extends State<AddressForm> {
   TextEditingController _recipientPhoneNumber = TextEditingController();
 
   void _onMapCreated(GoogleMapController controller) {
-    print("created");
-    _controller = controller;
   }
 
   void initState() {
@@ -102,6 +100,27 @@ class _AddressFormState extends State<AddressForm> {
                   tiltGesturesEnabled: false,
                   zoomGesturesEnabled: false,
                 )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(alignment: Alignment.centerLeft, child: Text("Alamat:")),
+            ),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.grey.shade200,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.address.labelAddress,
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+            ),
+            Divider(
+              height: 10,
+            ),
             Form(
               key: _formKey,
               child: Expanded(
@@ -112,39 +131,24 @@ class _AddressFormState extends State<AddressForm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Address:"),
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.grey.shade200,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                widget.address.labelAddress,
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
                           CustomTextField(
-                              label: 'Name',
+                              label: 'Nama',
                               controller: _addressName,
                               marginTop: 20,
                               marginBottom: 0,
-                              hint: "Home / Office / Friend's home",
+                              hint: "Home / Office / Rumah teman",
                               validator: (String value) {
                                 if (value.isEmpty) {
-                                  return "Name can't be empty";
+                                  return "Nama tidak boleh kosong";
                                 }
                                 return null;
                               }),
                           CustomTextField(
-                              label: 'DetailedAddress',
+                              label: 'Detail Alamat',
                               controller: _detailedAddress,
                               marginTop: 20,
                               marginBottom: 0,
-                              hint: 'Street, building number',
+                              hint: 'Jalan, No Rumah, RT RW',
                               validator: (String value) {
                                 if (value.isEmpty) {
                                   return "Recipient's name can't be empty";
@@ -153,7 +157,7 @@ class _AddressFormState extends State<AddressForm> {
                               }),
                           Container(
                               margin: EdgeInsets.only(top: 20, bottom: 5),
-                              child: Text("Province",
+                              child: Text("Provinsi",
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold))),
                           BlocBuilder<ProvinceBloc, ProvinceState>(
@@ -210,7 +214,7 @@ class _AddressFormState extends State<AddressForm> {
                           }),
                           Container(
                               margin: EdgeInsets.only(top: 20, bottom: 5),
-                              child: Text("City",
+                              child: Text("Kota",
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold))),
                           Container(
@@ -277,26 +281,26 @@ class _AddressFormState extends State<AddressForm> {
                                     },
                                   ))),
                           CustomTextField(
-                              label: 'Recipient',
+                              label: 'Penerima',
                               controller: _recipientName,
                               marginTop: 20,
                               marginBottom: 0,
-                              hint: "Recipient's name",
+                              hint: "Nama penerima",
                               validator: (String value) {
                                 if (value.isEmpty) {
-                                  return "Recipient's name can't be empty";
+                                  return "Nama penerima tidak boleh kosong";
                                 }
                                 return null;
                               }),
                           CustomTextField(
-                            label: 'Recipient phone number',
+                            label: 'No Telp',
                             controller: _recipientPhoneNumber,
                             marginTop: 20,
                             marginBottom: 20,
-                            hint: "Recipient's phone number",
+                            hint: "No telp penerima",
                             validator: (String value) {
                               if (value.isEmpty) {
-                                return "Recipient's phone number can't be empty";
+                                return "No telp penerima tidak boleh kosong";
                               }
                               return null;
                             },
@@ -313,7 +317,7 @@ class _AddressFormState extends State<AddressForm> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: PrimaryButton(
-                    label: "Save",
+                    label: "Simpan",
                     onPressed: () {
                       saveAddress(context);
                     },

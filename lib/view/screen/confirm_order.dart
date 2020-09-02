@@ -5,6 +5,9 @@ import 'package:filkop_mobile_apps/bloc/adress/address_state.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
+import 'package:filkop_mobile_apps/bloc/gosend/gosend_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/gosend/gosend_event.dart';
+import 'package:filkop_mobile_apps/bloc/gosend/gosend_state.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
@@ -34,6 +37,8 @@ class ConfirmOrder extends StatefulWidget {
 
 class _ConfirmOrderState extends State<ConfirmOrder> {
   bool isSwitched = false;
+  double currentLong;
+  double currentLat;
 
   @override
   Widget build(BuildContext context) {
@@ -63,13 +68,21 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                   BlocBuilder<OrderBoxBloc, OrderBoxState>(
                     builder: (context, state) {
                       if (state is OrderBoxUpdated) {
-                        return OrderBox(onPressed: (){
-                        },location: state.orderBox.location, stateButton: state.orderBox.stateButton, onPressedAmbilSendiri: (){
-                          context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(stateButton: OrderBoxModel.AMBIL_SENDIRI));
-                        },onPressedDikirim: (){
-                          context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(stateButton: OrderBoxModel.DIKIRIM));
-                        },);
-
+                        return OrderBox(
+                          onPressed: () {},
+                          location: state.orderBox.location,
+                          stateButton: state.orderBox.stateButton,
+                          onPressedAmbilSendiri: () {
+                            context.bloc<OrderBoxBloc>().add(
+                                OrderBoxUpdateStateButton(
+                                    stateButton: OrderBoxModel.AMBIL_SENDIRI));
+                          },
+                          onPressedDikirim: () {
+                            context.bloc<OrderBoxBloc>().add(
+                                OrderBoxUpdateStateButton(
+                                    stateButton: OrderBoxModel.DIKIRIM));
+                          },
+                        );
                       }
                       return Container();
                     },
@@ -107,108 +120,142 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
 
                   //Alamat Pengiriman
                   Container(
-                    margin: EdgeInsets.only(top: 30,bottom: 20),
-                    child: BlocBuilder<OrderBoxBloc,OrderBoxState>(
-                      builder: (context, state) {
-                        if(state is OrderBoxUpdated) {
-                          if(state.orderBox.stateButton == OrderBoxModel.DIKIRIM) {
-                            return Column(
-                              children: [
-                                Container(
-                                    alignment: Alignment.centerLeft,
-                                    margin: EdgeInsets.only(left: 15),
-                                    child: Text(
-                                      "Alamat Pengiriman",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    )),
-                                Divider(
-                                  height: 30,
-                                ),
+                    margin: EdgeInsets.only(top: 30, bottom: 20),
+                    child: BlocBuilder<OrderBoxBloc, OrderBoxState>(
+                        builder: (context, state) {
+                      if (state is OrderBoxUpdated) {
+                        if (state.orderBox.stateButton ==
+                            OrderBoxModel.DIKIRIM) {
 
-                                BlocBuilder<AddressBloc, AddressState>(
-                                    builder: (context, state) {
-                                      if (state is AddressInit) {
-                                        context.bloc<AddressBloc>().add(
-                                            FetchAddress());
-                                      }
-                                      if (state is AddressUpdated) {
-                                        print("UPDATED");
-                                        UserAddress userAddress =
-                                        state.addressModel.allAddress[0];
-                                        return AddressCard(
-                                          userAddress: userAddress,
-                                          onSelect: () {
-                                            Navigator.pushNamed(
-                                                context, AddressPage.tag);
-                                          },
-                                          onEdit: () {},
-                                          onDelete: () {},
-                                          usingActionButton: false,
-                                        );
-                                      }
-                                      if (state is AddressEmpty) {
-                                        return AddNewAddressCard(
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                                context, AddressPage.tag);
-                                          },
-                                        );
-                                      }
-                                      return Text("NULL");
-                                    }),
-                              ],
-                            );
-                          }else{
-                            return  Container(
-                                color: Colors.grey.shade200,
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
+                          return Column(
+                            children: [
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.only(left: 15),
+                                  child: Text(
+                                    "Alamat Pengiriman",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  )),
+                              Divider(
+                                height: 30,
+                              ),
+                              BlocBuilder<AddressBloc, AddressState>(
+                                  builder: (context, addressState) {
+                                if (addressState is AddressInit) {
+                                  context
+                                      .bloc<AddressBloc>()
+                                      .add(FetchAddress());
+                                }
+                                if (addressState is AddressUpdated) {
+                                  UserAddress userAddress =
+                                  addressState.addressModel.allAddress[0];
+                                  currentLat = userAddress.latitude;
+                                  currentLong = userAddress.longitude;
+                                  context.bloc<GosendBloc>().add(FetchGosend(store: state.orderBox.location, long: currentLong, lat: currentLat));
+                                  return AddressCard(
+                                    userAddress: userAddress,
+                                    onSelect: () {
+                                      Navigator.pushNamed(
+                                          context, AddressPage.tag);
+                                    },
+                                    onEdit: () {},
+                                    onDelete: () {},
+                                    usingActionButton: false,
+                                  );
+                                }
+                                if (state is AddressEmpty) {
+                                  return AddNewAddressCard(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, AddressPage.tag);
+                                    },
+                                  );
+                                }
+                                return Text("NULL");
+                              }),
+
+                              BlocBuilder<GosendBloc,GosendState>(
+                                builder: (context, gosendState) {
+                                  if(gosendState is GosendUpdated) {
+                                    return Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                                20)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 20),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text("Pilih metode pengiriman"),
+                                              Icon(Icons.arrow_forward_ios),
+                                            ],
+                                          ),
+                                        )
+                                    );
+                                  }
+                                  if(gosendState is GosendError){
+                                    print(gosendState.message);
+                                  }
+                                  return CircularProgressIndicator();
+                                }
+                              )
+
+                            ],
+                          );
+                        } else {
+                          return Container(
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 20),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text("Pesanan untuk dibawa pulang?"),
+                                        FlutterSwitch(
+                                            width: 80.0,
+                                            height: 40.0,
+                                            valueFontSize: 11.0,
+                                            toggleSize: 20.0,
+                                            value: isSwitched,
+                                            borderRadius: 20.0,
+                                            padding: 8.0,
+                                            showOnOff: true,
+                                            activeText: "Ya",
+                                            inactiveText: "Tidak",
+                                            onToggle: (val) {
+                                              setState(() {
+                                                isSwitched = val;
+                                              });
+                                            }),
+                                      ],
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                              "Pesanan untuk dibawa pulang?"),
-                                          FlutterSwitch(
-                                              width: 80.0,
-                                              height: 40.0,
-                                              valueFontSize: 11.0,
-                                              toggleSize: 20.0,
-                                              value: isSwitched,
-                                              borderRadius: 20.0,
-                                              padding: 8.0,
-                                              showOnOff: true,
-                                              activeText: "Ya",
-                                              inactiveText: "Tidak",
-                                              onToggle: (val) {
-                                                setState(() {
-                                                  isSwitched = val;
-                                                });
-                                              }),
-                                        ],
-                                      ),
-                                    )));
-                          }
-                        }else{
-                          return Container();
+                                  )));
                         }
+                      } else {
+                        return Container();
                       }
-                    ),
+                    }),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 15),
-                      child: Text("Pesanan kamu", style: TextStyle(
-                        fontWeight: FontWeight.bold
-                      ),)),
-                  Divider(height: 20,),
-                  BlocBuilder<CartBloc, CartState>(
-                      builder: (context, state) {
+                      margin: EdgeInsets.only(left: 15),
+                      child: Text(
+                        "Pesanan kamu",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
+                  Divider(
+                    height: 20,
+                  ),
+                  BlocBuilder<CartBloc, CartState>(builder: (context, state) {
                     if (state is CartInitState) {
                       fetchCart(context);
                     }
@@ -222,36 +269,33 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                     if (state is CartUpdated) {
                       CartModel cartModel = state.cartModel;
                       List<ListTileOrder> listOrder =
-                          List<ListTileOrder>.from(
-                              cartModel.allItems.map((e) {
+                          List<ListTileOrder>.from(cartModel.allItems.map((e) {
                         return ListTileOrder(
                           name: e.name,
                           total: e.total,
                           price: e.menuPrice,
                           image: e.photo,
                           onTap: () {
-                            _goToDetail(
-                                e.convertToProduct(), context);
+                            _goToDetail(e.convertToProduct(), context);
                           },
                           onDeleteTap: () async {
                             SharedPreferences pref =
                                 await SharedPreferences.getInstance();
-                            String location =
-                            pref.getString('location');
-                            _showAlertDelete(context, e.name,
-                                e.cartId, location);
+                            String location = pref.getString('location');
+                            _showAlertDelete(
+                                context, e.name, e.cartId, location);
                           },
                         );
                       }));
                       return Container(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Column(
-                                children: listOrder,
-                              )
-                            ],
-                          ));
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Column(
+                            children: listOrder,
+                          )
+                        ],
+                      ));
                     }
 
                     if (state is CartUpdating) {
@@ -301,8 +345,6 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
 
   _showAlertDelete(
       BuildContext context, String name, String cartId, String store) async {
-    print("here");
-    print("$cartId, $store");
     await animated_dialog_box.showInOutDailog(
         title: Center(child: Text("Warning")),
         // IF YOU WANT TO ADD

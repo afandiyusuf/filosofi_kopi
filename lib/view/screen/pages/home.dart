@@ -119,18 +119,21 @@ class HomePage extends StatelessWidget {
                 ),
               );
             }else{
-              return OrderBox(
-                location:"Pick your store",
-                onPressed: () {
-                  _gotoPickOurStoresScreen(context);
-                },
-                onPressedAmbilSendiri: (){
-                  _gotoPickOurStoresScreen(context);
-                },
-                onPressedDikirim: (){
-                  _gotoPickOurStoresScreen(context);
-                },
-                stateButton: 0,
+              return Container(
+                margin: EdgeInsets.only(top: 30),
+                child: OrderBox(
+                  location:"Pick your store",
+                  onPressed: () {
+                    _gotoPickOurStoresScreen(context);
+                  },
+                  onPressedAmbilSendiri: (){
+                    _gotoPickOurStoresScreen(context);
+                  },
+                  onPressedDikirim: (){
+                    _gotoPickOurStoresScreen(context);
+                  },
+                  stateButton: 0,
+                ),
               );
             }
           }

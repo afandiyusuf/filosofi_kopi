@@ -1,6 +1,7 @@
 import 'package:filkop_mobile_apps/bloc/adress/address_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/city/city_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/gosend/gosend_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_bloc.dart';
@@ -66,6 +67,11 @@ class _MainAppState extends State<MainApp> {
             RajaOngkirRepository(rajaOngkirService: RajaOngkirService()),
           ),
         ),
+        BlocProvider<GosendBloc>(
+          create: (_) => GosendBloc(
+            cartRepository: CartRepository(apiService: ApiService())
+          ),
+        )
       ],
       child: MaterialApp(
         initialRoute: rootRoute,

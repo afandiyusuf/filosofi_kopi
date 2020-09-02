@@ -12,7 +12,7 @@ class CartBottom extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 80,
+      height: 100,
       color: Colors.white,
       margin: EdgeInsets.only(bottom: marginBottom),
       padding: EdgeInsets.all(0),

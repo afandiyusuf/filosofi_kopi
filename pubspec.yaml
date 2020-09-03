@@ -46,6 +46,7 @@ dependencies:
   google_maps_flutter: ^0.5.21+8
   search_map_place: ^0.3.0
   geocoder: ^0.2.1
+  permission_handler: ^5.0.1+1
 
 
 

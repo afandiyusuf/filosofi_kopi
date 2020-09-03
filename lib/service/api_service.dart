@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:filkop_mobile_apps/model/base_response.dart';
 import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
+import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/model/store_datas.dart';
 import 'package:http/http.dart' show Client;
@@ -197,6 +198,45 @@ class ApiService {
       }
     } else {
       return 'error';
+    }
+  }
+
+  Future<List<Gosend>> getGosendService(
+      String store, double latitude, double longitude) async {
+    final body = {'store': store, 'lat': latitude.toString(), 'long': longitude.toString()};
+    try {
+      final response = await client.post(
+          "$baseUrl/restApi/gosend_fnb", body: body);
+      if (response.statusCode == 200) {
+        final parsed = json.decode(response.body);
+        //check return api error or not
+        if (parsed['errors'] == null) {
+          //check is serviceable or not
+          List<Gosend> retData = [];
+
+          if (parsed['Instant']['serviceable'] == true) {
+            try {
+              retData.add(Gosend.fromJson(parsed['Instant']));
+            } catch (_) {}
+          }
+
+          if (parsed['SameDay']['serviceable'] == true) {
+            try {
+              retData.add(Gosend.fromJson(parsed['SameDay']));
+            } catch (_) {}
+          }
+          if (retData.length == 0) {
+            retData = null;
+          }
+          return retData;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }catch(_){
+      return null;
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -18,6 +19,10 @@ class CartRepository {
 
   Future<bool> deleteItemFromCart(String cartId){
     return apiService.deleteItemFromCart(cartId);
+  }
+
+  Future<List<Gosend>> getGosendData(String store, double long, double lat){
+    return apiService.getGosendService(store, lat, long);
   }
 
 }

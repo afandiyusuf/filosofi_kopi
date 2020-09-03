@@ -48,7 +48,7 @@ class ListTileOrder extends StatelessWidget {
           children: <Widget>[
             Text("$total barang"),
             Text("$price", style: TextStyle(
-                fontSize: 18
+                fontSize: 13
             ),)
           ],
         ),

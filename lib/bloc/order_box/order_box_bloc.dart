@@ -31,6 +31,14 @@ class OrderBoxBloc extends Bloc<OrderBoxEvent, OrderBoxState>{
     if(event is OrderBoxSelectProduct){
       _orderBox.selectedProduct = event.selectedProduct;
       _orderBox.selectedTotal = event.total;
+      _orderBox.initialSelectedTotal = event.total;
+      yield OrderBoxUpdated(orderBox: _orderBox);
+    }
+
+    if(event is OrderBoxUnselectProduct){
+      _orderBox.selectedProduct = null;
+      _orderBox.selectedTotal = 0;
+      _orderBox.initialSelectedTotal = 0;
       yield OrderBoxUpdated(orderBox: _orderBox);
     }
 

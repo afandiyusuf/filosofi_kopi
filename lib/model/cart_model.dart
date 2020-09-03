@@ -1,9 +1,12 @@
+import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 
 class CartModel {
   List<CartItem> allItems = [];
   List<CartItem> lastHistory;
-
+  int subtotal;
+  int total;
+  Gosend selectedGosend;
   CartModel({this.allItems});
 
   factory CartModel.fromJson(data, location){
@@ -29,6 +32,10 @@ class CartModel {
   CartItem getCartItemByIndex(int index) {
     return allItems[index];
   }
+  CartItem getCartItemByProduct(Product product){
+    CartItem item =  allItems.firstWhere((element) => element.menuId == product.id, orElse: ()=> null);
+    return item;
+  }
 
 
   int getTotalPrice() {
@@ -37,7 +44,18 @@ class CartModel {
       int totalPerProduct = element.qty.toInt() * int.parse(element.menuPrice);
       totalPrice += totalPerProduct;
     });
+    subtotal = totalPrice;
     return totalPrice;
+  }
+
+  void calculateTotalWithDelivery(){
+    getTotalPrice();
+    if(selectedGosend != null) {
+      total = subtotal + selectedGosend.price;
+    }else{
+      total = subtotal;
+    }
+
   }
 
   void rollBack() {

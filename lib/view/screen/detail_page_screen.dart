@@ -6,11 +6,13 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
+import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/add_note_button.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field_decoration.dart';
 import 'package:filkop_mobile_apps/view/component/detail_thumbnail.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
@@ -33,6 +35,8 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     _nominalTextController = TextEditingController(text: "0");
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -46,7 +50,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
             .output
             .symbolOnLeft;
         _total = state.orderBox.selectedTotal;
-        print(_total);
         return Scaffold(
           appBar: CustomAppBar(
             titleText: product.name,
@@ -157,32 +160,82 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                         ),
                         BlocBuilder<CartBloc, CartState>(
                             builder: (context, cartState) {
-                          if (cartState is CartUpdating) {
-                            return Container(
-                              width: size.width * 0.4,
-                              height: 50,
-                              child: Center(
-                                child: CircularProgressIndicator(),
+
+                          if(cartState is CartUpdated) {
+                            if (_total > 0) {
+                              return InkWell(
+                                onTap: () {
+                                  CartItem cartItem = cartState.cartModel
+                                      .getCartItemByProduct(product);
+                                  _updateCart(
+                                      context, product, state.orderBox.location,
+                                      cartItem: cartItem);
+                                },
+                                child: Container(
+                                  width: size.width * 0.4,
+                                  height: 50,
+                                  child: Center(
+                                      child: Text(
+                                        "Add to cart",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  decoration: BoxDecoration(
+                                      color: Colors.black),
+                                ),
+                              );
+                            }else if(state.orderBox.initialSelectedTotal != 0){
+                              return InkWell(
+                                onTap: () {
+                                  CartItem cartItem = cartState.cartModel
+                                      .getCartItemByProduct(product);
+                                  _updateCart(
+                                      context, product, state.orderBox.location,
+                                      cartItem: cartItem);
+                                },
+                                child: Container(
+                                  width: size.width * 0.4,
+                                  height: 50,
+                                  child: Center(
+                                      child: Text(
+                                        "Delete From Cart",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  decoration: BoxDecoration(
+                                      color: Colors.red.shade800),
+                                ),
+                              );
+                            }else{
+                              return Container();
+                            }
+                          }
+
+                          if(cartState is CartEmptyState){
+                            return Visibility(
+                              visible: (_total > 0) ? true : false,
+                              child: InkWell(
+                                onTap: () {
+                                  _updateCart(
+                                      context, product, state.orderBox.location);
+                                },
+                                child: Container(
+                                  width: size.width * 0.4,
+                                  height: 50,
+                                  child: Center(
+                                      child: Text(
+                                        "Add to cart",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  decoration: BoxDecoration(
+                                      color: Colors.black),
+                                ),
                               ),
                             );
                           }
-
-                          return InkWell(
-                            onTap: () {
-                              _updateCart(context, product, state.orderBox.location);
-                            },
-                            child: Visibility(
-                              visible: _total > 0 ? true : false,
-                              child: Container(
-                                width: size.width * 0.4,
-                                height: 50,
-                                child: Center(
-                                    child: Text(
-                                  "Add to cart",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                                decoration: BoxDecoration(color: Colors.black),
-                              ),
+                          return Container(
+                            width: size.width * 0.4,
+                            height: 50,
+                            child: Center(
+                              child: CircularProgressIndicator(),
                             ),
                           );
                         }),
@@ -209,19 +262,27 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
       return Text("Impossible trough here");
     });
   }
-
+  @override
+  void deactivate() {
+    context.bloc<OrderBoxBloc>().add(OrderBoxUnselectProduct());
+    super.deactivate();
+  }
   @override
   dispose() {
     _nominalTextController.dispose();
     super.dispose();
   }
-  _updateCart(BuildContext context,Product product,String location) {
+  _updateCart(BuildContext context,Product product,String location, {CartItem cartItem = null}) {
 
     print("total is $_total");
-    context.bloc<CartBloc>().add(UpdateCart(
-        product: product,
-        total: _total,
-        store: location));
+    if(_total > 0) {
+      context.bloc<CartBloc>().add(UpdateCart(
+          product: product,
+          total: _total,
+          store: location));
+    }else{
+      context.bloc<CartBloc>().add(DeleteItemFromCart(cartId: cartItem.cartId,store: location));
+    }
   }
   _setTotal(int total, BuildContext context) {
     _total += total;
@@ -230,8 +291,9 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
       _nominalTextController.text = _total.toString();
     }
 
-    context
-        .bloc<OrderBoxBloc>()
-        .add(OrderBoxSetTotalSelectedProduct(total: _total));
+      context
+          .bloc<OrderBoxBloc>()
+          .add(OrderBoxSetTotalSelectedProduct(total: _total));
+
   }
 }

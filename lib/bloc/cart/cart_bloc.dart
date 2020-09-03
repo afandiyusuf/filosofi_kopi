@@ -5,7 +5,7 @@ import 'package:filkop_mobile_apps/repository/cart_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  CartBloc({this.cartRepository}) : super(CartEmptyState());
+  CartBloc({this.cartRepository}) : super(CartInitState());
   CartModel _cartModel = CartModel();
   CartModel get cartModel => _cartModel;
   CartRepository cartRepository;
@@ -13,6 +13,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   @override
   Stream<CartState> mapEventToState(CartEvent event) async* {
     yield CartUpdating();
+
     if (event is UpdateCart) {
       int diffTotal = event.total;
       try {
@@ -43,6 +44,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         yield CartUpdateError(cartModel: _cartModel);
       }
     }
+
     if(event is DeleteItemFromCart){
       bool status = false;
       try{
@@ -66,13 +68,20 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     }
 
+    if(event is UpdateDeliveryMethodCart){
+      _cartModel.selectedGosend = event.deliverySelected;
+      _cartModel.calculateTotalWithDelivery();
+      yield CartUpdated(cartModel: _cartModel);
+    }
+
     if(event is FetchCart){
       CartModel newestCartModel;
       newestCartModel = await cartRepository.getCart(event.location);
       if (newestCartModel != null) {
         print("finish update cart here");
         _cartModel = newestCartModel;
-        yield CartUpdated(cartModel: newestCartModel);
+        print(_cartModel);
+        yield CartUpdated(cartModel: _cartModel);
       } else {
         yield CartEmptyState();
       }

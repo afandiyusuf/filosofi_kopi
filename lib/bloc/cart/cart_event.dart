@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -23,6 +24,13 @@ class DeleteItemFromCart extends CartEvent{
 class FetchCart extends CartEvent{
   final String location;
   FetchCart({this.location});
+}
+
+class UpdateDeliveryMethodCart extends CartEvent{
+  final Gosend deliverySelected;
+
+  UpdateDeliveryMethodCart({this.deliverySelected});
+
 }
 
 class DisposeCartEvent extends CartEvent{}

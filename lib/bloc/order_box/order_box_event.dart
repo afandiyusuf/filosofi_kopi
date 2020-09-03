@@ -38,6 +38,11 @@ class OrderBoxSelectProduct extends OrderBoxEvent{
   @override
   List<Object> get props => [];
 }
+class OrderBoxUnselectProduct extends OrderBoxEvent{
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}
 
 class OrderBoxSetTotalSelectedProduct extends OrderBoxEvent{
   final int total;
@@ -47,5 +52,4 @@ class OrderBoxSetTotalSelectedProduct extends OrderBoxEvent{
   @override
   // TODO: implement props
   List<Object> get props => [];
-
 }

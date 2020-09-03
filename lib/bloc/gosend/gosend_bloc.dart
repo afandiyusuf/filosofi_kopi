@@ -26,12 +26,17 @@ class GosendBloc extends Bloc<GosendEvent,GosendState>{
         yield GosendError('data null');
       }
     }
+    if(event is UnpickGosend){
+      selectedGosend = null;
+      yield(GosendUpdated(datas: datas, selectedGosend: selectedGosend));
+    }
+
     if(event is PickGosend){
       if(datas != null) {
         if (datas.length == 0) {
           yield GosendError("data null");
         } else {
-          if (event.type == "SameDay") {
+          if (event.type == "Same Day") {
             selectedGosend =
                 datas.firstWhere((element) => element.shipmentMethod ==
                     "Same Day");
@@ -40,7 +45,7 @@ class GosendBloc extends Bloc<GosendEvent,GosendState>{
                 datas.firstWhere((element) => element.shipmentMethod ==
                     "Instant");
           }
-          yield GosendUpdated(datas: datas, selectedGosend: selectedGosend);
+          yield GosendPicked(datas: datas, selectedGosend: selectedGosend);
         }
       }else{
         yield GosendError('data null');

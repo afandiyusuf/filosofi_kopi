@@ -100,6 +100,10 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 floatingActionButton:
                     BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+
+                      if(state is CartInitState){
+                        fetchCart(context);
+                      }
                   if (state is CartUpdated) {
                     int totalItems = state.cartModel.getTotalItems();
                     int totalPrice = state.cartModel.getTotalPrice();
@@ -145,7 +149,9 @@ class _MainScreenState extends State<MainScreen> {
   void fetchCart(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String location = pref.getString('location');
+    int storeId = pref.getInt('storeId');
     context.bloc<CartBloc>().add(FetchCart(location: location));
+    context.bloc<OrderBoxBloc>().add(OrderBoxUpdateLocation(location: location, storeId: storeId));
   }
 
   void _showBottomSheet(context) {

@@ -111,6 +111,7 @@ class PickOurStoresScreen extends StatelessWidget {
     context.bloc<OrderBoxBloc>().add(OrderBoxUpdateLocation(location: location, storeId: storeId));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('location', location);
+    prefs.setInt('storeId', storeId);
     Navigator.pop(context);
   }
 }

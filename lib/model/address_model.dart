@@ -64,6 +64,11 @@ class UserAddressModel {
       var data = jsonDecode(parsed);
       _allAddress = List<UserAddress>.from(
           data.map((item) => UserAddress.fromJson(item)));
+      _allAddress.forEach((element) {
+        if(lastId <= element.id){
+          lastId = element.id+1;
+        }
+      });
     }else{
       _allAddress = [];
     }

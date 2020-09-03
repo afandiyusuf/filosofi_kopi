@@ -204,20 +204,38 @@ class ApiService {
   Future<List<Gosend>> getGosendService(
       String store, double latitude, double longitude) async {
     final body = {'store': store, 'lat': latitude.toString(), 'long': longitude.toString()};
-    final response = await client.post("$baseUrl/restApi/gosend_fnb", body: body);
-    if (response.statusCode == 200) {
-      final parsed = json.decode(response.body);
-      List<Gosend> retData = [];
-      try {
-        retData.add(Gosend.fromJson(parsed['Instant']));
-      } catch (_) {}
+    try {
+      final response = await client.post(
+          "$baseUrl/restApi/gosend_fnb", body: body);
+      if (response.statusCode == 200) {
+        final parsed = json.decode(response.body);
+        //check return api error or not
+        if (parsed['errors'] == null) {
+          //check is serviceable or not
+          List<Gosend> retData = [];
 
-      try {
-        retData.add(Gosend.fromJson(parsed['SameDay']));
-      } catch (_) {}
+          if (parsed['Instant']['serviceable'] == true) {
+            try {
+              retData.add(Gosend.fromJson(parsed['Instant']));
+            } catch (_) {}
+          }
 
-      return retData;
-    } else {
+          if (parsed['SameDay']['serviceable'] == true) {
+            try {
+              retData.add(Gosend.fromJson(parsed['SameDay']));
+            } catch (_) {}
+          }
+          if (retData.length == 0) {
+            retData = null;
+          }
+          return retData;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }catch(_){
       return null;
     }
   }

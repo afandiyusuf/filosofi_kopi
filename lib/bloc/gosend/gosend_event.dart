@@ -21,3 +21,5 @@ class PickGosend extends GosendEvent{
   final String type;
   PickGosend(this.type);
 }
+
+class UnpickGosend extends GosendEvent{}

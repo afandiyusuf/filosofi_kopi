@@ -1,4 +1,5 @@
 import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
 import 'package:filkop_mobile_apps/bloc/category_product/category_product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/category_product/category_product_event.dart';
@@ -39,10 +40,10 @@ class _MenuState extends State<Menu> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
     final double itemWidth = size.width / 2;
     final double itemHeight = itemWidth * 1.4;
 
@@ -92,26 +93,34 @@ class _MenuState extends State<Menu> {
                 }
                 return Container();
               }),
-              BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
-                if (state is ProductEmpty) {
+              BlocBuilder<ProductBloc, ProductState>(builder: (context, productState) {
+                print("PRODUCT STATE IS $productState");
+                if (productState is ProductEmpty) {
+                  print("EMPTY");
                   OrderBoxModel orderBox =
                       context.bloc<OrderBoxBloc>().orderBox;
                   context
                       .bloc<ProductBloc>()
                       .add(FetchProduct(store: orderBox.location));
                 }
-                if(state is ProductDataLoading){
+                if(productState is ProductDataLoading){
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-                print(context.bloc<CartBloc>().state.toString());
-                if (state is ProductDataLoaded) {
-                  products = state.products;
+
+                if (productState is ProductDataLoaded) {
+                  products = productState.products;
+                  print("products is $products");
+                  if(context.bloc<CartBloc>().state is CartInitState){
+                    OrderBoxModel orderBox =
+                        context.bloc<OrderBoxBloc>().orderBox;
+                    context.bloc<CartBloc>().add(FetchCart(location: orderBox.location));
+                  }
                   if(context.bloc<CartBloc>().state is CartUpdated){
-                    print("sort boss");
                     CartUpdated state = context.bloc<CartBloc>().state;
                     CartModel cm = state.cartModel;
+
                     products.sortByBought(cm);
                   }else{
                     print("not sort");
@@ -154,7 +163,7 @@ class _MenuState extends State<Menu> {
                   );
                 }
 
-                if (state is ProductDataError) {
+                if (productState is ProductDataError) {
                   return Center(
                     child: Text("Error"),
                   );

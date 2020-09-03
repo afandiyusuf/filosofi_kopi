@@ -12,7 +12,15 @@ class GosendUpdating extends GosendState{}
 class GosendUpdated extends GosendState{
   final List<Gosend> datas;
   final Gosend selectedGosend;
+  List<Object> get props => [datas, selectedGosend];
   GosendUpdated({this.datas, this.selectedGosend});
+}
+class GosendPicked extends GosendState{
+  final List<Gosend> datas;
+  final Gosend selectedGosend;
+  @override
+  List<Object> get props => [datas, selectedGosend];
+  GosendPicked({this.datas, this.selectedGosend});
 }
 class GosendError extends GosendState{
   final String message;

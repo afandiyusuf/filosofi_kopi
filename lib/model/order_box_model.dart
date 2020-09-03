@@ -9,6 +9,7 @@ class OrderBoxModel{
   String state = "default";
   Product selectedProduct;
   int selectedTotal = 0;
+  int initialSelectedTotal = 0;
   OrderBoxModel({this.stateButton, this.location, this.storeId = 0});
   factory OrderBoxModel.fromJson(dynamic map){
     return OrderBoxModel(

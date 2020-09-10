@@ -21,10 +21,10 @@ import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Menu extends StatefulWidget {
   final OrderBoxBloc orderBoxBloc;
-
   Menu({this.orderBoxBloc});
 
   @override
@@ -33,12 +33,24 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   CategoryProductModel categoryProductModel;
+  Future<SharedPreferences> pref = SharedPreferences.getInstance();
   ProductModel products;
 
   @override
   void initState() {
+    //fetch orderaox
+    FetchCart();
     super.initState();
   }
+
+  void FetchCartInit() async{
+    var _pref = await pref;
+    var location = _pref.getString('location');
+    if(location != null) {
+      context.bloc<CartBloc>().add(FetchCart(location: location));
+    }
+  }
+
 
 
   @override

@@ -3,10 +3,12 @@ import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
 import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/repository/cart_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supercharged/supercharged.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc({this.cartRepository}) : super(CartInitState());
   CartModel _cartModel = CartModel();
+
   CartModel get cartModel => _cartModel;
   CartRepository cartRepository;
 
@@ -45,16 +47,17 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     }
 
-    if(event is DeleteItemFromCart){
+    if (event is DeleteItemFromCart) {
       bool status = false;
-      try{
+      try {
         status = await cartRepository.deleteItemFromCart(event.cartId);
-      }catch(_){
+      } catch (_) {
         print("delete cart error|");
         print(_.toString());
       }
       print(status);
       print("delete cart success");
+      yield DeleteItemSuccess();
       CartModel newestCartModel;
       newestCartModel = await cartRepository.getCart(event.store);
       if (newestCartModel != null) {
@@ -68,13 +71,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     }
 
-    if(event is UpdateDeliveryMethodCart){
+    if (event is UpdateDeliveryMethodCart) {
       _cartModel.selectedGosend = event.deliverySelected;
       _cartModel.calculateTotalWithDelivery();
       yield CartUpdated(cartModel: _cartModel);
     }
 
-    if(event is FetchCart){
+    if (event is FetchCart) {
       CartModel newestCartModel;
       newestCartModel = await cartRepository.getCart(event.location);
       if (newestCartModel != null) {
@@ -91,5 +94,38 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       _cartModel = CartModel();
       yield CartEmptyState();
     }
+
+    if (event is AddTransaction) {
+      yield AddingTransaction();
+      String response = await cartRepository.addTransactionFnb(
+          event.firstName,
+          event.lastName,
+          event.email,
+          event.address,
+          event.phone,
+          event.subtotal,
+          event.totalAmount,
+          event.total,
+          event.discount,
+          event.shipping,
+          event.shippingType,
+          event.shippingCost,
+          event.shippingOrigin,
+          event.shippingDestination,
+          event.province,
+          event.city,
+          event.voucher,
+          event.latitude,
+          event.longitude,
+          event.createdDate,
+          event.store);
+      if(response == 'success'){
+        yield AddTransactionSuccess();
+      }else{
+        yield AddTransactionError(response);
+      }
+    }
+
+    
   }
 }

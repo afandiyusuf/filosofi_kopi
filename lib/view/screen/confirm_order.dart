@@ -28,6 +28,7 @@ import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmOrder extends StatefulWidget {
@@ -41,6 +42,10 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
   bool isSwitched = false;
   double currentLong;
   double currentLat;
+  UserAddress currentUserAddress;
+  CartModel currentCartModel;
+  Gosend currentGosend;
+  OrderBoxModel currentOrderBox;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +75,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                   BlocBuilder<OrderBoxBloc, OrderBoxState>(
                     builder: (context, state) {
                       if (state is OrderBoxUpdated) {
+                        currentOrderBox = state.orderBox;
                         return OrderBox(
                           onPressed: () {},
                           location: state.orderBox.location,
@@ -154,6 +160,9 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                 if (addressState is AddressUpdated) {
                                   UserAddress userAddress =
                                       addressState.addressModel.allAddress[0];
+
+                                  currentUserAddress = userAddress;
+
                                   currentLat = userAddress.latitude;
                                   currentLong = userAddress.longitude;
                                   context.bloc<GosendBloc>().add(FetchGosend(
@@ -171,7 +180,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                     usingActionButton: false,
                                   );
                                 }
-                                if (state is AddressEmpty) {
+                                if (addressState is AddressEmpty) {
                                   return AddNewAddressCard(
                                     onTap: () {
                                       Navigator.pushNamed(
@@ -179,11 +188,14 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                     },
                                   );
                                 }
-                                return Text("NULL");
+                                print(addressState);
+                                return Container();
                               }),
                               BlocBuilder<GosendBloc, GosendState>(
                                   builder: (context, gosendState) {
                                 if (gosendState is GosendUpdated) {
+                                  currentGosend = gosendState.selectedGosend;
+
                                   return InkWell(
                                     onTap: () {
                                       _showBottomSheet(context);
@@ -208,6 +220,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   );
                                 }
                                 if (gosendState is GosendPicked) {
+                                  currentGosend = gosendState.selectedGosend;
                                   return InkWell(
                                     onTap: () {
                                       _showBottomSheet(context);
@@ -241,20 +254,21 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   );
                                 }
                                 if (gosendState is GosendError) {
-                                  return  Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                        BorderRadius.circular(20)),
-                                    child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 20),
-                                        child:Text("Alamat tidak mendukung pengiriman, silakan pilih/ganti alamat yang lebih dekat")
-                                    ));
+                                  return Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 20),
+                                          child: Text(
+                                              "Alamat tidak mendukung pengiriman, silakan pilih/ganti alamat yang lebih dekat")));
                                 }
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Center(child: CircularProgressIndicator()),
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
                                 );
                               })
                             ],
@@ -312,6 +326,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
 
                     if (state is CartUpdated) {
                       CartModel cartModel = state.cartModel;
+                      currentCartModel = cartModel;
                       cartModel.calculateTotalWithDelivery();
                       List<ListTileOrder> listOrder =
                           List<ListTileOrder>.from(cartModel.allItems.map((e) {
@@ -348,7 +363,9 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                           Column(
                             children: listOrder,
                           ),
-                          Divider(height: 20,),
+                          Divider(
+                            height: 20,
+                          ),
                           Container(
                             child: Padding(
                               padding:
@@ -375,7 +392,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                           Container(
                             child: Padding(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 15),
+                                  const EdgeInsets.symmetric(horizontal: 15),
                               child: Row(
                                 children: [
                                   Text("Total:"),
@@ -388,14 +405,13 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   )
                                 ],
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                               ),
                             ),
                           ),
                           Divider(
                             height: 20,
                           ),
-
                         ],
                       ));
                     }
@@ -417,33 +433,55 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                 ],
               ),
             ),
-
             BlocBuilder<OrderBoxBloc, OrderBoxState>(
-              builder: (context, orderBoxState) {
-                if(orderBoxState is OrderBoxUpdated) {
-                  return BlocBuilder<GosendBloc, GosendState>(
-                      builder: (context, gosendState) {
-                        if (gosendState is GosendPicked || orderBoxState.orderBox.stateButton == OrderBoxModel.AMBIL_SENDIRI) {
-                          return PrimaryButton(
-                              label: "Pesan Sekarang",
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.8,
-                              margin: EdgeInsets.only(bottom: 10, top: 10));
-                        }
-                        return Container(
-                            margin: EdgeInsets.only(top: 10, bottom: 10),
-                            child: Text("Silakan pilih metode pengiriman"));
-                      }
-                  );
-                }else{
-                  return Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
+                builder: (context, orderBoxState) {
+              if (orderBoxState is OrderBoxUpdated) {
+                return BlocBuilder<GosendBloc, GosendState>(
+                    builder: (context, gosendState) {
+                  if (gosendState is GosendPicked ||
+                      orderBoxState.orderBox.stateButton ==
+                          OrderBoxModel.AMBIL_SENDIRI) {
+                    return PrimaryButton(
+                        onPressed: () {
+                          ConfirmTransaction(context);
+                        },
+                        label: "Pesan Sekarang",
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        margin: EdgeInsets.only(bottom: 10, top: 10));
+                  }
+                  return Container(
+                      margin: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Text("Silakan pilih metode pengiriman"));
+                });
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Center(child: CircularProgressIndicator()),
+                );
               }
+            }),
+
+            BlocListener<CartBloc,CartState>(
+              listener: (context, stateCart){
+                if(stateCart is CartEmptyState){
+                  Navigator.pop(context);
+                }
+                if(stateCart is AddTransactionSuccess){
+                  Fluttertoast.showToast(
+                      msg: "Add Transaction Success",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                  context.bloc<CartBloc>().add(FetchCart(location: currentOrderBox.location));
+                }else if(stateCart is AddTransactionError){
+                  _showAlertValidation(stateCart.message, context);
+                }
+              },
+              child: Container(),
             ),
           ],
         ),
@@ -593,5 +631,80 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
             ),
           );
         });
+  }
+
+  void ConfirmTransaction(BuildContext context) {
+    if (currentUserAddress == null) {
+      Fluttertoast.showToast(
+          msg: "Pilih alamat pengiriman terlebih dahulu",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+    if(currentGosend == null){
+      Fluttertoast.showToast(
+          msg: "Pilih metode pengiriman terlebih dahulu",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+
+    context.bloc<CartBloc>().add(AddTransaction(
+        currentUserAddress.namePerson,
+        '',
+        '',
+        currentUserAddress.labelAddress + currentUserAddress.detailAddress,
+        currentUserAddress.phoneNumber,
+        currentCartModel.subtotal.toString(),
+        currentCartModel.total.toString(),
+        currentCartModel.total.toString(),
+        '0',
+        'gosend',
+        currentGosend.shipmentMethod,
+        currentGosend.price.toString(),
+        currentOrderBox.location,
+        currentUserAddress.labelAddress + currentUserAddress.detailAddress,
+        currentUserAddress.province,
+        currentUserAddress.city,
+        '',
+        currentUserAddress.latitude.toString(),
+        currentUserAddress.longitude.toString(),
+        DateTime.now().toString(),
+        currentOrderBox.location));
+  }
+
+  _showAlertValidation(String errorMessage, BuildContext context) async {
+    await animated_dialog_box.showInOutDailog(
+        title: Center(child: Text("Warning")),
+        // IF YOU WANT TO ADD
+        context: context,
+        firstButton: MaterialButton(
+          // FIRST BUTTON IS REQUIRED
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
+          color: Colors.red,
+          child: Text('Ok'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        secondButton: Container(),
+        icon: Icon(
+          Icons.info_outline,
+          color: Colors.red,
+        ),
+        // IF YOU WANT TO ADD ICON
+        yourWidget: Container(
+          child: Text(errorMessage),
+        ));
   }
 }

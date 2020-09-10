@@ -22,6 +22,7 @@ import 'package:filkop_mobile_apps/view/screen/pages/profile.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supercharged/supercharged.dart';
 
@@ -50,79 +51,101 @@ class _MainScreenState extends State<MainScreen> {
             create: (_) => MainPageBloc(),
           )
         ],
-        child: BlocListener<CartBloc, CartState>(
-          listener: (context, state) {
-            if (state is CartUpdated) {
-              context.bloc<ProductBloc>().add(RefreshProduct());
-            }
-          },
-          child: BlocBuilder<MainPageBloc, int>(
-            builder: (context, state) {
-              return Scaffold(
-                body: PageView(
-                  controller: _pageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  onPageChanged: (index) {
-                    context.bloc<MainPageBloc>().add(index);
-                  },
-                  children: screens,
-                ),
-                bottomNavigationBar: BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  selectedItemColor: Colors.black,
-                  selectedLabelStyle: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  currentIndex: state,
-                  onTap: (index) {
-                    context.bloc<MainPageBloc>().add(index);
-                    _onItemTapped(context, index);
-                  },
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      title: Text("HOME", style: _bottomNavBarStyle()),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.restaurant_menu),
-                      title: Text("MENU", style: _bottomNavBarStyle()),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.show_chart),
-                      title: Text("MERCHANDHISE", style: _bottomNavBarStyle()),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.menu),
-                      title: Text("PROFILE", style: _bottomNavBarStyle()),
-                    ),
-                  ],
-                ),
-                floatingActionButton:
-                    BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-
-                      if(state is CartInitState){
-                        fetchCart(context);
-                      }
+        child: Column(
+          children: [
+            BlocListener<CartBloc,CartState>(
+              listener: (context, cartStateListener){
+                if(cartStateListener is DeleteItemSuccess){
+                  Fluttertoast.showToast(
+                      msg: "Hapus item berhasil",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                }
+              },
+              child: Container(),
+            ),
+            Expanded(
+              child: BlocListener<CartBloc, CartState>(
+                listener: (context, state) {
                   if (state is CartUpdated) {
-                    int totalItems = state.cartModel.getTotalItems();
-                    int totalPrice = state.cartModel.getTotalPrice();
-                    return CartBottom(
-                      total: "$totalItems",
-                      price: "${rupiah(totalPrice.toDouble())}",
-                      onPressed: () {
-                        _showBottomSheet(context);
-                      },
-                    );
-                  } else {
-                    return Container();
+                    context.bloc<ProductBloc>().add(RefreshProduct());
                   }
-                }),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerDocked,
-              );
-            },
-          ),
+                },
+                child: BlocBuilder<MainPageBloc, int>(
+                  builder: (context, state) {
+                    return Scaffold(
+                      body: PageView(
+                        controller: _pageController,
+                        physics: NeverScrollableScrollPhysics(),
+                        onPageChanged: (index) {
+                          context.bloc<MainPageBloc>().add(index);
+                        },
+                        children: screens,
+                      ),
+                      bottomNavigationBar: BottomNavigationBar(
+                        type: BottomNavigationBarType.fixed,
+                        selectedItemColor: Colors.black,
+                        selectedLabelStyle: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        currentIndex: state,
+                        onTap: (index) {
+                          context.bloc<MainPageBloc>().add(index);
+                          _onItemTapped(context, index);
+                        },
+                        items: [
+                          BottomNavigationBarItem(
+                            icon: Icon(Icons.home),
+                            title: Text("HOME", style: _bottomNavBarStyle()),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Icon(Icons.restaurant_menu),
+                            title: Text("MENU", style: _bottomNavBarStyle()),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Icon(Icons.show_chart),
+                            title: Text("MERCHANDHISE", style: _bottomNavBarStyle()),
+                          ),
+                          BottomNavigationBarItem(
+                            icon: Icon(Icons.menu),
+                            title: Text("PROFILE", style: _bottomNavBarStyle()),
+                          ),
+                        ],
+                      ),
+                      floatingActionButton:
+                          BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+
+                            if(state is CartInitState){
+                              fetchCart(context);
+                            }
+                        if (state is CartUpdated) {
+                          int totalItems = state.cartModel.getTotalItems();
+                          int totalPrice = state.cartModel.getTotalPrice();
+                          return CartBottom(
+                            total: "$totalItems",
+                            price: "${rupiah(totalPrice.toDouble())}",
+                            onPressed: () {
+                              _showBottomSheet(context);
+                            },
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
+                      floatingActionButtonLocation:
+                          FloatingActionButtonLocation.centerDocked,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         ));
   }
 
@@ -150,8 +173,11 @@ class _MainScreenState extends State<MainScreen> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String location = pref.getString('location');
     int storeId = pref.getInt('storeId');
-    context.bloc<CartBloc>().add(FetchCart(location: location));
-    context.bloc<OrderBoxBloc>().add(OrderBoxUpdateLocation(location: location, storeId: storeId));
+    if(location != null) {
+      context.bloc<CartBloc>().add(FetchCart(location: location));
+      context.bloc<OrderBoxBloc>().add(
+          OrderBoxUpdateLocation(location: location, storeId: storeId));
+    }
   }
 
   void _showBottomSheet(context) {
@@ -177,6 +203,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12.0, vertical: 8),

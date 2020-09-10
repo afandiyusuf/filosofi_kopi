@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class DetailThumbnail extends StatelessWidget {
@@ -21,9 +22,14 @@ class DetailThumbnail extends StatelessWidget {
         padding: const EdgeInsets.all(3),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(6),
-          child: Image.network(
-            image,
+          child:  CachedNetworkImage(
+            imageUrl: image,
+            placeholder: (context, url) => Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: CircularProgressIndicator(),
+            ),
             fit: BoxFit.cover,
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
         ),
       ),

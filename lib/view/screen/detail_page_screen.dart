@@ -231,6 +231,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                               ),
                             );
                           }
+                          print(cartState);
                           return Container(
                             width: size.width * 0.4,
                             height: 50,

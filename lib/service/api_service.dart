@@ -203,10 +203,14 @@ class ApiService {
 
   Future<List<Gosend>> getGosendService(
       String store, double latitude, double longitude) async {
-    final body = {'store': store, 'lat': latitude.toString(), 'long': longitude.toString()};
+    final body = {
+      'store': store,
+      'lat': latitude.toString(),
+      'long': longitude.toString()
+    };
     try {
-      final response = await client.post(
-          "$baseUrl/restApi/gosend_fnb", body: body);
+      final response =
+          await client.post("$baseUrl/restApi/gosend_fnb", body: body);
       if (response.statusCode == 200) {
         final parsed = json.decode(response.body);
         //check return api error or not
@@ -235,8 +239,76 @@ class ApiService {
       } else {
         return null;
       }
-    }catch(_){
+    } catch (_) {
       return null;
+    }
+  }
+
+  Future<String> addTransactionFnb(
+      String firstName,
+      String lastName,
+      String email,
+      String address,
+      String phone,
+      String subtotal,
+      String totalAmount,
+      String total,
+      String discount,
+      String shipping,
+      String shippingType,
+      String shippingCost,
+      String shippingOrigin,
+      String shippingDestination,
+      String province,
+      String city,
+      String voucher,
+      String latitude,
+      String longitude,
+      String createdDate,
+      String store) async {
+    final body = {
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'address': address,
+      'phone' : phone,
+      'total_amount' : totalAmount,
+      'discount' : discount,
+      'subtotal' : subtotal,
+      'total' : total,
+      'shipping' : shipping,
+      'shipping_type': shippingType,
+      'shipping_cost' : shippingCost,
+      'shipping_origin' : shippingOrigin,
+      'shipping_destination': shippingDestination,
+      'province' : province,
+      'city' : city,
+      'voucher' : voucher,
+      'latitude' : latitude,
+      'longitude' : longitude,
+      'created_date' : createdDate,
+      'store':store,
+    };
+
+    print("ADD REQUEST BODY");
+    print(body);
+
+    try {
+      final response =
+          await client.post("$baseUrl/restApi/proceed_fnb", body: body);
+      print(response.body);
+      if (response.statusCode == 200) {
+        final parsed = json.decode(response.body);
+        if(parsed['success'] == true){
+          return 'success';
+        }else{
+          return parsed['msg'];
+        }
+      } else {
+        return 'connection error';
+      }
+    }catch(_){
+      return 'unexpected error ${_.toString()}';
     }
   }
 }

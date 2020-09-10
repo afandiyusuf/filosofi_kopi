@@ -21,3 +21,14 @@ class CartUpdateError extends CartState{
 
   CartUpdateError({@required this.cartModel});
 }
+
+class AddingTransaction extends CartState{}
+
+class AddTransactionSuccess extends CartState{}
+
+class AddTransactionError extends CartState{
+  final String message;
+  AddTransactionError(this.message);
+}
+
+class DeleteItemSuccess extends CartState{}

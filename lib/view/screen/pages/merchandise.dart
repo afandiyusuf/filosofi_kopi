@@ -41,7 +41,7 @@ class _MerchandisePageState extends State<MerchandisePage> {
                         selected: category.selected,
                         width: screen.width * 0.28,
                         onTap: () {
-                          _selectCategory(index);
+                          _selectCategory(category.name);
                         },
                       );
                     }),
@@ -59,7 +59,7 @@ class _MerchandisePageState extends State<MerchandisePage> {
                         selected: category.selected,
                         width: screen.width * 0.28,
                         onTap: () {
-                          _selectSubCategory(index);
+                          _selectSubCategory(category.name);
                         },
                       );
                     }),
@@ -90,17 +90,17 @@ class _MerchandisePageState extends State<MerchandisePage> {
             ])));
   }
 
-  _selectCategory(int index) {
+  _selectCategory(String category) {
     setState(() {
-      categoryMerchandiseModel.select(index);
-      merchandiseModel.setByCateogory(index);
+      categoryMerchandiseModel.select(category);
+      merchandiseModel.setByCateogory(category);
     });
   }
 
-  _selectSubCategory(int index){
+  _selectSubCategory(String subCategory){
     setState(() {
-      categoryMerchandiseModel.selectSub(index);
-      merchandiseModel.setBySubCategory(index);
+      categoryMerchandiseModel.selectSub(subCategory);
+      merchandiseModel.setBySubCategory(subCategory);
     });
   }
 

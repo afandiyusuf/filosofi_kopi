@@ -658,11 +658,11 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
     }
 
     context.bloc<CartBloc>().add(AddTransaction(
-        currentUserAddress.namePerson,
+        'name here',
         '',
         '',
-        currentUserAddress.labelAddress + currentUserAddress.detailAddress,
-        currentUserAddress.phoneNumber,
+        'address',
+        'phone number here',
         currentCartModel.subtotal.toString(),
         currentCartModel.total.toString(),
         currentCartModel.total.toString(),
@@ -671,7 +671,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
         currentGosend.shipmentMethod,
         currentGosend.price.toString(),
         currentOrderBox.location,
-        currentUserAddress.labelAddress + currentUserAddress.detailAddress,
+        'address',
         currentUserAddress.province,
         currentUserAddress.city,
         '',

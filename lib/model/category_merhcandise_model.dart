@@ -45,9 +45,9 @@ class CategoryMerchandiseModel {
       ),
     ]),
   ];
-  int _selected = 0;
+  String _selected = '';
 
-  int getSelected() {
+  String getSelected() {
     return _selected;
   }
 
@@ -56,10 +56,10 @@ class CategoryMerchandiseModel {
   }
 
   int countSubCategory(){
-    return _list[_selected].subCategoryMerchandise.length;
+    return _list[getIndexCategory(_selected)].subCategoryMerchandise.length;
   }
 
-  void setSelected(int selected) {
+  void setSelected(String selected) {
     _selected = selected;
   }
 
@@ -75,26 +75,43 @@ class CategoryMerchandiseModel {
   }
 
   SubCategoryMerchandise getSubByIndex(int index){
-    return _list[_selected].subCategoryMerchandise[index];
+    return _list[getIndexCategory(_selected)].subCategoryMerchandise[index];
+  }
+
+  int getIndexCategory(String categoryName){
+    for(int i=0;i<_list.length;i++){
+      if(_list[i].name == categoryName){
+        return i;
+      }
+    }
+
+    return 0;
   }
 
   CategoryMerchandise getById(int id) {
     return _list.firstWhere((category) => category.id == id);
   }
 
-  select(int index) {
-    _selected = index;
+  select(String category) {
+    _selected = category;
     _list.forEach((element) {
       element.selected = false;
+      if(element.name == category){
+        element.selected = true;
+      }
     });
-    _list[index].selected = true;
   }
 
-  selectSub(int index){
-    _list[_selected].subCategoryMerchandise.forEach((element) {
+  selectSub(String subCategory){
+    _list[getIndexCategory(_selected)].subCategoryMerchandise.forEach((element) {
       element.selected = false;
     });
-    _list[_selected].subCategoryMerchandise[index].selected = true;
+
+    _list[getIndexCategory(_selected)].subCategoryMerchandise.forEach((element) {
+      if(element.name == subCategory){
+        element.selected = true;
+      }
+    });
   }
 }
 

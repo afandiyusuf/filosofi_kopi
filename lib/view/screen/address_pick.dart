@@ -178,17 +178,17 @@ class _AddressPickState extends State<AddressPick> {
     bool isUpdate = false;
     if(widget.userAddress == null) {
        userAddress = UserAddress(
-        id: 0,
+        id: 0.toString(),
         longitude: lastCameraPosition.target.longitude,
         latitude: lastCameraPosition.target.latitude,
-        labelAddress: currentAddress,
+        address: currentAddress,
       );
        isUpdate = false;
     }else{
       userAddress = widget.userAddress;
       userAddress.longitude = lastCameraPosition.target.longitude;
       userAddress.latitude = lastCameraPosition.target.latitude;
-      userAddress.labelAddress = currentAddress;
+      userAddress.address = currentAddress;
       isUpdate = true;
     }
     Navigator.push(context,MaterialPageRoute(

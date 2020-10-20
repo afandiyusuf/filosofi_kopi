@@ -97,13 +97,14 @@ class Product{
   final String code;
   final String discPrice;
   final String categoryText;
-  final int category;
+  final String category;
   String notes = "";
   int bought = 0;
 
   Product({this.id, this.name, this.image, this.price, this.category, this.code, this.discount, this.discPrice, this.description, this.originalPrice, this.avail , this.jenis, this.stock, this.categoryText});
 
   factory Product.fromJson(Map<String, dynamic> map){
+
     return Product(
       id: map['id'],
       code: map['code'],
@@ -111,7 +112,7 @@ class Product{
       discount: map['discount'],
       price: map['price'],
       discPrice: map['disc_price'],
-      category: 0,
+      category: map['jenis'],
       image: "https://www.filosofikopi.id/upload/images/product/${map['photo']}",
       stock: map['stock'],
       avail: map['avail'],

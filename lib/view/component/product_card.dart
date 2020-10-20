@@ -6,7 +6,7 @@ class ProductCard extends StatelessWidget {
   final int id;
   final String price;
   final String name;
-  final int category;
+  final String category;
   final Function onTap;
   final int total;
 

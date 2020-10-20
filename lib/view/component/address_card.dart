@@ -29,20 +29,20 @@ class AddressCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(userAddress.title,
+                          Text(userAddress.name,
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+//                          Container(
+//                              margin: EdgeInsets.only(top: 10),
+//                              child: Text(userAddress.namePerson)),
+//                          Container(
+//                              margin: EdgeInsets.only(top: 10),
+//                              child: Text(userAddress.phoneNumber)),
+//                          Container(
+//                              margin: EdgeInsets.only(top: 10),
+//                              child: Text(userAddress.labelAddress)),
                           Container(
                               margin: EdgeInsets.only(top: 10),
-                              child: Text(userAddress.namePerson)),
-                          Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: Text(userAddress.phoneNumber)),
-                          Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: Text(userAddress.labelAddress)),
-                          Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: Text(userAddress.detailAddress)),
+                              child: Text(userAddress.address)),
                         ],
                       ),
                     ),

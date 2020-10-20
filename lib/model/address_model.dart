@@ -12,7 +12,7 @@ class UserAddressModel {
     loadAddress();
   }
 
-  select(int id) {
+  select(String id) {
     print("SELECT");
     for(int i= 0;i<_allAddress.length;i++){
       print("SELECTED CHANGE 0");
@@ -65,8 +65,8 @@ class UserAddressModel {
       _allAddress = List<UserAddress>.from(
           data.map((item) => UserAddress.fromJson(item)));
       _allAddress.forEach((element) {
-        if(lastId <= element.id){
-          lastId = element.id+1;
+        if(lastId <= int.parse(element.id)){
+          lastId = int.parse(element.id)+1;
         }
       });
     }else{
@@ -85,67 +85,66 @@ class UserAddressModel {
     }
   }
 }
+UserAddress userAddressFromJson(String str) => UserAddress.fromJson(json.decode(str));
+
+String userAddressToJson(UserAddress data) => json.encode(data.toJson());
 
 class UserAddress {
-  int id;
-  String title;
-  String namePerson;
-  String phoneNumber;
-  String detailAddress;
-  double longitude;
-  double latitude;
+  UserAddress({
+    this.id,
+    this.userId,
+    this.name,
+    this.province,
+    this.city,
+    this.subdistrict,
+    this.destination,
+    this.address,
+    this.latitude,
+    this.longitude,
+    this.token,
+    this.selected,
+  });
+
+  String id;
+  String userId;
+  String name;
   String province;
-  String realCity;
   String city;
+  String subdistrict;
+  String destination;
+  String address;
+  double latitude;
+  double longitude;
+  String token;
   int selected;
-  bool pinnedFromMap;
-  String labelAddress;
 
-  UserAddress(
-      {this.id,
-      this.title,
-      this.namePerson,
-      this.phoneNumber,
-      this.detailAddress,
-      this.longitude,
-      this.latitude,
-      this.selected,
-      this.province,
-      this.city,
-      this.labelAddress,
-      this.realCity,
-      this.pinnedFromMap});
+  factory UserAddress.fromJson(Map<String, dynamic> json) => UserAddress(
+    id: json["id"],
+    userId: json["user_id"],
+    name: json["name"],
+    province: json["province"],
+    city: json["city"],
+    subdistrict: json["subdistrict"],
+    destination: json["destination"],
+    address: json["address"],
+    latitude: double.parse(json["latitude"]),
+    longitude: double.parse(json["longitude"]),
+    token: json["token"],
+    selected: 0
+  );
 
-  factory UserAddress.fromJson(dynamic map) {
-    return UserAddress(
-        id: map['id'],
-        title: map['title'],
-        namePerson: map['namePerson'],
-        phoneNumber: map['phoneNumber'],
-        detailAddress: map['detailAddress'],
-        labelAddress: map['labelAddress'],
-        longitude: map['longitude'],
-        province: map['province'],
-        city: map['city'],
-        realCity: map['realCity'],
-        latitude: map['latitude'],
-        selected: map['selected'],
-        pinnedFromMap: map['pinnedFromMap']);
-  }
-
-  Map toJson() => {
-        'title': title,
-        'namePerson': namePerson,
-        'phoneNumber': phoneNumber,
-        'detailAddress': detailAddress,
-        'longitude': longitude,
-        'latitude': latitude,
-        'selected': selected,
-        'pinnedFromMap': pinnedFromMap,
-        'province': province,
-        'city': city,
-        'labelAddress': labelAddress,
-        'realCity': realCity,
-        'id': id,
-      };
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user_id": userId,
+    "name": name,
+    "province": province,
+    "city": city,
+    "subdistrict": subdistrict,
+    "destination": destination,
+    "address": address,
+    "latitude":  latitude,
+    "longitude": longitude,
+    "token": token,
+  };
 }
+

@@ -273,7 +273,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     _nominalTextController.dispose();
     super.dispose();
   }
-  _updateCart(BuildContext context,Product product,String location, {CartItem cartItem = null}) {
+  _updateCart(BuildContext context,Product product,String location, {CartItem cartItem}) {
 
     print("total is $_total");
     if(_total > 0) {

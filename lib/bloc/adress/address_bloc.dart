@@ -18,7 +18,7 @@ class AddressBloc extends Bloc<AddressEvent,AddressState>{
 
     if(event is AddAddress){
       UserAddress address = event.address;
-      address.id = addressModel.getId();
+      address.id = addressModel.getId().toString();
       addressModel.addAddress(address);
     }
 

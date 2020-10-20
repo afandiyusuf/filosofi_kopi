@@ -42,23 +42,19 @@ class _AddressFormState extends State<AddressForm> {
 
   TextEditingController _detailedAddress = TextEditingController();
   TextEditingController _addressName = TextEditingController();
-  TextEditingController _recipientName = TextEditingController();
-  TextEditingController _recipientPhoneNumber = TextEditingController();
 
   void _onMapCreated(GoogleMapController controller) {
   }
 
   void initState() {
-    _detailedAddress.text = widget.address.detailAddress;
-    _addressName.text = widget.address.title;
-    _recipientName.text = widget.address.namePerson;
-    _recipientPhoneNumber.text = widget.address.phoneNumber;
+    _detailedAddress.text = widget.address.address;
+    _addressName.text = widget.address.name;
     if (widget.address.province != null) {
       provinceValue = widget.address.province;
     }
     if (widget.address.city != null) {
       cityValue = widget.address.city;
-      realCityValue = widget.address.realCity;
+      realCityValue = widget.address.city;
     }
 
     _cameraPosition = CameraPosition(
@@ -79,7 +75,7 @@ class _AddressFormState extends State<AddressForm> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.address.labelAddress);
+//    print(widget.address.labelAddress);
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Detail Address",
@@ -100,24 +96,24 @@ class _AddressFormState extends State<AddressForm> {
                   tiltGesturesEnabled: false,
                   zoomGesturesEnabled: false,
                 )),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(alignment: Alignment.centerLeft, child: Text("Alamat:")),
-            ),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.grey.shade200,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  widget.address.labelAddress,
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-            ),
+//            Padding(
+//              padding: const EdgeInsets.all(8.0),
+//              child: Align(alignment: Alignment.centerLeft, child: Text("Alamat:")),
+//            ),
+//            Container(
+//              width: double.infinity,
+//              decoration: BoxDecoration(
+//                borderRadius: BorderRadius.circular(5),
+//                color: Colors.grey.shade200,
+//              ),
+//              child: Padding(
+//                padding: const EdgeInsets.all(8.0),
+//                child: Text(
+//                  '$widget.address.name',
+//                  style: TextStyle(fontSize: 12),
+//                ),
+//              ),
+//            ),
             Divider(
               height: 10,
             ),
@@ -280,31 +276,6 @@ class _AddressFormState extends State<AddressForm> {
                                       return Container();
                                     },
                                   ))),
-                          CustomTextField(
-                              label: 'Penerima',
-                              controller: _recipientName,
-                              marginTop: 20,
-                              marginBottom: 0,
-                              hint: "Nama penerima",
-                              validator: (String value) {
-                                if (value.isEmpty) {
-                                  return "Nama penerima tidak boleh kosong";
-                                }
-                                return null;
-                              }),
-                          CustomTextField(
-                            label: 'No Telp',
-                            controller: _recipientPhoneNumber,
-                            marginTop: 20,
-                            marginBottom: 20,
-                            hint: "No telp penerima",
-                            validator: (String value) {
-                              if (value.isEmpty) {
-                                return "No telp penerima tidak boleh kosong";
-                              }
-                              return null;
-                            },
-                          ),
                         ],
                       ),
                     )
@@ -332,18 +303,18 @@ class _AddressFormState extends State<AddressForm> {
   saveAddress(BuildContext context) {
     if (_formKey.currentState.validate()) {
       UserAddress address = UserAddress(
-          title: _addressName.text,
-          namePerson: _recipientName.text,
-          phoneNumber: _recipientPhoneNumber.text,
-          detailAddress: _detailedAddress.text,
-          labelAddress: widget.address.labelAddress,
+          name: _addressName.text,
+//          namePerson: _recipientName.text,
+//          phoneNumber: _recipientPhoneNumber.text,
+          address: _detailedAddress.text,
+//          labelAddress: widget.address.labelAddress,
           longitude: widget.address.longitude,
           latitude: widget.address.latitude,
           province: provinceValue,
-          city: cityValue,
-          realCity: realCityValue,
-          selected: 1,
-          pinnedFromMap: true);
+//          city: cityValue,
+          city: realCityValue,
+          selected: 1);
+//          pinnedFromMap: true);
       if (widget.isUpdate) {
         print("UPDAAAAATEEE");
         address.id = widget.address.id;

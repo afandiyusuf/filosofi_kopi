@@ -26,7 +26,7 @@ class UpdateAddress extends AddressEvent{
 }
 
 class SelectAddress extends AddressEvent{
-  final int addressId;
+  final String addressId;
   SelectAddress(this.addressId);
 
 }

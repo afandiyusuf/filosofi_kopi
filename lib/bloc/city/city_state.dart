@@ -3,7 +3,6 @@ import 'package:filkop_mobile_apps/model/city_model.dart';
 
 class CityState extends Equatable {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 

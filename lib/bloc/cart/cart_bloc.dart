@@ -3,7 +3,6 @@ import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
 import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/repository/cart_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supercharged/supercharged.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc({this.cartRepository}) : super(CartInitState());

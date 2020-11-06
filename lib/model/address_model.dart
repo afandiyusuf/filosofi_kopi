@@ -14,8 +14,7 @@ class UserAddressModel {
     loadAddress();
   }
 
-  select(String id) {
-    print("SELECT");
+  select(String id) async {
     for (int i = 0; i < _allAddress.length; i++) {
       print("SELECTED CHANGE 0");
       _allAddress[i].selected = 0;
@@ -24,8 +23,11 @@ class UserAddressModel {
         _allAddress[i].selected = 1;
       }
     }
+    SharedPreferences pref = await _pref;
+    pref.setString("address_selected", id);
     saveAddress();
   }
+
 
   addAddress(UserAddress address) async {
     SharedPreferences pref = await _pref;
@@ -88,7 +90,14 @@ class UserAddressModel {
     var response = await http.post('https://filosofikopi.id/restApi/get_user_address', body: body);
     if (response.statusCode == 200) {
       AddressResponse addressResponse = AddressResponse.fromJson(jsonDecode(response.body));
+      SharedPreferences pref = await _pref;
+      var id = pref.getString("address_selected");
       _allAddress = addressResponse.data;
+      for(int i=0;i<_allAddress.length;i++){
+        if(_allAddress[i].id == id){
+          _allAddress[i].selected = 1;
+        }
+      }
     } else {
       _allAddress = [];
     }

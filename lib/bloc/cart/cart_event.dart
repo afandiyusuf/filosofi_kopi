@@ -42,45 +42,27 @@ class AddTransaction extends CartEvent {
   final String firstName;
   final String lastName;
   final String email;
-  final String address;
   final String phone;
-  final String subtotal;
-  final String totalAmount;
-  final String total;
-  final String discount;
+  final String addressId;
   final String shipping;
   final String shippingType;
   final String shippingCost;
-  final String shippingOrigin;
-  final String shippingDestination;
-  final String province;
-  final String city;
   final String voucher;
   final String latitude;
   final String longitude;
-  final String createdDate;
   final String store;
 
   AddTransaction(
       this.firstName,
       this.lastName,
       this.email,
-      this.address,
       this.phone,
-      this.subtotal,
-      this.totalAmount,
-      this.total,
-      this.discount,
+      this.addressId,
       this.shipping,
       this.shippingType,
       this.shippingCost,
-      this.shippingOrigin,
-      this.shippingDestination,
-      this.province,
-      this.city,
       this.voucher,
       this.latitude,
       this.longitude,
-      this.createdDate,
       this.store);
 }

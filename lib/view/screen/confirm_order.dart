@@ -160,8 +160,12 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                 if (addressState is AddressUpdated) {
                                   UserAddress userAddress =
                                       addressState.addressModel.allAddress[0];
+                                  try {
+                                    currentUserAddress = addressState.addressModel.allAddress.firstWhere((element) => element.selected == 1);
+                                  }catch(_){
+                                    currentUserAddress = addressState.addressModel.allAddress[0];
+                                  }
 
-                                  currentUserAddress = addressState.addressModel.allAddress.firstWhere((element) => element.selected == 1);
                                   userAddress = currentUserAddress;
                                   try {
                                     currentLat = double.parse(userAddress.latitude);
@@ -665,28 +669,8 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
       );
     }
 
-    context.bloc<CartBloc>().add(AddTransaction(
-        'name here',
-        '',
-        '',
-        'address',
-        'phone number here',
-        currentCartModel.subtotal.toString(),
-        currentCartModel.total.toString(),
-        currentCartModel.total.toString(),
-        '0',
-        'gosend',
-        currentGosend.shipmentMethod,
-        currentGosend.price.toString(),
-        currentOrderBox.location,
-        'address',
-        currentUserAddress.province,
-        currentUserAddress.city,
-        '',
-        currentUserAddress.latitude.toString(),
-        currentUserAddress.longitude.toString(),
-        DateTime.now().toString(),
-        currentOrderBox.location));
+//    context.bloc<CartBloc>().add(AddTransaction(
+//       ));
   }
 
   _showAlertValidation(String errorMessage, BuildContext context) async {

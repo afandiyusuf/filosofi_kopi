@@ -52,7 +52,7 @@ class AddTransaction extends CartEvent {
   final String longitude;
   final String store;
 
-  AddTransaction(
+  AddTransaction({
       this.firstName,
       this.lastName,
       this.email,
@@ -64,5 +64,5 @@ class AddTransaction extends CartEvent {
       this.voucher,
       this.latitude,
       this.longitude,
-      this.store);
+      this.store});
 }

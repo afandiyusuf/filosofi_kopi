@@ -19,6 +19,7 @@ import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/add_new_address_card.dart';
 import 'package:filkop_mobile_apps/view/component/address_card.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
+import 'package:filkop_mobile_apps/view/component/custom_text_field.dart';
 import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
 import 'package:filkop_mobile_apps/view/component/order_box.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
@@ -46,6 +47,10 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
   CartModel currentCartModel;
   Gosend currentGosend;
   OrderBoxModel currentOrderBox;
+
+  final _formKey = GlobalKey<FormState>();
+  var _nameTxt = TextEditingController();
+  var _telpTxt = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +144,32 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                           return Column(
                             children: [
                               Container(
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: [
+                                        CustomTextField(label: "Penerima",controller: _nameTxt, validator: (String value){
+                                          if(value.isEmpty){
+                                            return 'Tidak boleh kosong';
+                                          }
+                                          return null;
+                                        },),
+                                        CustomTextField(label:"No. Telp",controller: _telpTxt, validator: (String value){
+                                          if(value.isEmpty){
+                                            return "Tidak boleh kosong";
+                                          }
+                                          return null;
+                                        },),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              Container(
                                   alignment: Alignment.centerLeft,
                                   margin: EdgeInsets.only(left: 15),
                                   child: Text(
@@ -203,6 +234,10 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                 print(addressState);
                                 return Container();
                               }),
+
+
+
+
                               BlocBuilder<GosendBloc, GosendState>(
                                   builder: (context, gosendState) {
                                 if (gosendState is GosendUpdated) {
@@ -282,7 +317,8 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   child: Center(
                                       child: CircularProgressIndicator()),
                                 );
-                              })
+                              }),
+
                             ],
                           );
                         } else {
@@ -656,6 +692,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
           textColor: Colors.white,
           fontSize: 16.0
       );
+      return;
     }
     if(currentGosend == null){
       Fluttertoast.showToast(
@@ -667,10 +704,27 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
           textColor: Colors.white,
           fontSize: 16.0
       );
+      return;
     }
 
-//    context.bloc<CartBloc>().add(AddTransaction(
-//       ));
+    if(_formKey.currentState.validate()){
+      context.bloc<CartBloc>().add(AddTransaction(
+        firstName: _nameTxt.text,
+        lastName: '',
+        email: '',
+        phone: _telpTxt.text,
+        shipping: 'gosend',
+        shippingType: currentGosend.shipmentMethod,
+        shippingCost: currentGosend.price.toString(),
+        voucher: '',
+        latitude: currentUserAddress.latitude,
+        longitude: currentUserAddress.longitude,
+        store: currentOrderBox.location,
+        addressId: currentUserAddress.id,
+      ));
+    }else{
+      Fluttertoast.showToast(msg: "Nama dan alamat tidak boleh kosong");
+    }
   }
 
   _showAlertValidation(String errorMessage, BuildContext context) async {

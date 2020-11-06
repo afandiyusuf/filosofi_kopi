@@ -11,8 +11,8 @@ class CustomTextField extends StatelessWidget {
       {Key key,
       this.controller,
       this.label,
-      this.marginTop,
-      this.marginBottom,
+      this.marginTop = 0,
+      this.marginBottom = 0,
       this.hint,
       this.validator})
       : super(key: key);

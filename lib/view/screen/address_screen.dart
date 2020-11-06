@@ -30,6 +30,7 @@ class _AddressPageState extends State<AddressPage> {
   void initState() {
     status = locationPermission.request();
     stateAddress = setStateAddress('empty');
+    context.bloc<AddressBloc>().add(FetchAddress());
     super.initState();
   }
 

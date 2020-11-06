@@ -5,6 +5,7 @@ import 'package:filkop_mobile_apps/bloc/gosend/gosend_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/sub_district/sub_district_bloc.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
 import 'package:filkop_mobile_apps/repository/cart_repository.dart';
 import 'package:filkop_mobile_apps/repository/product_repository.dart';
@@ -42,7 +43,7 @@ class _MainAppState extends State<MainApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<OrderBoxBloc>(
-        create: (_) => OrderBoxBloc(),
+          create: (_) => OrderBoxBloc(),
         ),
         BlocProvider<CartBloc>(
           create: (_) => CartBloc(cartRepository: CartRepository(apiService: ApiService())),
@@ -63,6 +64,12 @@ class _MainAppState extends State<MainApp> {
         ),
         BlocProvider<CityBloc>(
           create: (_) => CityBloc(
+            rajaOngkirRepository:
+            RajaOngkirRepository(rajaOngkirService: RajaOngkirService()),
+          ),
+        ),
+        BlocProvider<SubDistrictBloc>(
+          create: (_) => SubDistrictBloc(
             rajaOngkirRepository:
             RajaOngkirRepository(rajaOngkirService: RajaOngkirService()),
           ),

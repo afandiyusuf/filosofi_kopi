@@ -113,7 +113,7 @@ class Product{
       price: map['price'],
       discPrice: map['disc_price'],
       category: map['jenis'],
-      image: "https://www.filosofikopi.id/upload/images/product/${map['photo']}",
+      image: "${map['link_image']}${map['photo']}",
       stock: map['stock'],
       avail: map['avail'],
       originalPrice: map['original_price'],

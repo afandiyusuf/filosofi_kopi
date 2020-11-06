@@ -92,6 +92,7 @@ class ApiService {
 
   Future<bool> addToCart(
       String productId, String total, String notes, String store) async {
+    print("CALL FROM HERE");
     SharedPreferences pref = await _prefs;
     final body = {
       'token': pref.getString('token'),

@@ -20,6 +20,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       try {
         diffTotal = _cartModel.getDiffTotal(event.product, event.total);
       } catch (_) {
+        print("get diff total error");
         yield CartUpdateError(cartModel: null);
       }
 
@@ -42,7 +43,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         }
       } else {
         _cartModel.rollBack();
-        yield CartUpdateError(cartModel: _cartModel);
+        yield CartUpdated(cartModel: _cartModel);
       }
     }
 

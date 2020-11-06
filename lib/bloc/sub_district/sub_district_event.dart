@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:filkop_mobile_apps/model/subdistrict.dart';
 
 class SubDistrictEvent extends Equatable {
   @override
@@ -11,7 +12,6 @@ class FetchSubDistrict extends SubDistrictEvent {
   FetchSubDistrict({this.cityId});
 }
 class SelectSubDistrict extends SubDistrictEvent{
-  final String selectedSubDistrict;
-  final String realSubDistrictName;
-  SelectSubDistrict(this.selectedSubDistrict,this.realSubDistrictName);
+  final Subdistrict selectedSubdistrict;
+  SelectSubDistrict(this.selectedSubdistrict);
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:filkop_mobile_apps/bloc/adress/address_bloc.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
@@ -38,7 +39,11 @@ class _AddressPickState extends State<AddressPick> {
   @override
   void initState() {
     if(widget.userAddress != null){
-      _center =  LatLng(widget.userAddress.latitude, widget.userAddress.longitude);
+      try {
+        _center = LatLng(double.parse(widget.userAddress.latitude), double.parse(widget.userAddress.longitude));
+      }catch(_){
+        _center = LatLng(0,0);
+      }
     }
 
     _cameraPosition = CameraPosition(
@@ -54,17 +59,14 @@ class _AddressPickState extends State<AddressPick> {
         icon: BitmapDescriptor.defaultMarker,
       ),
     );
-
     super.initState();
+
   }
 
 
 
   void _updatePosition(CameraPosition _position) {
     lastCameraPosition = _position;
-
-
-
     MarkerId id = MarkerId('cursor');
     final marker = _markers.firstWhere((item) => item.markerId == id);
     Marker _marker = Marker(
@@ -179,15 +181,15 @@ class _AddressPickState extends State<AddressPick> {
     if(widget.userAddress == null) {
        userAddress = UserAddress(
         id: 0.toString(),
-        longitude: lastCameraPosition.target.longitude,
-        latitude: lastCameraPosition.target.latitude,
+        longitude: lastCameraPosition.target.longitude.toString(),
+        latitude: lastCameraPosition.target.latitude.toString(),
         address: currentAddress,
       );
        isUpdate = false;
     }else{
       userAddress = widget.userAddress;
-      userAddress.longitude = lastCameraPosition.target.longitude;
-      userAddress.latitude = lastCameraPosition.target.latitude;
+      userAddress.longitude = lastCameraPosition.target.longitude.toString();
+      userAddress.latitude = lastCameraPosition.target.latitude.toString();
       userAddress.address = currentAddress;
       isUpdate = true;
     }

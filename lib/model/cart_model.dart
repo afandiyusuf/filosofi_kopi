@@ -124,7 +124,7 @@ class CartItem {
         menuPrice: data['menu_price'],
         menuDiscount: data['menu_discount'],
         name: data['name'],
-        photo: "https://www.filosofikopi.id/upload/images/product/${data['photo']}",
+        photo: "${data['link_image']}${data['photo']}",
         total: data['total'],
         description: data['description']
     );

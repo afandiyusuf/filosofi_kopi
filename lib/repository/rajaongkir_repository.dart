@@ -1,5 +1,6 @@
 import 'package:filkop_mobile_apps/model/city_model.dart';
 import 'package:filkop_mobile_apps/model/province_model.dart';
+import 'package:filkop_mobile_apps/model/subdistrict.dart';
 import 'package:filkop_mobile_apps/service/rajaongkir_service.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -16,5 +17,9 @@ class RajaOngkirRepository {
 
   Future<List<City>> fetchCity(String provinceId) async{
     return await rajaOngkirService.getCities(provinceId);
+  }
+
+  Future<List<Subdistrict>> fetchSubdistrict(String cityId) async{
+    return await rajaOngkirService.getSubdistrict(cityId);
   }
 }

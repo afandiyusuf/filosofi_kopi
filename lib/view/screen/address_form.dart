@@ -6,9 +6,13 @@ import 'package:filkop_mobile_apps/bloc/city/city_state.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_event.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_state.dart';
+import 'package:filkop_mobile_apps/bloc/sub_district/sub_district_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/sub_district/sub_district_event.dart';
+import 'package:filkop_mobile_apps/bloc/sub_district/sub_district_state.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
 import 'package:filkop_mobile_apps/model/city_model.dart';
 import 'package:filkop_mobile_apps/model/province_model.dart';
+import 'package:filkop_mobile_apps/model/subdistrict.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
@@ -38,13 +42,15 @@ class _AddressFormState extends State<AddressForm> {
   String selectedCity;
   String provinceValue;
   String cityValue;
+  String subdistrictId;
+  String subdistrictName;
   String realCityValue;
+  Subdistrict subdistrictSelected;
 
   TextEditingController _detailedAddress = TextEditingController();
   TextEditingController _addressName = TextEditingController();
 
-  void _onMapCreated(GoogleMapController controller) {
-  }
+  void _onMapCreated(GoogleMapController controller) {}
 
   void initState() {
     _detailedAddress.text = widget.address.address;
@@ -54,7 +60,12 @@ class _AddressFormState extends State<AddressForm> {
     }
     if (widget.address.city != null) {
       cityValue = widget.address.city;
-      realCityValue = widget.address.city;
+      realCityValue = widget.address.id;
+    }
+
+    if (widget.address.subdistrict != null) {
+      subdistrictId = widget.address.subdistrict;
+      subdistrictName = widget.address.subdistrict;
     }
 
     _cameraPosition = CameraPosition(
@@ -83,19 +94,6 @@ class _AddressFormState extends State<AddressForm> {
       body: Container(
         child: Column(
           children: [
-            Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: _cameraPosition,
-                  zoomControlsEnabled: false,
-                  markers: _markers,
-                  myLocationButtonEnabled: true,
-                  liteModeEnabled: true,
-                  tiltGesturesEnabled: false,
-                  zoomGesturesEnabled: false,
-                )),
 //            Padding(
 //              padding: const EdgeInsets.all(8.0),
 //              child: Align(alignment: Alignment.centerLeft, child: Text("Alamat:")),
@@ -122,6 +120,22 @@ class _AddressFormState extends State<AddressForm> {
               child: Expanded(
                 child: ListView(
                   children: [
+//                    Container(
+//                        width: MediaQuery.of(context).size.width,
+//                        height: MediaQuery.of(context).size.height * 0.2,
+//                        child: GoogleMap(
+//
+//                          onMapCreated: _onMapCreated,
+//                          initialCameraPosition: _cameraPosition,
+//                          zoomControlsEnabled: false,
+//                          markers: _markers,
+//                          myLocationButtonEnabled: true,
+//                          liteModeEnabled: true,
+//                          tiltGesturesEnabled: false,
+//                          zoomGesturesEnabled: false,
+//
+//                        )),
+                    Divider(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -152,20 +166,14 @@ class _AddressFormState extends State<AddressForm> {
                                 return null;
                               }),
                           Container(
-                              margin: EdgeInsets.only(top: 20, bottom: 5),
-                              child: Text("Provinsi",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
-                          BlocBuilder<ProvinceBloc, ProvinceState>(
-                              builder: (context, state) {
+                              margin: EdgeInsets.only(top: 20, bottom: 5), child: Text("Provinsi", style: TextStyle(fontWeight: FontWeight.bold))),
+                          BlocBuilder<ProvinceBloc, ProvinceState>(builder: (context, state) {
                             if (state is ProvinceInit) {
                               context.bloc<ProvinceBloc>().add(FetchProvince());
                             }
                             if (state is ProvinceReady) {
                               List<Province> datas = state.province;
-                              List<DropdownMenuItem<String>> dropDownItem =
-                                  datas.map<DropdownMenuItem<String>>(
-                                      (Province province) {
+                              List<DropdownMenuItem<String>> dropDownItem = datas.map<DropdownMenuItem<String>>((Province province) {
                                 return DropdownMenuItem<String>(
                                   value: province.name,
                                   child: Text(province.name),
@@ -173,29 +181,26 @@ class _AddressFormState extends State<AddressForm> {
                               }).toList();
                               if (provinceValue == null) {
                                 provinceValue = datas[0].name;
-                                context
-                                    .bloc<CityBloc>()
-                                    .add(FetchCity(provinceId: datas[0].id));
+                                context.bloc<CityBloc>().add(FetchCity(provinceId: datas[0].id));
                               }
+
                               return Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   color: Colors.grey.shade200,
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 0, bottom: 0, left: 12, right: 12),
+                                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 12, right: 12),
                                   child: DropdownButton<String>(
                                     underline: Container(),
                                     onChanged: (String newValue) {
-                                      Province selectedProvince =
-                                          datas.firstWhere((element) =>
-                                              element.name == newValue);
+                                      Province selectedProvince = datas.firstWhere((element) => element.name == newValue);
                                       setState(() {
                                         provinceValue = newValue;
                                         cityValue = null;
-                                        context.bloc<CityBloc>().add(FetchCity(
-                                            provinceId: selectedProvince.id));
+                                        subdistrictSelected = null;
+                                        context.bloc<CityBloc>().add(FetchCity(provinceId: selectedProvince.id));
+                                        context.bloc<SubDistrictBloc>().add(SelectSubDistrict(null));
                                       });
                                     },
                                     value: provinceValue,
@@ -208,65 +213,111 @@ class _AddressFormState extends State<AddressForm> {
                             }
                             return Container();
                           }),
-                          Container(
-                              margin: EdgeInsets.only(top: 20, bottom: 5),
-                              child: Text("Kota",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Container(margin: EdgeInsets.only(top: 20, bottom: 5), child: Text("Kota", style: TextStyle(fontWeight: FontWeight.bold))),
                           Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
                                 color: Colors.grey.shade200,
                               ),
                               child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 0, bottom: 0, left: 12, right: 12),
+                                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 12, right: 12),
                                   child: BlocBuilder<CityBloc, CityState>(
                                     builder: (context, state) {
                                       if (state is CityEmpty) {
                                         return Container(
                                           child: Center(
-                                            child: Text(
-                                                "Pilih provinsi terlebih dahulu"),
+                                            child: Text("Pilih provinsi terlebih dahulu"),
                                           ),
                                         );
                                       }
                                       if (state is CityLoading) {
-                                        return Container(
-                                            child: Center(
-                                                child:
-                                                    CircularProgressIndicator()));
+                                        return Container(child: Center(child: CircularProgressIndicator()));
                                       }
                                       if (state is CityReady) {
                                         List<City> citiesData = state.cities;
-                                        List<DropdownMenuItem<String>>
-                                            dropDownItem = citiesData
-                                                .map<DropdownMenuItem<String>>(
-                                                    (City city) {
+
+                                        List<DropdownMenuItem<String>> dropDownItem = citiesData.map<DropdownMenuItem<String>>((City city) {
                                           return DropdownMenuItem<String>(
                                             value: city.name,
                                             child: Text(city.name),
                                           );
                                         }).toList();
 
-                                        cityValue = state.selectedCities;
-                                        realCityValue =
-                                            citiesData[0].realCityName;
 
+                                        cityValue = state.selectedCities;
+                                        realCityValue = citiesData[0].realCityName;
+                                        var id = citiesData.firstWhere((city) => city.name == state.selectedCities).id;
+                                        context.bloc<SubDistrictBloc>().add(FetchSubDistrict(cityId: id));
                                         return DropdownButton<String>(
                                           onChanged: (String newValue) {
                                             setState(() {
                                               cityValue = newValue;
-                                              realCityValue = citiesData
-                                                  .firstWhere((city) =>
-                                                      city.name == newValue)
-                                                  .realCityName;
-                                              context.bloc<CityBloc>().add(
-                                                  SelectCity(
-                                                      newValue, realCityValue));
+                                              realCityValue = citiesData.firstWhere((city) => city.name == newValue).realCityName;
+                                              subdistrictSelected = null;
+                                              context.bloc<CityBloc>().add(SelectCity(newValue, realCityValue));
+                                              context.bloc<SubDistrictBloc>().add(FetchSubDistrict(cityId: citiesData[0].id));
                                             });
                                           },
                                           value: cityValue,
+                                          icon: Icon(Icons.arrow_drop_down),
+                                          iconSize: 24,
+                                          items: dropDownItem,
+                                          underline: Container(),
+                                        );
+                                      }
+                                      return Container();
+                                    },
+                                  ))),
+                          Container(
+                              margin: EdgeInsets.only(top: 20, bottom: 5),
+                              child: Text("Kecamatan/Kelurahan", style: TextStyle(fontWeight: FontWeight.bold))),
+                          Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.grey.shade200,
+                              ),
+                              child: Padding(
+                                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 12, right: 12),
+                                  child: BlocBuilder<SubDistrictBloc, SubDistrictState>(
+                                    builder: (context, state) {
+                                      if (state is SubDistrictEmpty) {
+                                        return Container(
+                                          child: Center(
+                                            child: Text("Pilih Kota terlebih dahulu"),
+                                          ),
+                                        );
+                                      }
+                                      if (state is SubDistrictLoading) {
+                                        return Container(child: Center(child: CircularProgressIndicator()));
+                                      }
+                                      if (state is SubDistrictReady) {
+                                        List<Subdistrict> subdistrictDatas = state.subdistrict;
+                                        if(subdistrictSelected == null){
+                                          subdistrictSelected = subdistrictDatas[0];
+                                        }
+                                        var selectedVal = subdistrictDatas.firstWhere((element) => element.subdistrictId == subdistrictSelected.subdistrictId,orElse: null);
+                                        if(selectedVal == null){
+                                          subdistrictSelected = subdistrictDatas[0];
+                                        }else{
+                                          subdistrictSelected = selectedVal;
+                                        }
+                                        List<DropdownMenuItem<Subdistrict>> dropDownItem =
+                                        subdistrictDatas.map<DropdownMenuItem<Subdistrict>>((Subdistrict subdistrict) {
+                                          return DropdownMenuItem<Subdistrict>(
+                                            value: subdistrict,
+                                            child: Text(subdistrict.subdistrictName),
+                                          );
+                                        }).toList();
+
+                                        return DropdownButton<Subdistrict>(
+                                          onChanged: (Subdistrict newValue) {
+                                            setState(() {
+                                              subdistrictId = newValue.subdistrictId;
+                                              subdistrictSelected = newValue;
+                                              context.bloc<SubDistrictBloc>().add(SelectSubDistrict(subdistrictSelected));
+                                            });
+                                          },
+                                          value: subdistrictSelected,
                                           icon: Icon(Icons.arrow_drop_down),
                                           iconSize: 24,
                                           items: dropDownItem,
@@ -313,10 +364,11 @@ class _AddressFormState extends State<AddressForm> {
           province: provinceValue,
 //          city: cityValue,
           city: realCityValue,
+          subdistrict: subdistrictSelected.subdistrictName,
+          destination: subdistrictSelected.subdistrictId,
           selected: 1);
 //          pinnedFromMap: true);
       if (widget.isUpdate) {
-        print("UPDAAAAATEEE");
         address.id = widget.address.id;
         context.bloc<AddressBloc>().add(UpdateAddress(address: address));
       } else {

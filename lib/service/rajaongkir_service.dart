@@ -1,12 +1,13 @@
 import 'package:filkop_mobile_apps/model/city_model.dart';
+import 'package:filkop_mobile_apps/model/subdistrict.dart';
 import 'package:http/http.dart' show Client;
 import 'dart:convert';
 import 'package:filkop_mobile_apps/model/province_model.dart';
 
 class RajaOngkirService {
   Client client = Client();
-  String key = '258ce2346109f2b555e6466f782c588c';
-  String baseUrl = 'https://api.rajaongkir.com/starter';
+  String key = 'a607a4d120de45a7febff4cf02bddf7d';
+  String baseUrl = 'https://pro.rajaongkir.com/api';
 
   Future<List<Province>> getProvince() async {
     final response =
@@ -44,4 +45,28 @@ class RajaOngkirService {
       return null;
     }
   }
+
+  Future<List<Subdistrict>> getSubdistrict(String cityId) async {
+    final response = await client
+        .get('$baseUrl/subdistrict?city=$cityId', headers: {'key': key});
+    print('$baseUrl/subdistrict?city=$cityId');
+    print(response.body);
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+
+      if (parsed['rajaongkir']['status']['code'] == 200) {
+        final data = parsed['rajaongkir']['results'];
+        print("DATA IS");
+        print(data);
+        return List<Subdistrict>.from(data.map((item) {
+          return Subdistrict.fromJson(item);
+        }));
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
 }

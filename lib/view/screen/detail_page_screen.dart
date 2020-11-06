@@ -35,20 +35,14 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
     _nominalTextController = TextEditingController(text: "0");
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return BlocBuilder<OrderBoxBloc, OrderBoxState>(builder: (context, state) {
       if (state is OrderBoxUpdated) {
         Product product = state.orderBox.selectedProduct;
-        FlutterMoneyFormatter fmf =
-            FlutterMoneyFormatter(amount: double.parse(product.price));
-        String priceFormatted = fmf
-            .copyWith(symbol: 'Rp.', symbolAndNumberSeparator: ' ')
-            .output
-            .symbolOnLeft;
+        FlutterMoneyFormatter fmf = FlutterMoneyFormatter(amount: double.parse(product.price));
+        String priceFormatted = fmf.copyWith(symbol: 'Rp.', symbolAndNumberSeparator: ' ').output.symbolOnLeft;
         _total = state.orderBox.selectedTotal;
         return Scaffold(
           appBar: CustomAppBar(
@@ -68,20 +62,14 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                     margin: EdgeInsets.only(top: 20),
                     child: Text(
                       product.name.toUpperCase(),
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 10),
                     child: Text(
                       "$priceFormatted",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15),
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                   ),
                   Container(
@@ -121,9 +109,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                         Container(
                           width: size.width * 0.4,
                           height: 50,
-                          decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: Colors.black12, width: 1)),
+                          decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -132,101 +118,93 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   _setTotal(-1, context);
                                 },
                                 child: Container(
-                                    width: 40,
                                     height: 40,
-                                    child: Center(child: Text("-"))),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                      child: Center(child: Text("-")),
+                                    )),
                               ),
-                              Container(
-                                  margin: EdgeInsets.only(left: 20, right: 20),
-                                  width: 30,
-                                  height: 30,
-                                  child: Center(
-                                    child: Text(
-                                      "$_total",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                  )),
+                              Expanded(
+                                child: Container(
+                                    height: 30,
+                                    child: Center(
+                                      child: Text(
+                                        "$_total",
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                    )),
+                              ),
                               InkWell(
                                 onTap: () {
                                   _setTotal(1, context);
                                 },
                                 child: Container(
-                                    width: 40,
                                     height: 40,
-                                    child: Center(child: Text("+"))),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                      child: Center(child: Text("+")),
+                                    )),
                               )
                             ],
                           ),
                         ),
-                        BlocBuilder<CartBloc, CartState>(
-                            builder: (context, cartState) {
-
-                          if(cartState is CartUpdated) {
+                        BlocBuilder<CartBloc, CartState>(builder: (context, cartState) {
+                          if (cartState is CartUpdated) {
                             if (_total > 0) {
                               return InkWell(
                                 onTap: () {
-                                  CartItem cartItem = cartState.cartModel
-                                      .getCartItemByProduct(product);
-                                  _updateCart(
-                                      context, product, state.orderBox.location,
-                                      cartItem: cartItem);
+                                  CartItem cartItem = cartState.cartModel.getCartItemByProduct(product);
+                                  _updateCart(context, product, state.orderBox.location, cartItem: cartItem);
                                 },
                                 child: Container(
                                   width: size.width * 0.4,
                                   height: 50,
                                   child: Center(
                                       child: Text(
-                                        "Add to cart",
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                  decoration: BoxDecoration(
-                                      color: Colors.black),
+                                    "Add to cart",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                                  decoration: BoxDecoration(color: Colors.black),
                                 ),
                               );
-                            }else if(state.orderBox.initialSelectedTotal != 0){
+                            } else if (state.orderBox.initialSelectedTotal != 0) {
                               return InkWell(
                                 onTap: () {
-                                  CartItem cartItem = cartState.cartModel
-                                      .getCartItemByProduct(product);
-                                  _updateCart(
-                                      context, product, state.orderBox.location,
-                                      cartItem: cartItem);
+                                  CartItem cartItem = cartState.cartModel.getCartItemByProduct(product);
+                                  _updateCart(context, product, state.orderBox.location, cartItem: cartItem);
                                 },
                                 child: Container(
                                   width: size.width * 0.4,
                                   height: 50,
                                   child: Center(
                                       child: Text(
-                                        "Delete From Cart",
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                  decoration: BoxDecoration(
-                                      color: Colors.red.shade800),
+                                    "Delete From Cart",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                                  decoration: BoxDecoration(color: Colors.red.shade800),
                                 ),
                               );
-                            }else{
+                            } else {
                               return Container();
                             }
                           }
 
-                          if(cartState is CartEmptyState){
+                          if (cartState is CartEmptyState) {
                             return Visibility(
                               visible: (_total > 0) ? true : false,
                               child: InkWell(
                                 onTap: () {
-                                  _updateCart(
-                                      context, product, state.orderBox.location);
+                                  _updateCart(context, product, state.orderBox.location);
                                 },
                                 child: Container(
                                   width: size.width * 0.4,
                                   height: 50,
                                   child: Center(
                                       child: Text(
-                                        "Add to cart",
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                  decoration: BoxDecoration(
-                                      color: Colors.black),
+                                    "Add to cart",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                                  decoration: BoxDecoration(color: Colors.black),
                                 ),
                               ),
                             );
@@ -243,10 +221,9 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                       ],
                     ),
                   ),
-
                   BlocListener<CartBloc, CartState>(
                     listener: (context, state) {
-                      if(state is CartUpdated){
+                      if (state is CartUpdated) {
                         context.bloc<ProductBloc>().add(RefreshProduct());
                         Navigator.of(context).pop();
                       }
@@ -263,28 +240,28 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
       return Text("Impossible trough here");
     });
   }
+
   @override
   void deactivate() {
     context.bloc<OrderBoxBloc>().add(OrderBoxUnselectProduct());
     super.deactivate();
   }
+
   @override
   dispose() {
     _nominalTextController.dispose();
     super.dispose();
   }
-  _updateCart(BuildContext context,Product product,String location, {CartItem cartItem}) {
 
+  _updateCart(BuildContext context, Product product, String location, {CartItem cartItem}) {
     print("total is $_total");
-    if(_total > 0) {
-      context.bloc<CartBloc>().add(UpdateCart(
-          product: product,
-          total: _total,
-          store: location));
-    }else{
-      context.bloc<CartBloc>().add(DeleteItemFromCart(cartId: cartItem.cartId,store: location));
+    if (_total > 0) {
+      context.bloc<CartBloc>().add(UpdateCart(product: product, total: _total, store: location));
+    } else {
+      context.bloc<CartBloc>().add(DeleteItemFromCart(cartId: cartItem.cartId, store: location));
     }
   }
+
   _setTotal(int total, BuildContext context) {
     _total += total;
     if (_total < 0) {
@@ -292,9 +269,6 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
       _nominalTextController.text = _total.toString();
     }
 
-      context
-          .bloc<OrderBoxBloc>()
-          .add(OrderBoxSetTotalSelectedProduct(total: _total));
-
+    context.bloc<OrderBoxBloc>().add(OrderBoxSetTotalSelectedProduct(total: _total));
   }
 }

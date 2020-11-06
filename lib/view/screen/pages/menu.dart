@@ -43,7 +43,7 @@ class _MenuState extends State<Menu> {
     super.initState();
   }
 
-  void FetchCartInit() async{
+  void fetchCartInit() async{
     var _pref = await pref;
     var location = _pref.getString('location');
     if(location != null) {

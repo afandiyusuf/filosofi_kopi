@@ -161,10 +161,18 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   UserAddress userAddress =
                                       addressState.addressModel.allAddress[0];
 
-                                  currentUserAddress = userAddress;
-
-                                  currentLat = userAddress.latitude;
-                                  currentLong = userAddress.longitude;
+                                  currentUserAddress = addressState.addressModel.allAddress.firstWhere((element) => element.selected == 1);
+                                  userAddress = currentUserAddress;
+                                  try {
+                                    currentLat = double.parse(userAddress.latitude);
+                                  }catch(_){
+                                    currentLat = 0;
+                                  }
+                                  try{
+                                    currentLong = double.parse(userAddress.longitude);
+                                  }catch(_){
+                                    currentLong = 0;
+                                  }
                                   context.bloc<GosendBloc>().add(FetchGosend(
                                       store: state.orderBox.location,
                                       long: currentLong,
@@ -443,7 +451,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                           OrderBoxModel.AMBIL_SENDIRI) {
                     return PrimaryButton(
                         onPressed: () {
-                          ConfirmTransaction(context);
+                          confirmTransaction(context);
                         },
                         label: "Pesan Sekarang",
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -633,7 +641,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
         });
   }
 
-  void ConfirmTransaction(BuildContext context) {
+  void confirmTransaction(BuildContext context) {
     if (currentUserAddress == null) {
       Fluttertoast.showToast(
           msg: "Pilih alamat pengiriman terlebih dahulu",

@@ -13,7 +13,8 @@ class AddressBloc extends Bloc<AddressEvent,AddressState>{
     yield AddressUpdating();
 
     if(event is FetchAddress){
-      addressModel.loadAddress();
+      addressModel = new UserAddressModel();
+      await addressModel.loadAddress();
     }
 
     if(event is AddAddress){
@@ -24,15 +25,16 @@ class AddressBloc extends Bloc<AddressEvent,AddressState>{
 
     if(event is RemoveAddress){
       UserAddress address = event.address;
-      addressModel.removeAddress(address);
+      print('remove here');
+      await addressModel.removeAddress(address);
     }
     if(event is SelectAddress){
-      addressModel.select(event.addressId);
+      await addressModel.select(event.addressId);
     }
 
     if(event is UpdateAddress){
       UserAddress address = event.address;
-      addressModel.updateAddress(address);
+      await addressModel.updateAddress(address);
     }
 
     if(addressModel.allAddress == null || addressModel.allAddress.length == 0){

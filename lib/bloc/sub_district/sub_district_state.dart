@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:filkop_mobile_apps/model/city_model.dart';
+import 'package:filkop_mobile_apps/model/subdistrict.dart';
 
 class SubDistrictState extends Equatable {
   @override
@@ -11,10 +11,9 @@ class SubDistrictEmpty extends SubDistrictState {}
 class SubDistrictLoading extends SubDistrictState {}
 
 class SubDistrictReady extends SubDistrictState {
-  final List<City> cities;
-  final String selectedCities;
-  final String realCityName;
-  SubDistrictReady({this.cities, this.selectedCities,this.realCityName});
+  final List<Subdistrict> subdistrict;
+  final Subdistrict selectedSubdistrict;
+  SubDistrictReady({this.subdistrict, this.selectedSubdistrict});
 }
 
 

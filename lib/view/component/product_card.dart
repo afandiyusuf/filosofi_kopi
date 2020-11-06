@@ -48,7 +48,7 @@ class ProductCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(name, style: titleStyle,),
+                        Text(name, style: titleStyle,overflow: TextOverflow.ellipsis,),
                         Text("$price")
                       ],
                     )),

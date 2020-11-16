@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:filkop_mobile_apps/model/base_response.dart';
 import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
+import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/model/store_datas.dart';
@@ -82,6 +83,20 @@ class ApiService {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
         return CategoryProductModel.fromJson(parsed['data']);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  Future<CategoryApparelModel> getCategoryApparelModel() async {
+    final response = await client.post('$baseUrl/restApi/get_category_apparel');
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      if (parsed['success'] == true) {
+        return CategoryApparelModel.fromJson(parsed['data']);
       } else {
         return null;
       }

@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    screens = [HomePage(), Menu(), MerchandisePage(), Profile()];
+    screens = [HomePage(), Menu(), ApparelPage(), Profile()];
   }
 
   @override

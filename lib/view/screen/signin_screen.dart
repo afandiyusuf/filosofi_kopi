@@ -13,7 +13,7 @@ class SignInScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Container(
-                child: Image.asset('images/logo.png'),
+                child: Image.asset('images/logo-font.png'),
                 width: 220,
                 margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.4),
             ),

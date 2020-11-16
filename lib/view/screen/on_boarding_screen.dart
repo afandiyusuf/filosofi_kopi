@@ -73,7 +73,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               children: <Widget>[
                 Container(
                   width:100,
-                    child: Image.asset('images/logo.png')),
+                    child: Image.asset('images/logo-font.png')),
                 Container(
                   margin: EdgeInsets.only(top: 0, bottom: 20),
                   child: Text(

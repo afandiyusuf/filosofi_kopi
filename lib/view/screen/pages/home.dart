@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
                     child: Container(
                         alignment: Alignment.center,
                         height: 70,
-                        child: Image.asset('images/logo.png')),
+                        child: Image.asset('images/logo-font.png')),
                   ),
                 ),
                 Padding(

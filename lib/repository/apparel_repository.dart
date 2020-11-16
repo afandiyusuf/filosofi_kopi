@@ -1,13 +1,13 @@
-import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:flutter/cupertino.dart';
 
-class ProductRepository{
+class ApparelRepository{
   final ApiService apiService;
-  ProductRepository({@required this.apiService});
+  ApparelRepository({@required this.apiService});
 
-  Future<ProductModel> getProductModelByStore(String store) async{
-    ProductModel products = await apiService.getProductModelByStore({
+  Future<ApparelModel> getProductModelByStore(String store) async{
+    ApparelModel products = await apiService.getApparelModel({
       "store":store
     });
 

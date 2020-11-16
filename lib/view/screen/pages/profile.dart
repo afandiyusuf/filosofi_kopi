@@ -4,6 +4,8 @@ import 'package:filkop_mobile_apps/view/component/profile_button.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatelessWidget {
   @override
@@ -61,7 +63,13 @@ class Profile extends StatelessWidget {
               border: Border(
                   top: BorderSide(color: Colors.black26),
                   bottom: BorderSide(color: Colors.black26)),
-              onTap: () {},
+              onTap: ()  async {
+                if(await canLaunch("https://filosofikopi.id/faq")){
+                  launch("https://filosofikopi.id/faq");
+                  return;
+                }
+                Fluttertoast.showToast(msg: "Terjadi kesalahan coba lagi nanti");
+              },
             ),
             ProfileButton(
               leadingIcon: Icons.map,
@@ -80,7 +88,13 @@ class Profile extends StatelessWidget {
               rightIcon: Icon(Icons.navigate_next),
               border: Border(
                   bottom: BorderSide(color: Colors.black26)),
-              onTap: () {},
+              onTap: () async {
+                if(await canLaunch("https://play.google.com/store")){
+                launch("https://play.google.com/store");
+                return;
+                }
+                Fluttertoast.showToast(msg: "Terjadi kesalahan coba lagi nanti");
+              },
             ),
             ProfileButton(
               padding: EdgeInsets.only(left:12,right: 12, top:30,bottom: 30),

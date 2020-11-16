@@ -1,15 +1,15 @@
 class CategoryApparelModel {
   int _selected = 0;
-  List<CategoryProduct> categoryProducts;
+  List<CategoryApparel> categoryProducts;
   CategoryApparelModel({this.categoryProducts});
 
   factory CategoryApparelModel.fromJson(data){
 
-    List<CategoryProduct> listCategoryProduct = List<CategoryProduct>.from(
-        data.map((item) => CategoryProduct.fromJson(item))
+    List<CategoryApparel> listCategoryProduct = List<CategoryApparel>.from(
+        data.map((item) => CategoryApparel.fromJson(item))
     );
     //add all category
-    listCategoryProduct.insert(0,CategoryProduct(
+    listCategoryProduct.insert(0,CategoryApparel(
       id:0,
       name: "All",
       selected: true,
@@ -38,15 +38,15 @@ class CategoryApparelModel {
     _selected = selected;
   }
 
-  List<CategoryProduct> getCategories(){
+  List<CategoryApparel> getCategories(){
     return categoryProducts;
   }
 
-  CategoryProduct getByIndex(int index){
+  CategoryApparel getByIndex(int index){
     return categoryProducts[index];
   }
 
-  CategoryProduct getById(int id){
+  CategoryApparel getById(int id){
     return categoryProducts.firstWhere((category) => category.id == id);
   }
 
@@ -66,15 +66,15 @@ class CategoryApparelModel {
   }
 }
 
-class CategoryProduct{
+class CategoryApparel{
   final String name;
   final int id;
   bool selected;
 
-  CategoryProduct({this.id,this.name,this.selected = false});
+  CategoryApparel({this.id,this.name,this.selected = false});
 
-  factory CategoryProduct.fromJson(Map<String, dynamic> map){
-    return CategoryProduct(
+  factory CategoryApparel.fromJson(Map<String, dynamic> map){
+    return CategoryApparel(
         name: map['category_name'],
         id: map['category_id'],
         selected: false

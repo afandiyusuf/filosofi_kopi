@@ -33,6 +33,7 @@ class ProductCard extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: CachedNetworkImage(
+                          height: MediaQuery.of(context).size.width * 0.4,
                           imageUrl: image,
                           placeholder: (context, url) => Padding(
                             padding: const EdgeInsets.all(25.0),

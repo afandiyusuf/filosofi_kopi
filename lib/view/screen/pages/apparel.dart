@@ -6,13 +6,13 @@ import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_event.
 import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_state.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
-import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
-import 'package:filkop_mobile_apps/bloc/product/product_state.dart';
+import 'package:filkop_mobile_apps/bloc/apparel/apparel_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/apparel/apparel_event.dart';
+import 'package:filkop_mobile_apps/bloc/apparel/apparel_state.dart';
 import 'package:filkop_mobile_apps/model/cart_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
-import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/repository/category_apparel_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/category_button.dart';
@@ -31,9 +31,9 @@ class ApparelPage extends StatefulWidget {
 }
 
 class _ApparelPageState extends State<ApparelPage> {
-  CategoryApparelModel categoryProductModel;
+  CategoryApparelModel categoryApparelModel;
   Future<SharedPreferences> pref = SharedPreferences.getInstance();
-  ProductModel products;
+  ApparelModel apparels;
 
   @override
   void initState() {
@@ -43,11 +43,11 @@ class _ApparelPageState extends State<ApparelPage> {
   }
 
   void fetchCartInit() async{
-    var _pref = await pref;
-    var location = _pref.getString('location');
-    if(location != null) {
-      context.bloc<CartBloc>().add(FetchCart(location: location));
-    }
+//    var _pref = await pref;
+//    var location = _pref.getString('location');
+//    if(location != null) {
+//      context.bloc<CartBloc>().add(FetchCart(location: location));
+//    }
   }
 
 
@@ -82,16 +82,16 @@ class _ApparelPageState extends State<ApparelPage> {
                     }
 
                     if (state is CategoryApparelUpdated) {
-                      categoryProductModel = state.categoryApparelModel;
+                      categoryApparelModel = state.categoryApparelModel;
                       return Container(
                         margin: EdgeInsets.only(top: 50, bottom: 0),
                         height: 30,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: categoryProductModel.count(),
+                            itemCount: categoryApparelModel.count(),
                             itemBuilder: (BuildContext context, int index) {
-                              CategoryProduct category =
-                              categoryProductModel.getByIndex(index);
+                              CategoryApparel category =
+                              categoryApparelModel.getByIndex(index);
                               return CategoryButton(
                                 name: category.name,
                                 selected: category.selected,
@@ -104,38 +104,35 @@ class _ApparelPageState extends State<ApparelPage> {
                     }
                     return Container();
                   }),
-              BlocBuilder<ProductBloc, ProductState>(builder: (context, productState) {
-                print("PRODUCT STATE IS $productState");
-                if (productState is ProductEmpty) {
-                  print("EMPTY");
+              BlocBuilder<ApparelBloc, ApparelState>(builder: (context, apparelState) {
+                if (apparelState is ApparelEmpty) {
                   OrderBoxModel orderBox =
                       context.bloc<OrderBoxBloc>().orderBox;
                   context
-                      .bloc<ProductBloc>()
-                      .add(FetchProduct(store: orderBox.location));
+                      .bloc<ApparelBloc>()
+                      .add(FetchApparel(store: orderBox.location));
                 }
-                if(productState is ProductDataLoading){
+                if(apparelState is ApparelDataLoading){
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
 
-                if (productState is ProductDataLoaded) {
-                  products = productState.products;
-                  print("products is $products");
-                  if(context.bloc<CartBloc>().state is CartInitState){
-                    OrderBoxModel orderBox =
-                        context.bloc<OrderBoxBloc>().orderBox;
-                    context.bloc<CartBloc>().add(FetchCart(location: orderBox.location));
-                  }
-                  if(context.bloc<CartBloc>().state is CartUpdated){
-                    CartUpdated state = context.bloc<CartBloc>().state;
-                    CartModel cm = state.cartModel;
-
-                    products.sortByBought(cm);
-                  }else{
-                    print("not sort");
-                  }
+                if (apparelState is ApparelDataLoaded) {
+                  apparels = apparelState.apparels;
+//                  if(context.bloc<CartBloc>().state is CartInitState){
+//                    OrderBoxModel orderBox =
+//                        context.bloc<OrderBoxBloc>().orderBox;
+//                    context.bloc<CartBloc>().add(FetchCart(location: orderBox.location));
+//                  }
+//                  if(context.bloc<CartBloc>().state is CartUpdated){
+//                    CartUpdated state = context.bloc<CartBloc>().state;
+//                    CartModel cm = state.cartModel;
+//
+//                    products.sortByBought(cm);
+//                  }else{
+//                    print("not sort");
+//                  }
 
                   return Expanded(
                     child: Container(
@@ -146,35 +143,36 @@ class _ApparelPageState extends State<ApparelPage> {
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
                           childAspectRatio: (itemWidth / itemHeight),
-                          children: List.generate(products.getTotal(), (index) {
-                            Product _product = products.getByIndex(index);
-                            String priceFormatted = rupiah(double.parse(_product.price));
-                            return BlocBuilder<CartBloc, CartState>(
-                                builder: (context, state) {
+                          children: List.generate(apparels.getTotal(), (index) {
+                            Apparel _apparel = apparels.getByIndex(index);
+                            String priceFormatted = rupiah(double.parse(_apparel.price));
+//                            return BlocBuilder<CartBloc, CartState>(
+//                                builder: (context, state) {
                                   int total = 0;
-                                  if(state is CartUpdated){
-                                    CartModel cartModel = state.cartModel;
-                                    total = cartModel.getTotalItemsByIndex(_product.id);
-                                  }
+//                                  if(state is CartUpdated){
+//                                    CartModel cartModel = state.cartModel;
+//                                    total = cartModel.getTotalItemsByIndex(_product.id);
+//                                  }
                                   return ProductCard(
-                                    id: int.parse(_product.id),
-                                    name: _product.name,
+                                    id: int.parse(_apparel.id),
+                                    name: _apparel.name,
                                     price: priceFormatted,
-                                    category: _product.category,
-                                    image: _product.image,
+                                    category: _apparel.catId[0].categoryId,
+                                    image: "${_apparel.image[0]
+                                        .linkImage}${_apparel.image[0].name}",
                                     total: total,
                                     onTap: () {
-                                      _goToDetail(_product, context);
+                                      _goToDetail(_apparel, context);
                                     },
                                   );
-                                }
-                            );
+                              //  }
+                           // );
                           })),
                     ),
                   );
                 }
 
-                if (productState is ProductDataError) {
+                if (apparelState is ApparelDataError) {
                   return Center(
                     child: Text("Error"),
                   );
@@ -191,22 +189,22 @@ class _ApparelPageState extends State<ApparelPage> {
     );
   }
 
-  _goToDetail(Product product, BuildContext context) {
+  _goToDetail(Apparel product, BuildContext context) {
     int total = 0;
-    if (context.bloc<CartBloc>().state is CartUpdated) {
-      print("result is");
-      print(context.bloc<CartBloc>().state is CartUpdated);
-      CartUpdated state = context.bloc<CartBloc>().state;
-      if (state.cartModel != null) {
-        //get total menu
-        total = state.cartModel.getTotalItemsByIndex(product.id);
-      }
-    }
-    print("total is $total");
-    context
-        .bloc<OrderBoxBloc>()
-        .add(OrderBoxSelectProduct(selectedProduct: product, total: total));
-    Navigator.pushNamed(context, DetailPageScreen.tag);
+//    if (context.bloc<CartBloc>().state is CartUpdated) {
+//      print("result is");
+//      print(context.bloc<CartBloc>().state is CartUpdated);
+//      CartUpdated state = context.bloc<CartBloc>().state;
+//      if (state.cartModel != null) {
+//        //get total menu
+//        total = state.cartModel.getTotalItemsByIndex(product.id);
+//      }
+//    }
+//    print("total is $total");
+//    context
+//        .bloc<OrderBoxBloc>()
+//        .add(OrderBoxSelectProduct(selectedProduct: product, total: total));
+//    Navigator.pushNamed(context, DetailPageScreen.tag);
   }
 
   _selectCategory(String categoryName, BuildContext context) {
@@ -214,7 +212,7 @@ class _ApparelPageState extends State<ApparelPage> {
         .bloc<CategoryApparelBloc>()
         .add(SelectCategoryApparel(categoryName));
     context
-        .bloc<ProductBloc>()
-        .add(SetProductsByCategory(categoryName: categoryName));
+        .bloc<ApparelBloc>()
+        .add(SetApparelByCategory(categoryName: categoryName));
   }
 }

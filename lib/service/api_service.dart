@@ -6,6 +6,7 @@ import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:filkop_mobile_apps/model/apparel_model.dart' as Apparel;
 import 'package:filkop_mobile_apps/model/store_datas.dart';
 import 'package:http/http.dart' show Client;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,6 +69,22 @@ class ApiService {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
         return ProductModel.fromJson(parsed['data']);
+      } else {
+        print(parsed);
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  Future<Apparel.ApparelModel> getApparelModel(dynamic body) async {
+    final response =
+    await client.post("$baseUrl/restApi/get_apparel", body: body);
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      if (parsed['success'] == true) {
+        return Apparel.ApparelModel.fromJson(parsed['data']);
       } else {
         print(parsed);
         return null;

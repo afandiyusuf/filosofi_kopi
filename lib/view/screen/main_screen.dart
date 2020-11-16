@@ -17,7 +17,7 @@ import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/home.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/menu.dart';
-import 'package:filkop_mobile_apps/view/screen/pages/merchandise.dart';
+import 'package:filkop_mobile_apps/view/screen/pages/apparel.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/profile.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:flutter/material.dart';

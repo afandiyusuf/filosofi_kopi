@@ -42,9 +42,14 @@ class CartApparelModel {
   int getTotalPrice() {
     int totalPrice = 0;
     allProductItems.forEach((element) {
-      int totalPerProduct = element.amount.toInt() * int.parse(element.menuPrice);
+      int totalPerProduct = 0;
+      if(element.productPrice != null) {
+        totalPerProduct = element.amount.toInt() *
+            int.parse(element.productPrice);
+      }
       totalPrice += totalPerProduct;
     });
+    print(allProductItems);
     subtotal = totalPrice;
     return totalPrice;
   }
@@ -107,7 +112,7 @@ class CartItem {
   final String menuId;
   String notes;
   int amount;
-  final String menuPrice;
+  final String productPrice;
   final String menuDiscount;
   final String name;
   final String photo;
@@ -115,7 +120,7 @@ class CartItem {
   String total;
 
   CartItem(
-      {this.photo, this.total, this.menuPrice, this.menuDiscount, this.name, this.amount, this.menuId, this.cartId, this.notes, this.description});
+      {this.photo, this.total, this.productPrice, this.menuDiscount, this.name, this.amount, this.menuId, this.cartId, this.notes, this.description});
 
   factory CartItem.fromJson(data){
     return CartItem(
@@ -123,7 +128,7 @@ class CartItem {
         notes: data['notes'] == null ? null : data['notes'],
         menuId: data['menu_id']  == null ? null : data['menu_id'],
         amount: data['amount'] == null ? null : int.parse(data['amount']),
-        menuPrice: data['menu_price'] == null ? null : data['menu_price'] ,
+        productPrice: data['product_price'] == null ? null : data['product_price'] ,
         menuDiscount: data['menu_discount']  == null ? null : data['menu_discount'],
         name: data['name']  == null ? null : data['name'],
         photo: data['photo'] == null ? null : "${data['link_image']}${data['photo']}",
@@ -136,7 +141,7 @@ class CartItem {
     return Product(
       id: menuId,
       name: name,
-      price: menuPrice,
+      price: productPrice,
       image: photo,
       description: description,
     );

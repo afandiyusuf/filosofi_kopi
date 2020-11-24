@@ -2,6 +2,9 @@ import 'package:animated_dialog_box/animated_dialog_box.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_product_event.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_product_state.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_state.dart' as CartApparelState;
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_event.dart' as CartApparelEvent;
 import 'package:filkop_mobile_apps/bloc/main_page/main_page_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
@@ -15,9 +18,9 @@ import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/pages/apparel_page.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/home.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/product_page.dart';
-import 'package:filkop_mobile_apps/view/screen/pages/apparel_page.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/profile.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +39,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   PageController _pageController = PageController();
   List<Widget> screens;
-
+  int _pageIndex = 0;
   @override
   void initState() {
     super.initState();
@@ -53,9 +56,9 @@ class _MainScreenState extends State<MainScreen> {
         ],
         child: Column(
           children: [
-            BlocListener<CartProductBloc,CartProductState>(
-              listener: (context, cartStateListener){
-                if(cartStateListener is DeleteItemSuccess){
+            BlocListener<CartProductBloc, CartProductState>(
+              listener: (context, cartStateListener) {
+                if (cartStateListener is DeleteItemSuccess) {
                   Fluttertoast.showToast(
                       msg: "Hapus item berhasil",
                       toastLength: Toast.LENGTH_LONG,
@@ -63,8 +66,7 @@ class _MainScreenState extends State<MainScreen> {
                       timeInSecForIosWeb: 1,
                       backgroundColor: Colors.red,
                       textColor: Colors.white,
-                      fontSize: 16.0
-                  );
+                      fontSize: 16.0);
                 }
               },
               child: Container(),
@@ -79,18 +81,83 @@ class _MainScreenState extends State<MainScreen> {
                 child: BlocBuilder<MainPageBloc, int>(
                   builder: (context, state) {
                     return Scaffold(
-                      body: PageView(
-                        controller: _pageController,
-                        physics: NeverScrollableScrollPhysics(),
-                        onPageChanged: (index) {
-                          context.bloc<MainPageBloc>().add(index);
-                        },
-                        children: screens,
+                      body: Stack(
+                        children: [
+                          SafeArea(
+                            child: PageView(
+                              controller: _pageController,
+                              physics: NeverScrollableScrollPhysics(),
+                              onPageChanged: (index) {
+                                setState(() {
+                                  _pageIndex = index;
+                                });
+                                context.bloc<MainPageBloc>().add(index);
+                              },
+                              children: screens,
+                            ),
+                          ),
+
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Column(
+                              children: [
+                                Visibility(
+                                  visible: (_pageIndex == 2)? true:false,
+                                  child: BlocBuilder<CartApparelBloc, CartApparelState.CartApparelState>(
+                                      builder: (context, state) {
+                                        if (state is CartApparelState.CartInitState) {
+                                          fetchCartApparel(context);
+                                        }
+                                        if (state is CartApparelState.CartUpdated) {
+                                          int totalItems = state.cartModel.getTotalItems();
+                                          int totalPrice = state.cartModel.getTotalPrice();
+                                          return Container(
+                                            child: CartBottom(
+                                              total: "$totalItems",
+                                              price: "${rupiah(totalPrice.toDouble())}",
+                                              onPressed: () {
+                                                _showBottomSheetProduct(context);
+                                              },
+                                            ),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }),
+                                ),
+
+                                //FNB CART
+                                Visibility(
+                                  visible: (_pageIndex == 1)? true:false,
+                                  child: BlocBuilder<CartProductBloc, CartProductState>(
+                                      builder: (context, state) {
+                                        if (state is CartInitState) {
+                                          fetchCart(context);
+                                        }
+                                        if (state is CartUpdated) {
+                                          int totalItems = state.cartModel.getTotalItems();
+                                          int totalPrice = state.cartModel.getTotalPrice();
+                                          return CartBottom(
+                                            total: "$totalItems",
+                                            price: "${rupiah(totalPrice.toDouble())}",
+                                            onPressed: () {
+                                              _showBottomSheetProduct(context);
+                                            },
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
                       bottomNavigationBar: BottomNavigationBar(
-                        unselectedLabelStyle: TextStyle(
-                          fontSize: 9
-                        ),
+                        unselectedLabelStyle: TextStyle(fontSize: 9),
                         type: BottomNavigationBarType.fixed,
                         selectedItemColor: Colors.black,
                         selectedLabelStyle: TextStyle(
@@ -103,14 +170,13 @@ class _MainScreenState extends State<MainScreen> {
                           _onItemTapped(context, index);
                         },
                         items: [
-
                           BottomNavigationBarItem(
                             icon: Icon(Icons.home),
                             label: "Home",
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.restaurant_menu),
-                            label:"Menu",
+                            label: "Menu",
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.show_chart),
@@ -119,32 +185,9 @@ class _MainScreenState extends State<MainScreen> {
                           BottomNavigationBarItem(
                             icon: Icon(Icons.menu),
                             label: "Profile",
-
                           ),
                         ],
                       ),
-                      floatingActionButton:
-                          BlocBuilder<CartProductBloc, CartProductState>(builder: (context, state) {
-
-                            if(state is CartInitState){
-                              fetchCart(context);
-                            }
-                        if (state is CartUpdated) {
-                          int totalItems = state.cartModel.getTotalItems();
-                          int totalPrice = state.cartModel.getTotalPrice();
-                          return CartBottom(
-                            total: "$totalItems",
-                            price: "${rupiah(totalPrice.toDouble())}",
-                            onPressed: () {
-                              _showBottomSheet(context);
-                            },
-                          );
-                        } else {
-                          return Container();
-                        }
-                      }),
-                      floatingActionButtonLocation:
-                          FloatingActionButtonLocation.centerDocked,
                     );
                   },
                 ),
@@ -178,18 +221,29 @@ class _MainScreenState extends State<MainScreen> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String location = pref.getString('location');
     int storeId = pref.getInt('storeId');
-    if(location != null) {
+    if (location != null) {
       context.bloc<CartProductBloc>().add(FetchCart(location: location));
-      context.bloc<OrderBoxBloc>().add(
-          OrderBoxUpdateLocation(location: location, storeId: storeId));
+      context
+          .bloc<OrderBoxBloc>()
+          .add(OrderBoxUpdateLocation(location: location, storeId: storeId));
+    }
+  }
+  void fetchCartApparel(BuildContext context) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String location = pref.getString('location');
+    if (location != null) {
+      context.bloc<CartApparelBloc>().add(CartApparelEvent.FetchCart(location: location));
     }
   }
 
-  void _showBottomSheet(context) {
+
+
+  void _showBottomSheetProduct(context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
-          return BlocBuilder<CartProductBloc, CartProductState>(builder: (context, state) {
+          return BlocBuilder<CartProductBloc, CartProductState>(
+              builder: (context, state) {
             if (state is CartInitState) {
               fetchCart(context);
             }
@@ -208,7 +262,6 @@ class _MainScreenState extends State<MainScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12.0, vertical: 8),

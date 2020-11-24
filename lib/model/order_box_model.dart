@@ -1,3 +1,4 @@
+import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 
 class OrderBoxModel{
@@ -8,8 +9,11 @@ class OrderBoxModel{
   int storeId;
   String state = "default";
   Product selectedProduct;
-  int selectedTotal = 0;
-  int initialSelectedTotal = 0;
+  Apparel selectedApparel;
+  int selectedApparelTotal = 0;
+  int selectedProductTotal = 0;
+  int initialSelectedProductTotal = 0;
+  int initialSelectedApparelTotal = 0;
   OrderBoxModel({this.stateButton, this.location, this.storeId = 0});
   factory OrderBoxModel.fromJson(dynamic map){
     return OrderBoxModel(

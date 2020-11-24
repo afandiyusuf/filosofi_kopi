@@ -14,10 +14,10 @@ import 'package:filkop_mobile_apps/view/component/cart_bottom.dart';
 import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
-import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/home.dart';
-import 'package:filkop_mobile_apps/view/screen/pages/menu.dart';
-import 'package:filkop_mobile_apps/view/screen/pages/apparel.dart';
+import 'package:filkop_mobile_apps/view/screen/pages/product_page.dart';
+import 'package:filkop_mobile_apps/view/screen/pages/apparel_page.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/profile.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    screens = [HomePage(), Menu(), ApparelPage(), Profile()];
+    screens = [HomePage(), ProductPage(), ApparelPage(), Profile()];
   }
 
   @override
@@ -286,7 +286,7 @@ class _MainScreenState extends State<MainScreen> {
           onPressed: () {
             context
                 .bloc<CartBloc>()
-                .add(DeleteItemFromCart(cartId: cartId, store: store));
+                .add(DeleteProductItemFromCart(cartId: cartId, store: store));
             Navigator.of(context).pop();
           },
         ),
@@ -324,6 +324,6 @@ class _MainScreenState extends State<MainScreen> {
     context
         .bloc<OrderBoxBloc>()
         .add(OrderBoxSelectProduct(selectedProduct: product, total: total));
-    Navigator.pushNamed(context, DetailPageScreen.tag);
+    Navigator.pushNamed(context, DetailProductScreen.tag);
   }
 }

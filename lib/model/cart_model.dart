@@ -1,17 +1,19 @@
+import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 
 class CartModel {
-  List<CartItem> allItems = [];
+  List<CartItem> allProductItems = [];
+  List<CartItem> allApparelItems = [];
   List<CartItem> lastHistory;
   int subtotal;
   int total;
   Gosend selectedGosend;
-  CartModel({this.allItems});
+  CartModel({this.allProductItems});
 
   factory CartModel.fromJson(data, location){
     return CartModel(
-        allItems: List<CartItem>.from(data.map((item) {
+        allProductItems: List<CartItem>.from(data.map((item) {
           return CartItem.fromJson(item);
         }))
     );
@@ -19,28 +21,33 @@ class CartModel {
 
   int getTotalItems() {
     int total = 0;
-    allItems.forEach((element) {
+    allProductItems.forEach((element) {
       total += element.qty.toInt();
     });
     return total;
   }
 
   int getTotalTypeItems() {
-    return allItems.length;
+    return allProductItems.length;
   }
 
   CartItem getCartItemByIndex(int index) {
-    return allItems[index];
+    return allProductItems[index];
   }
   CartItem getCartItemByProduct(Product product){
-    CartItem item =  allItems.firstWhere((element) => element.menuId == product.id, orElse: ()=> null);
+    CartItem item =  allProductItems.firstWhere((element) => element.menuId == product.id, orElse: ()=> null);
+    return item;
+  }
+  
+  CartItem getCartItemByAppare(Apparel product){
+    CartItem item = allApparelItems.firstWhere((element) => element.menuId == product.id, orElse: ()=>null);
     return item;
   }
 
 
   int getTotalPrice() {
     int totalPrice = 0;
-    allItems.forEach((element) {
+    allProductItems.forEach((element) {
       int totalPerProduct = element.qty.toInt() * int.parse(element.menuPrice);
       totalPrice += totalPerProduct;
     });
@@ -59,20 +66,20 @@ class CartModel {
   }
 
   void rollBack() {
-    allItems = List.of(lastHistory);
+    allProductItems = List.of(lastHistory);
   }
 
 
   int getDiffTotal(Product product, int total) {
-    lastHistory = List.of(allItems);
+    lastHistory = List.of(allProductItems);
     int diffTotal = 0;
 
-    if (allItems.length != 0) {
-      CartItem cartItem = allItems.firstWhere((el) =>
+    if (allProductItems.length != 0) {
+      CartItem cartItem = allProductItems.firstWhere((el) =>
       el.menuId == product.id, orElse: () => null);
       print(cartItem);
       if (cartItem != null) {
-        allItems.forEach((element) {
+        allProductItems.forEach((element) {
           if (element.menuId == product.id) {
             diffTotal = total - element.qty.toInt();
             element.qty = total;
@@ -89,7 +96,7 @@ class CartModel {
   }
 
   int getTotalItemsByIndex(String id) {
-    CartItem cartItem = allItems.firstWhere((el) =>
+    CartItem cartItem = allProductItems.firstWhere((el) =>
     el.menuId == id, orElse: () => null);
     if (cartItem != null) {
       print(cartItem.qty);

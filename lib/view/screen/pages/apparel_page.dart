@@ -18,7 +18,8 @@ import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/category_button.dart';
 import 'package:filkop_mobile_apps/view/component/product_card.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
-import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_apparel_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -191,20 +192,20 @@ class _ApparelPageState extends State<ApparelPage> {
 
   _goToDetail(Apparel product, BuildContext context) {
     int total = 0;
-//    if (context.bloc<CartBloc>().state is CartUpdated) {
-//      print("result is");
-//      print(context.bloc<CartBloc>().state is CartUpdated);
-//      CartUpdated state = context.bloc<CartBloc>().state;
-//      if (state.cartModel != null) {
-//        //get total menu
-//        total = state.cartModel.getTotalItemsByIndex(product.id);
-//      }
-//    }
-//    print("total is $total");
-//    context
-//        .bloc<OrderBoxBloc>()
-//        .add(OrderBoxSelectProduct(selectedProduct: product, total: total));
-//    Navigator.pushNamed(context, DetailPageScreen.tag);
+    if (context.bloc<CartBloc>().state is CartUpdated) {
+      print("result is");
+      print(context.bloc<CartBloc>().state is CartUpdated);
+      CartUpdated state = context.bloc<CartBloc>().state;
+      if (state.cartModel != null) {
+        //get total menu
+        total = state.cartModel.getTotalItemsByIndex(product.id);
+      }
+    }
+    print("total is $total");
+    context
+        .bloc<OrderBoxBloc>()
+        .add(OrderBoxSelectApparel(selectedApparel: product, total: total));
+    Navigator.pushNamed(context, DetailApparelScreen.tag);
   }
 
   _selectCategory(String categoryName, BuildContext context) {

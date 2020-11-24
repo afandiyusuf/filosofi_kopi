@@ -25,7 +25,7 @@ import 'package:filkop_mobile_apps/view/component/order_box.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
-import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -377,7 +377,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                       currentCartModel = cartModel;
                       cartModel.calculateTotalWithDelivery();
                       List<ListTileOrder> listOrder =
-                          List<ListTileOrder>.from(cartModel.allItems.map((e) {
+                          List<ListTileOrder>.from(cartModel.allProductItems.map((e) {
                         return ListTileOrder(
                           name: e.name,
                           total: e.total,
@@ -549,7 +549,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
     context
         .bloc<OrderBoxBloc>()
         .add(OrderBoxSelectProduct(selectedProduct: product, total: total));
-    Navigator.pushNamed(context, DetailPageScreen.tag);
+    Navigator.pushNamed(context, DetailProductScreen.tag);
   }
 
   _showAlertDelete(
@@ -568,7 +568,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
           onPressed: () {
             context
                 .bloc<CartBloc>()
-                .add(DeleteItemFromCart(cartId: cartId, store: store));
+                .add(DeleteProductItemFromCart(cartId: cartId, store: store));
             Navigator.of(context).pop();
           },
         ),

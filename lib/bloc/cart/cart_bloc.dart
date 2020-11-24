@@ -15,7 +15,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Stream<CartState> mapEventToState(CartEvent event) async* {
     yield CartUpdating();
 
-    if (event is UpdateCart) {
+    if (event is UpdateProductCart) {
       int diffTotal = event.total;
       try {
         diffTotal = _cartModel.getDiffTotal(event.product, event.total);
@@ -47,7 +47,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     }
 
-    if (event is DeleteItemFromCart) {
+    if (event is DeleteProductItemFromCart) {
       bool status = false;
       try {
         status = await cartRepository.deleteItemFromCart(event.cartId);

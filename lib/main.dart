@@ -17,7 +17,8 @@ import 'package:filkop_mobile_apps/service/rajaongkir_service.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
-import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_apparel_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/on_boarding_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
@@ -97,9 +98,11 @@ class _MainAppState extends State<MainApp> {
           VerifyPhoneScreen.tag : (context) => VerifyPhoneScreen(),
           LoginScreen.tag : (context) => LoginScreen(),
           PickOurStoresScreen.tag : (context) => PickOurStoresScreen(),
-          DetailPageScreen.tag : (context) => DetailPageScreen(),
+          DetailProductScreen.tag : (context) => DetailProductScreen(),
+          DetailApparelScreen.tag : (context) => DetailApparelScreen(),
           ConfirmOrder.tag : (context) => ConfirmOrder(),
-          ReferralCodeScreen.tag : (context) => ReferralCodeScreen()
+          ReferralCodeScreen.tag : (context) => ReferralCodeScreen(),
+
         },
       ),
     );

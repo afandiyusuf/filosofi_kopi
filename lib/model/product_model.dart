@@ -38,13 +38,13 @@ class ProductModel {
 
   void sortByBought(CartModel cartModel) {
     print("sort here");
-    print(cartModel.allItems.length);
+    print(cartModel.allProductItems.length);
     print(products.length);
 
 
     products.forEach((product) {
       product.bought = 0;
-      cartModel.allItems.forEach((cartItem) {
+      cartModel.allProductItems.forEach((cartItem) {
         if(cartItem.menuId == product.id){
           product.bought = cartItem.qty;
         }
@@ -59,9 +59,9 @@ class ProductModel {
     });
     print(data);
 
-    print("start sorting cart model ${cartModel.allItems.length}");
+    print("start sorting cart model ${cartModel.allProductItems.length}");
     data = "";
-    cartModel.allItems.forEach((element) {
+    cartModel.allProductItems.forEach((element) {
       data = "$data,${element.menuId} : ${element.qty}";
     });
     print(data);

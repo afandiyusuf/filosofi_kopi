@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,21 +9,37 @@ class CartEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class UpdateCart extends CartEvent {
+class UpdateProductCart extends CartEvent {
   final Product product;
   final int total;
   final String store;
 
-  UpdateCart(
+  UpdateProductCart(
       {@required this.product, @required this.total, @required this.store});
 }
 
-class DeleteItemFromCart extends CartEvent {
+class UpdateApparelCart extends CartEvent {
+  final Apparel product;
+  final int total;
+  final String store;
+
+  UpdateApparelCart(
+      {@required this.product, @required this.total, @required this.store});
+}
+
+class DeleteProductItemFromCart extends CartEvent {
   final String cartId;
   final String store;
 
-  DeleteItemFromCart({this.cartId, this.store});
+  DeleteProductItemFromCart({this.cartId, this.store});
 }
+
+class DeleteApparelItemFromCart extends CartEvent {
+  final String cartId;
+  final String store;
+  DeleteApparelItemFromCart({this.cartId, this.store});
+}
+
 
 class FetchCart extends CartEvent {
   final String location;

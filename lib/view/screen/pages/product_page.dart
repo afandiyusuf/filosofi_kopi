@@ -18,20 +18,20 @@ import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/category_button.dart';
 import 'package:filkop_mobile_apps/view/component/product_card.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
-import 'package:filkop_mobile_apps/view/screen/detail_page_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Menu extends StatefulWidget {
+class ProductPage extends StatefulWidget {
   final OrderBoxBloc orderBoxBloc;
-  Menu({this.orderBoxBloc});
+  ProductPage({this.orderBoxBloc});
 
   @override
-  _MenuState createState() => _MenuState();
+  _ProductPageState createState() => _ProductPageState();
 }
 
-class _MenuState extends State<Menu> {
+class _ProductPageState extends State<ProductPage> {
   CategoryProductModel categoryProductModel;
   Future<SharedPreferences> pref = SharedPreferences.getInstance();
   ProductModel products;
@@ -207,7 +207,7 @@ class _MenuState extends State<Menu> {
     context
         .bloc<OrderBoxBloc>()
         .add(OrderBoxSelectProduct(selectedProduct: product, total: total));
-    Navigator.pushNamed(context, DetailPageScreen.tag);
+    Navigator.pushNamed(context, DetailProductScreen.tag);
   }
 
   _selectCategory(String categoryName, BuildContext context) {

@@ -17,14 +17,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
-class DetailPageScreen extends StatefulWidget {
-  static final String tag = '/detail-page';
+class DetailProductScreen extends StatefulWidget {
+  static final String tag = '/detail-product-page';
 
   @override
-  _DetailPageScreenState createState() => _DetailPageScreenState();
+  _DetailProductScreenState createState() => _DetailProductScreenState();
 }
 
-class _DetailPageScreenState extends State<DetailPageScreen> {
+class _DetailProductScreenState extends State<DetailProductScreen> {
   bool noteAdded = false;
   int _total = 0;
   TextEditingController _nominalTextController;
@@ -43,7 +43,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
         Product product = state.orderBox.selectedProduct;
         FlutterMoneyFormatter fmf = FlutterMoneyFormatter(amount: double.parse(product.price));
         String priceFormatted = fmf.copyWith(symbol: 'Rp.', symbolAndNumberSeparator: ' ').output.symbolOnLeft;
-        _total = state.orderBox.selectedTotal;
+        _total = state.orderBox.selectedProductTotal;
         return Scaffold(
           appBar: CustomAppBar(
             titleText: product.name,
@@ -167,7 +167,7 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
                                   decoration: BoxDecoration(color: Colors.black),
                                 ),
                               );
-                            } else if (state.orderBox.initialSelectedTotal != 0) {
+                            } else if (state.orderBox.initialSelectedProductTotal != 0) {
                               return InkWell(
                                 onTap: () {
                                   CartItem cartItem = cartState.cartModel.getCartItemByProduct(product);
@@ -256,9 +256,9 @@ class _DetailPageScreenState extends State<DetailPageScreen> {
   _updateCart(BuildContext context, Product product, String location, {CartItem cartItem}) {
     print("total is $_total");
     if (_total > 0) {
-      context.bloc<CartBloc>().add(UpdateCart(product: product, total: _total, store: location));
+      context.bloc<CartBloc>().add(UpdateProductCart(product: product, total: _total, store: location));
     } else {
-      context.bloc<CartBloc>().add(DeleteItemFromCart(cartId: cartItem.cartId, store: location));
+      context.bloc<CartBloc>().add(DeleteProductItemFromCart(cartId: cartItem.cartId, store: location));
     }
   }
 

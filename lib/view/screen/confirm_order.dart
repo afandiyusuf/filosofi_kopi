@@ -2,9 +2,9 @@ import 'package:animated_dialog_box/animated_dialog_box.dart';
 import 'package:filkop_mobile_apps/bloc/adress/address_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/adress/address_event.dart';
 import 'package:filkop_mobile_apps/bloc/adress/address_state.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_state.dart';
 import 'package:filkop_mobile_apps/bloc/gosend/gosend_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/gosend/gosend_event.dart';
 import 'package:filkop_mobile_apps/bloc/gosend/gosend_state.dart';
@@ -12,7 +12,7 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
-import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
@@ -44,7 +44,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
   double currentLong;
   double currentLat;
   UserAddress currentUserAddress;
-  CartModel currentCartModel;
+  CartProductModel currentCartModel;
   Gosend currentGosend;
   OrderBoxModel currentOrderBox;
 
@@ -361,7 +361,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                     }),
                   ),
 
-                  BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                  BlocBuilder<CartProductBloc, CartProductState>(builder: (context, state) {
                     if (state is CartInitState) {
                       fetchCart(context);
                     }
@@ -373,7 +373,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                     }
 
                     if (state is CartUpdated) {
-                      CartModel cartModel = state.cartModel;
+                      CartProductModel cartModel = state.cartModel;
                       currentCartModel = cartModel;
                       cartModel.calculateTotalWithDelivery();
                       List<ListTileOrder> listOrder =
@@ -509,7 +509,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
               }
             }),
 
-            BlocListener<CartBloc,CartState>(
+            BlocListener<CartProductBloc,CartProductState>(
               listener: (context, stateCart){
                 if(stateCart is CartEmptyState){
                   Navigator.pop(context);
@@ -524,7 +524,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                       textColor: Colors.white,
                       fontSize: 16.0
                   );
-                  context.bloc<CartBloc>().add(FetchCart(location: currentOrderBox.location));
+                  context.bloc<CartProductBloc>().add(FetchCart(location: currentOrderBox.location));
                 }else if(stateCart is AddTransactionError){
                   _showAlertValidation(stateCart.message, context);
                 }
@@ -539,8 +539,8 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
 
   _goToDetail(Product product, BuildContext context) {
     int total = 0;
-    if (context.bloc<CartBloc>().state is CartUpdated) {
-      CartUpdated state = context.bloc<CartBloc>().state;
+    if (context.bloc<CartProductBloc>().state is CartUpdated) {
+      CartUpdated state = context.bloc<CartProductBloc>().state;
       if (state.cartModel != null) {
         //get total menu
         total = state.cartModel.getTotalItemsByIndex(product.id);
@@ -567,7 +567,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
           child: Text('Ya, Hapus!'),
           onPressed: () {
             context
-                .bloc<CartBloc>()
+                .bloc<CartProductBloc>()
                 .add(DeleteProductItemFromCart(cartId: cartId, store: store));
             Navigator.of(context).pop();
           },
@@ -597,7 +597,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
   void fetchCart(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String location = pref.getString('location');
-    context.bloc<CartBloc>().add(FetchCart(location: location));
+    context.bloc<CartProductBloc>().add(FetchCart(location: location));
   }
 
   void _showBottomSheet(context) {
@@ -622,7 +622,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                               onPressed: () {
                                 context.bloc<GosendBloc>().add(
                                     PickGosend(datas[index].shipmentMethod));
-                                context.bloc<CartBloc>().add(
+                                context.bloc<CartProductBloc>().add(
                                     UpdateDeliveryMethodCart(
                                         deliverySelected: datas[index]));
                                 Navigator.pop(context);
@@ -645,7 +645,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   onPressed: () {
                                     context.bloc<GosendBloc>().add(PickGosend(
                                         datas[index].shipmentMethod));
-                                    context.bloc<CartBloc>().add(
+                                    context.bloc<CartProductBloc>().add(
                                         UpdateDeliveryMethodCart(
                                             deliverySelected: datas[index]));
                                   }),
@@ -708,7 +708,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
     }
 
     if(_formKey.currentState.validate()){
-      context.bloc<CartBloc>().add(AddTransaction(
+      context.bloc<CartProductBloc>().add(AddTransaction(
         firstName: _nameTxt.text,
         lastName: '',
         email: '',

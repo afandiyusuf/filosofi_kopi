@@ -1,6 +1,6 @@
-import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_state.dart';
 import 'package:filkop_mobile_apps/bloc/category_product/category_product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/category_product/category_product_event.dart';
 import 'package:filkop_mobile_apps/bloc/category_product/category_product_state.dart';
@@ -9,7 +9,7 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_state.dart';
-import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
@@ -47,7 +47,7 @@ class _ProductPageState extends State<ProductPage> {
     var _pref = await pref;
     var location = _pref.getString('location');
     if(location != null) {
-      context.bloc<CartBloc>().add(FetchCart(location: location));
+      context.bloc<CartProductBloc>().add(FetchCart(location: location));
     }
   }
 
@@ -124,14 +124,14 @@ class _ProductPageState extends State<ProductPage> {
                 if (productState is ProductDataLoaded) {
                   products = productState.products;
                   print("products is $products");
-                  if(context.bloc<CartBloc>().state is CartInitState){
+                  if(context.bloc<CartProductBloc>().state is CartInitState){
                     OrderBoxModel orderBox =
                         context.bloc<OrderBoxBloc>().orderBox;
-                    context.bloc<CartBloc>().add(FetchCart(location: orderBox.location));
+                    context.bloc<CartProductBloc>().add(FetchCart(location: orderBox.location));
                   }
-                  if(context.bloc<CartBloc>().state is CartUpdated){
-                    CartUpdated state = context.bloc<CartBloc>().state;
-                    CartModel cm = state.cartModel;
+                  if(context.bloc<CartProductBloc>().state is CartUpdated){
+                    CartUpdated state = context.bloc<CartProductBloc>().state;
+                    CartProductModel cm = state.cartModel;
 
                     products.sortByBought(cm);
                   }else{
@@ -150,11 +150,11 @@ class _ProductPageState extends State<ProductPage> {
                           children: List.generate(products.getTotal(), (index) {
                             Product _product = products.getByIndex(index);
                             String priceFormatted = rupiah(double.parse(_product.price));
-                            return BlocBuilder<CartBloc, CartState>(
+                            return BlocBuilder<CartProductBloc, CartProductState>(
                               builder: (context, state) {
                                 int total = 0;
                                 if(state is CartUpdated){
-                                  CartModel cartModel = state.cartModel;
+                                  CartProductModel cartModel = state.cartModel;
                                   total = cartModel.getTotalItemsByIndex(_product.id);
                                 }
                                 return ProductCard(
@@ -194,10 +194,10 @@ class _ProductPageState extends State<ProductPage> {
 
   _goToDetail(Product product, BuildContext context) {
     int total = 0;
-    if (context.bloc<CartBloc>().state is CartUpdated) {
+    if (context.bloc<CartProductBloc>().state is CartUpdated) {
       print("result is");
-      print(context.bloc<CartBloc>().state is CartUpdated);
-      CartUpdated state = context.bloc<CartBloc>().state;
+      print(context.bloc<CartProductBloc>().state is CartUpdated);
+      CartUpdated state = context.bloc<CartProductBloc>().state;
       if (state.cartModel != null) {
         //get total menu
         total = state.cartModel.getTotalItemsByIndex(product.id);

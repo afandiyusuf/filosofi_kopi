@@ -1,6 +1,6 @@
-import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_state.dart';
 import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_event.dart';
 import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_state.dart';
@@ -9,7 +9,7 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_event.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_state.dart';
-import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
@@ -192,10 +192,10 @@ class _ApparelPageState extends State<ApparelPage> {
 
   _goToDetail(Apparel product, BuildContext context) {
     int total = 0;
-    if (context.bloc<CartBloc>().state is CartUpdated) {
+    if (context.bloc<CartProductBloc>().state is CartUpdated) {
       print("result is");
-      print(context.bloc<CartBloc>().state is CartUpdated);
-      CartUpdated state = context.bloc<CartBloc>().state;
+      print(context.bloc<CartProductBloc>().state is CartUpdated);
+      CartUpdated state = context.bloc<CartProductBloc>().state;
       if (state.cartModel != null) {
         //get total menu
         total = state.cartModel.getTotalItemsByIndex(product.id);

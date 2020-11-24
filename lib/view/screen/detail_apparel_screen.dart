@@ -1,14 +1,14 @@
-import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
+
+import 'package:filkop_mobile_apps/bloc/apparel/apparel_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/apparel/apparel_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_state.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
-import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
-import 'package:filkop_mobile_apps/model/cart_model.dart';
-import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/view/component/add_note_button.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field_decoration.dart';
@@ -150,12 +150,12 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                             ],
                           ),
                         ),
-                        BlocBuilder<CartBloc, CartState>(builder: (context, cartState) {
+                        BlocBuilder<CartApparelBloc, CartApparelState>(builder: (context, cartState) {
                           if (cartState is CartUpdated) {
                             if (_total > 0) {
                               return InkWell(
                                 onTap: () {
-                                  CartItem cartItem = cartState.cartModel.getCartItemByAppare(apparel);
+                                  CartItem cartItem = cartState.cartModel.getCartItemByApparel(apparel);
                                   _updateCart(context, apparel, state.orderBox.location, cartItem: cartItem);
                                 },
                                 child: Container(
@@ -172,7 +172,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                             } else if (state.orderBox.initialSelectedProductTotal != 0) {
                               return InkWell(
                                 onTap: () {
-                                  CartItem cartItem = cartState.cartModel.getCartItemByAppare(apparel);
+                                  CartItem cartItem = cartState.cartModel.getCartItemByApparel(apparel);
                                   _updateCart(context, apparel, state.orderBox.location, cartItem: cartItem);
                                 },
                                 child: Container(
@@ -223,10 +223,10 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                       ],
                     ),
                   ),
-                  BlocListener<CartBloc, CartState>(
+                  BlocListener<CartApparelBloc, CartApparelState>(
                     listener: (context, state) {
                       if (state is CartUpdated) {
-                        context.bloc<ProductBloc>().add(RefreshProduct());
+                        context.bloc<ApparelBloc>().add(RefreshApparel());
                         Navigator.of(context).pop();
                       }
                       // do stuff here based on BlocA's state
@@ -258,9 +258,9 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
   _updateCart(BuildContext context, Apparel apparel, String location, {CartItem cartItem}) {
     print("total is $_total");
     if (_total > 0) {
-      context.bloc<CartBloc>().add(UpdateApparelCart(product: apparel, total: _total, store: location));
+      context.bloc<CartApparelBloc>().add(UpdateApparelCart(product: apparel, total: _total, store: location));
     } else {
-      context.bloc<CartBloc>().add(DeleteProductItemFromCart(cartId: cartItem.cartId, store: location));
+      context.bloc<CartApparelBloc>().add(DeleteApparelItemFromCart(cartId: cartItem.cartId, store: location));
     }
   }
 

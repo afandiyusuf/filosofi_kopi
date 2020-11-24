@@ -38,7 +38,7 @@ class ApparelBloc extends Bloc<ApparelEvent, ApparelState>{
       }
     }
 
-    if(event is RefreshProduct){
+    if(event is RefreshApparel){
       if(_apparelModel == null){
         SharedPreferences pref = await SharedPreferences.getInstance();
         String location = pref.getString('location');

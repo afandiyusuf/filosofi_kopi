@@ -1,15 +1,14 @@
 import 'package:equatable/equatable.dart';
-import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:flutter/cupertino.dart';
 
-class CartEvent extends Equatable {
+class CartProductEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
 
-class UpdateProductCart extends CartEvent {
+class UpdateProductCart extends CartProductEvent {
   final Product product;
   final int total;
   final String store;
@@ -18,44 +17,28 @@ class UpdateProductCart extends CartEvent {
       {@required this.product, @required this.total, @required this.store});
 }
 
-class UpdateApparelCart extends CartEvent {
-  final Apparel product;
-  final int total;
-  final String store;
-
-  UpdateApparelCart(
-      {@required this.product, @required this.total, @required this.store});
-}
-
-class DeleteProductItemFromCart extends CartEvent {
+class DeleteProductItemFromCart extends CartProductEvent {
   final String cartId;
   final String store;
 
   DeleteProductItemFromCart({this.cartId, this.store});
 }
 
-class DeleteApparelItemFromCart extends CartEvent {
-  final String cartId;
-  final String store;
-  DeleteApparelItemFromCart({this.cartId, this.store});
-}
-
-
-class FetchCart extends CartEvent {
+class FetchCart extends CartProductEvent {
   final String location;
 
   FetchCart({this.location});
 }
 
-class UpdateDeliveryMethodCart extends CartEvent {
+class UpdateDeliveryMethodCart extends CartProductEvent {
   final Gosend deliverySelected;
 
   UpdateDeliveryMethodCart({this.deliverySelected});
 }
 
-class DisposeCartEvent extends CartEvent {}
+class DisposeCartEvent extends CartProductEvent {}
 
-class AddTransaction extends CartEvent {
+class AddTransaction extends CartProductEvent {
   final String firstName;
   final String lastName;
   final String email;

@@ -1,18 +1,18 @@
-import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
-import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_state.dart';
+import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/repository/cart_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CartBloc extends Bloc<CartEvent, CartState> {
-  CartBloc({this.cartRepository}) : super(CartInitState());
-  CartModel _cartModel = CartModel();
+class CartProductBloc extends Bloc<CartProductEvent, CartProductState> {
+  CartProductBloc({this.cartRepository}) : super(CartInitState());
+  CartProductModel _cartModel = CartProductModel();
 
-  CartModel get cartModel => _cartModel;
+  CartProductModel get cartModel => _cartModel;
   CartRepository cartRepository;
 
   @override
-  Stream<CartState> mapEventToState(CartEvent event) async* {
+  Stream<CartProductState> mapEventToState(CartProductEvent event) async* {
     yield CartUpdating();
 
     if (event is UpdateProductCart) {
@@ -58,7 +58,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       print(status);
       print("delete cart success");
       yield DeleteItemSuccess();
-      CartModel newestCartModel;
+      CartProductModel newestCartModel;
       newestCartModel = await cartRepository.getCart(event.store);
       if (newestCartModel != null) {
         print("finish update cart here");
@@ -78,7 +78,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
 
     if (event is FetchCart) {
-      CartModel newestCartModel;
+      CartProductModel newestCartModel;
       newestCartModel = await cartRepository.getCart(event.location);
       if (newestCartModel != null) {
         print("finish update cart here");
@@ -91,7 +91,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
 
     if (event is DisposeCartEvent) {
-      _cartModel = CartModel();
+      _cartModel = CartProductModel();
       yield CartEmptyState();
     }
 

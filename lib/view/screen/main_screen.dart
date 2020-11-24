@@ -1,14 +1,14 @@
 import 'package:animated_dialog_box/animated_dialog_box.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_state.dart';
 import 'package:filkop_mobile_apps/bloc/main_page/main_page_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
-import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/cart_bottom.dart';
 import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
         ],
         child: Column(
           children: [
-            BlocListener<CartBloc,CartState>(
+            BlocListener<CartProductBloc,CartProductState>(
               listener: (context, cartStateListener){
                 if(cartStateListener is DeleteItemSuccess){
                   Fluttertoast.showToast(
@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
               child: Container(),
             ),
             Expanded(
-              child: BlocListener<CartBloc, CartState>(
+              child: BlocListener<CartProductBloc, CartProductState>(
                 listener: (context, state) {
                   if (state is CartUpdated) {
                     context.bloc<ProductBloc>().add(RefreshProduct());
@@ -88,6 +88,9 @@ class _MainScreenState extends State<MainScreen> {
                         children: screens,
                       ),
                       bottomNavigationBar: BottomNavigationBar(
+                        unselectedLabelStyle: TextStyle(
+                          fontSize: 9
+                        ),
                         type: BottomNavigationBarType.fixed,
                         selectedItemColor: Colors.black,
                         selectedLabelStyle: TextStyle(
@@ -100,26 +103,28 @@ class _MainScreenState extends State<MainScreen> {
                           _onItemTapped(context, index);
                         },
                         items: [
+
                           BottomNavigationBarItem(
                             icon: Icon(Icons.home),
-                            title: Text("HOME", style: _bottomNavBarStyle()),
+                            label: "Home",
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.restaurant_menu),
-                            title: Text("MENU", style: _bottomNavBarStyle()),
+                            label:"Menu",
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.show_chart),
-                            title: Text("MERCHANDHISE", style: _bottomNavBarStyle()),
+                            label: "Apparel",
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.menu),
-                            title: Text("PROFILE", style: _bottomNavBarStyle()),
+                            label: "Profile",
+
                           ),
                         ],
                       ),
                       floatingActionButton:
-                          BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                          BlocBuilder<CartProductBloc, CartProductState>(builder: (context, state) {
 
                             if(state is CartInitState){
                               fetchCart(context);
@@ -174,7 +179,7 @@ class _MainScreenState extends State<MainScreen> {
     String location = pref.getString('location');
     int storeId = pref.getInt('storeId');
     if(location != null) {
-      context.bloc<CartBloc>().add(FetchCart(location: location));
+      context.bloc<CartProductBloc>().add(FetchCart(location: location));
       context.bloc<OrderBoxBloc>().add(
           OrderBoxUpdateLocation(location: location, storeId: storeId));
     }
@@ -184,7 +189,7 @@ class _MainScreenState extends State<MainScreen> {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
-          return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+          return BlocBuilder<CartProductBloc, CartProductState>(builder: (context, state) {
             if (state is CartInitState) {
               fetchCart(context);
             }
@@ -196,7 +201,7 @@ class _MainScreenState extends State<MainScreen> {
             }
 
             if (state is CartUpdated) {
-              CartModel cartModel = state.cartModel;
+              CartProductModel cartModel = state.cartModel;
               return Container(
                   child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -285,7 +290,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Text('Ya, Hapus!'),
           onPressed: () {
             context
-                .bloc<CartBloc>()
+                .bloc<CartProductBloc>()
                 .add(DeleteProductItemFromCart(cartId: cartId, store: store));
             Navigator.of(context).pop();
           },
@@ -314,8 +319,8 @@ class _MainScreenState extends State<MainScreen> {
 
   _goToDetail(Product product, BuildContext context) {
     int total = 0;
-    if (context.bloc<CartBloc>().state is CartUpdated) {
-      CartUpdated state = context.bloc<CartBloc>().state;
+    if (context.bloc<CartProductBloc>().state is CartUpdated) {
+      CartUpdated state = context.bloc<CartProductBloc>().state;
       if (state.cartModel != null) {
         //get total menu
         total = state.cartModel.getTotalItemsByIndex(product.id);

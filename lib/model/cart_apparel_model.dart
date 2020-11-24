@@ -2,17 +2,16 @@ import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 
-class CartModel {
+class CartApparelModel {
   List<CartItem> allProductItems = [];
-  List<CartItem> allApparelItems = [];
   List<CartItem> lastHistory;
   int subtotal;
   int total;
   Gosend selectedGosend;
-  CartModel({this.allProductItems});
+  CartApparelModel({this.allProductItems});
 
-  factory CartModel.fromJson(data, location){
-    return CartModel(
+  factory CartApparelModel.fromJson(data, location){
+    return CartApparelModel(
         allProductItems: List<CartItem>.from(data.map((item) {
           return CartItem.fromJson(item);
         }))
@@ -34,13 +33,8 @@ class CartModel {
   CartItem getCartItemByIndex(int index) {
     return allProductItems[index];
   }
-  CartItem getCartItemByProduct(Product product){
+  CartItem getCartItemByApparel(Apparel product){
     CartItem item =  allProductItems.firstWhere((element) => element.menuId == product.id, orElse: ()=> null);
-    return item;
-  }
-  
-  CartItem getCartItemByAppare(Apparel product){
-    CartItem item = allApparelItems.firstWhere((element) => element.menuId == product.id, orElse: ()=>null);
     return item;
   }
 
@@ -70,7 +64,7 @@ class CartModel {
   }
 
 
-  int getDiffTotal(Product product, int total) {
+  int getDiffTotal(Apparel product, int total) {
     lastHistory = List.of(allProductItems);
     int diffTotal = 0;
 
@@ -106,6 +100,7 @@ class CartModel {
     }
   }
 }
+
 
 class CartItem {
   final String cartId;

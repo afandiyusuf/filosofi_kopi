@@ -16,4 +16,4 @@ class SetApparelByCategory extends ApparelEvent{
   const SetApparelByCategory({this.categoryName});
 }
 
-class RefreshProduct extends ApparelEvent{}
+class RefreshApparel extends ApparelEvent{}

@@ -1,4 +1,4 @@
-import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 
 class ApparelModel {
   List<Apparel> products;
@@ -36,7 +36,7 @@ class ApparelModel {
     return products[index];
   }
 
-  void sortByBought(CartModel cartModel) {
+  void sortByBought(CartProductModel cartModel) {
     print("sort here");
     print(cartModel.allProductItems.length);
     print(products.length);

@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:filkop_mobile_apps/model/base_response.dart';
-import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
+import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
@@ -156,7 +157,41 @@ class ApiService {
     }
   }
 
-  Future<CartModel> getCart(String store) async {
+  Future<bool> addToCartApparel(
+      String productId, String total, String notes, String store) async {
+    print("CALL FROM HERE");
+    SharedPreferences pref = await _prefs;
+    final body = {
+      'token': pref.getString('token'),
+      'menu_id': productId,
+      'qty': total,
+      'notes': notes,
+      'store': store
+    };
+
+    print(body);
+
+    final response =
+    await client.post("$baseUrl/restApi/add_to_cart_apparel", body: body);
+
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      if (parsed['success'] == true) {
+        //refresh cart if success
+        await client.post("$baseUrl/restApi/get_cart_apparel", body: body);
+        return true;
+      } else {
+        print(response.body);
+        return false;
+      }
+    } else {
+      print(response.statusCode);
+      print(response.body);
+      return false;
+    }
+  }
+
+  Future<CartProductModel> getCart(String store) async {
     SharedPreferences pref = await _prefs;
     String location = pref.getString('location');
     final body = {'token': pref.getString('token'), 'store': store};
@@ -169,7 +204,32 @@ class ApiService {
       if (parsed['success'] == true) {
         print("result success");
         print(parsed['data']);
-        return CartModel.fromJson(parsed['data'], location);
+        return CartProductModel.fromJson(parsed['data'], location);
+      } else {
+        print(response.body);
+        return null;
+      }
+    } else {
+      print(response.statusCode);
+      print(response.body);
+      return null;
+    }
+  }
+
+  Future<CartApparelModel> getCartApparel(String store) async {
+    SharedPreferences pref = await _prefs;
+    String location = pref.getString('location');
+    final body = {'token': pref.getString('token'), 'store': store};
+
+    final response =
+    await client.post("$baseUrl/restApi/get_cart_apparel", body: body);
+
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      if (parsed['success'] == true) {
+        print("result success");
+        print(parsed['data']);
+        return CartApparelModel.fromJson(parsed['data'], location);
       } else {
         print(response.body);
         return null;
@@ -187,6 +247,25 @@ class ApiService {
 
     final response =
         await client.post("$baseUrl/restApi/remove_cart_fnb", body: body);
+
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      if (parsed['success']) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deleteItemFromCartApparel(String cartId) async {
+    SharedPreferences pref = await _prefs;
+    final body = {'token': pref.getString('token'), 'cart_id': cartId};
+
+    final response =
+    await client.post("$baseUrl/restApi/remove_cart_apparel", body: body);
 
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
@@ -315,6 +394,60 @@ class ApiService {
     try {
       final response =
           await client.post("$baseUrl/restApi/proceed_fnb", body: body);
+      print(response.body);
+      if (response.statusCode == 200) {
+        final parsed = json.decode(response.body);
+        if(parsed['success'] == true){
+          return 'success';
+        }else{
+          return parsed['msg'];
+        }
+      } else {
+        return 'connection error';
+      }
+    }catch(_){
+      return 'unexpected error ${_.toString()}';
+    }
+  }
+
+  Future<String> addTransactionApparel(
+      String firstName,
+      String lastName,
+      String email,
+      String phone,
+      String addressId,
+      String shipping,
+      String shippingType,
+      String shippingCost,
+      String voucher,
+      String latitude,
+      String longitude,
+      String store) async {
+
+    SharedPreferences pref = await _prefs;
+
+    final body = {
+      'first_name': firstName,
+      'last_name': lastName,
+      'address_id' : addressId,
+      'email': email,
+      'phone' : phone,
+      'shipping' : shipping,
+      'shipping_type': shippingType,
+      'shipping_cost' : shippingCost,
+      'voucher' : voucher,
+      'latitude' : latitude,
+      'longitude' : longitude,
+      'token' : pref.getString('token'),
+      'store':store,
+    };
+
+    print("ADD REQUEST BODY");
+    print(body);
+
+    try {
+      final response =
+      await client.post("$baseUrl/restApi/proceed", body: body);
       print(response.body);
       if (response.statusCode == 200) {
         final parsed = json.decode(response.body);

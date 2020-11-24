@@ -1,6 +1,6 @@
 import 'package:filkop_mobile_apps/bloc/adress/address_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/city/city_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/gosend/gosend_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
@@ -48,8 +48,8 @@ class _MainAppState extends State<MainApp> {
         BlocProvider<OrderBoxBloc>(
           create: (_) => OrderBoxBloc(),
         ),
-        BlocProvider<CartBloc>(
-          create: (_) => CartBloc(cartRepository: CartRepository(apiService: ApiService())),
+        BlocProvider<CartProductBloc>(
+          create: (_) => CartProductBloc(cartRepository: CartRepository(apiService: ApiService())),
         ),
         BlocProvider<ProductBloc>(
           create: (_) => ProductBloc(

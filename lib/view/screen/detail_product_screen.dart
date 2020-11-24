@@ -1,12 +1,12 @@
-import 'package:filkop_mobile_apps/bloc/cart/cart_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_event.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_state.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart/cart_product_state.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
-import 'package:filkop_mobile_apps/model/cart_model.dart';
+import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/add_note_button.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
@@ -148,7 +148,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                             ],
                           ),
                         ),
-                        BlocBuilder<CartBloc, CartState>(builder: (context, cartState) {
+                        BlocBuilder<CartProductBloc, CartProductState>(builder: (context, cartState) {
                           if (cartState is CartUpdated) {
                             if (_total > 0) {
                               return InkWell(
@@ -221,7 +221,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                       ],
                     ),
                   ),
-                  BlocListener<CartBloc, CartState>(
+                  BlocListener<CartProductBloc, CartProductState>(
                     listener: (context, state) {
                       if (state is CartUpdated) {
                         context.bloc<ProductBloc>().add(RefreshProduct());
@@ -256,9 +256,9 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
   _updateCart(BuildContext context, Product product, String location, {CartItem cartItem}) {
     print("total is $_total");
     if (_total > 0) {
-      context.bloc<CartBloc>().add(UpdateProductCart(product: product, total: _total, store: location));
+      context.bloc<CartProductBloc>().add(UpdateProductCart(product: product, total: _total, store: location));
     } else {
-      context.bloc<CartBloc>().add(DeleteProductItemFromCart(cartId: cartItem.cartId, store: location));
+      context.bloc<CartProductBloc>().add(DeleteProductItemFromCart(cartId: cartItem.cartId, store: location));
     }
   }
 

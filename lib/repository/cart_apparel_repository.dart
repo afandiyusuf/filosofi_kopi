@@ -10,7 +10,7 @@ class CartApparelRepository {
 
   Future<bool> addToCartApparel(String productId, String total, String store,
       String notes) {
-    return apiService.addToCart(productId, total, notes, store);
+    return apiService.addToCartApparel(productId, total, notes, store);
   }
 
   Future<CartApparelModel> getCart(String store) {

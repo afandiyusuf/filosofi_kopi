@@ -89,6 +89,7 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
         print(_cartModel);
         yield CartUpdated(cartModel: _cartModel);
       } else {
+        print("cart empty");
         yield CartEmptyState();
       }
     }
@@ -117,6 +118,13 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
         yield AddTransactionSuccess();
       }else{
         yield AddTransactionError(response);
+      }
+    }
+    if(_cartModel.allProductItems != null) {
+      if (_cartModel.allProductItems.length > 0) {
+        yield CartUpdated(cartModel: _cartModel);
+      } else {
+        yield CartEmptyState();
       }
     }
 

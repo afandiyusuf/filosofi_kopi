@@ -163,10 +163,9 @@ class ApiService {
     SharedPreferences pref = await _prefs;
     final body = {
       'token': pref.getString('token'),
-      'menu_id': productId,
-      'qty': total,
-      'notes': notes,
-      'store': store
+      'product_id': productId,
+      'amount': total,
+      "size":"s"
     };
 
     print(body);
@@ -219,8 +218,8 @@ class ApiService {
   Future<CartApparelModel> getCartApparel(String store) async {
     SharedPreferences pref = await _prefs;
     String location = pref.getString('location');
-    final body = {'token': pref.getString('token'), 'store': store};
-
+    final body = {'token': pref.getString('token')};
+    print(body);
     final response =
     await client.post("$baseUrl/restApi/get_cart_apparel", body: body);
 

@@ -21,7 +21,7 @@ class CartApparelModel {
   int getTotalItems() {
     int total = 0;
     allProductItems.forEach((element) {
-      total += element.qty.toInt();
+      total += element.amount.toInt();
     });
     return total;
   }
@@ -42,7 +42,7 @@ class CartApparelModel {
   int getTotalPrice() {
     int totalPrice = 0;
     allProductItems.forEach((element) {
-      int totalPerProduct = element.qty.toInt() * int.parse(element.menuPrice);
+      int totalPerProduct = element.amount.toInt() * int.parse(element.menuPrice);
       totalPrice += totalPerProduct;
     });
     subtotal = totalPrice;
@@ -75,8 +75,8 @@ class CartApparelModel {
       if (cartItem != null) {
         allProductItems.forEach((element) {
           if (element.menuId == product.id) {
-            diffTotal = total - element.qty.toInt();
-            element.qty = total;
+            diffTotal = total - element.amount.toInt();
+            element.amount = total;
           }
         }
         );
@@ -93,8 +93,8 @@ class CartApparelModel {
     CartItem cartItem = allProductItems.firstWhere((el) =>
     el.menuId == id, orElse: () => null);
     if (cartItem != null) {
-      print(cartItem.qty);
-      return cartItem.qty.toInt();
+      print(cartItem.amount);
+      return cartItem.amount.toInt();
     } else {
       return 0;
     }
@@ -106,7 +106,7 @@ class CartItem {
   final String cartId;
   final String menuId;
   String notes;
-  int qty;
+  int amount;
   final String menuPrice;
   final String menuDiscount;
   final String name;
@@ -115,20 +115,20 @@ class CartItem {
   String total;
 
   CartItem(
-      {this.photo, this.total, this.menuPrice, this.menuDiscount, this.name, this.qty, this.menuId, this.cartId, this.notes, this.description});
+      {this.photo, this.total, this.menuPrice, this.menuDiscount, this.name, this.amount, this.menuId, this.cartId, this.notes, this.description});
 
   factory CartItem.fromJson(data){
     return CartItem(
         cartId: data['cart_id'],
-        notes: data['notes'],
-        menuId: data['menu_id'],
-        qty: int.parse(data['qty']),
-        menuPrice: data['menu_price'],
-        menuDiscount: data['menu_discount'],
-        name: data['name'],
-        photo: "${data['link_image']}${data['photo']}",
-        total: data['total'],
-        description: data['description']
+        notes: data['notes'] == null ? null : data['notes'],
+        menuId: data['menu_id']  == null ? null : data['menu_id'],
+        amount: data['amount'] == null ? null : int.parse(data['amount']),
+        menuPrice: data['menu_price'] == null ? null : data['menu_price'] ,
+        menuDiscount: data['menu_discount']  == null ? null : data['menu_discount'],
+        name: data['name']  == null ? null : data['name'],
+        photo: data['photo'] == null ? null : "${data['link_image']}${data['photo']}",
+        total: data['total']  == null ? null : data['total'],
+        description: data['description']  == null ? null : data['description']
     );
   }
 

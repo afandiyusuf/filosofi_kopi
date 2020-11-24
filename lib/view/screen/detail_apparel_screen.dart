@@ -44,7 +44,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
         Apparel apparel = state.orderBox.selectedApparel;
         FlutterMoneyFormatter fmf = FlutterMoneyFormatter(amount: double.parse(apparel.price));
         String priceFormatted = fmf.copyWith(symbol: 'Rp.', symbolAndNumberSeparator: ' ').output.symbolOnLeft;
-        _total = state.orderBox.selectedProductTotal;
+        _total = state.orderBox.selectedApparelTotal;
         return Scaffold(
           appBar: CustomAppBar(
             titleText: apparel.name,
@@ -151,6 +151,9 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                           ),
                         ),
                         BlocBuilder<CartApparelBloc, CartApparelState>(builder: (context, cartState) {
+                          if(cartState is CartInitState){
+                            context.bloc<CartApparelBloc>().add(FetchCart());
+                          }
                           if (cartState is CartUpdated) {
                             if (_total > 0) {
                               return InkWell(
@@ -169,7 +172,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                                   decoration: BoxDecoration(color: Colors.black),
                                 ),
                               );
-                            } else if (state.orderBox.initialSelectedProductTotal != 0) {
+                            } else if (state.orderBox.initialSelectedApparelTotal != 0) {
                               return InkWell(
                                 onTap: () {
                                   CartItem cartItem = cartState.cartModel.getCartItemByApparel(apparel);
@@ -245,7 +248,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
 
   @override
   void deactivate() {
-    context.bloc<OrderBoxBloc>().add(OrderBoxUnselectProduct());
+    context.bloc<OrderBoxBloc>().add(OrderBoxUnselectApparel());
     super.deactivate();
   }
 

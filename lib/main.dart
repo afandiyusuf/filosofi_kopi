@@ -1,6 +1,7 @@
 import 'package:filkop_mobile_apps/bloc/adress/address_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/city/city_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/gosend/gosend_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:filkop_mobile_apps/bloc/province/province_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/sub_district/sub_district_bloc.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
 import 'package:filkop_mobile_apps/repository/apparel_repository.dart';
+import 'package:filkop_mobile_apps/repository/cart_apparel_repository.dart';
 import 'package:filkop_mobile_apps/repository/cart_repository.dart';
 import 'package:filkop_mobile_apps/repository/product_repository.dart';
 import 'package:filkop_mobile_apps/repository/rajaongkir_repository.dart';
@@ -50,6 +52,9 @@ class _MainAppState extends State<MainApp> {
         ),
         BlocProvider<CartProductBloc>(
           create: (_) => CartProductBloc(cartRepository: CartRepository(apiService: ApiService())),
+        ),
+        BlocProvider<CartApparelBloc>(
+          create: (_) => CartApparelBloc(cartRepository: CartApparelRepository(apiService: ApiService())),
         ),
         BlocProvider<ProductBloc>(
           create: (_) => ProductBloc(

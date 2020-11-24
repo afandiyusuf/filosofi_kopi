@@ -58,14 +58,14 @@ class OrderBoxBloc extends Bloc<OrderBoxEvent, OrderBoxState>{
       _orderBox.initialSelectedApparelTotal = event.total;
     }
 
-    if(event is OrderBoxUnselectProduct){
+    if(event is OrderBoxUnselectApparel){
       print("unselect apparel");
       _orderBox.selectedApparel = null;
       _orderBox.selectedApparelTotal = 0;
       _orderBox.initialSelectedApparelTotal = 0;
     }
 
-    if(event is OrderBoxSetTotalSelectedProduct){
+    if(event is OrderBoxSetTotalSelectedApparel){
       print("set total selected");
       _orderBox.selectedApparelTotal = event.total;
     }

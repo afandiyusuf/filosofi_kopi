@@ -85,7 +85,7 @@ class _ApparelPageState extends State<ApparelPage> {
                     if (state is CategoryApparelUpdated) {
                       categoryApparelModel = state.categoryApparelModel;
                       return Container(
-                        margin: EdgeInsets.only(top: 50, bottom: 0),
+                        margin: EdgeInsets.only(top: 10, bottom: 0),
                         height: 30,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,

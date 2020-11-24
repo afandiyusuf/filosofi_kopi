@@ -85,7 +85,7 @@ class _ProductPageState extends State<ProductPage> {
                 if (state is CategoryProductUpdated) {
                   categoryProductModel = state.categoryProductModel;
                   return Container(
-                    margin: EdgeInsets.only(top: 50, bottom: 0),
+                    margin: EdgeInsets.only(top: 10, bottom: 0),
                     height: 30,
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,

@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
 import 'package:filkop_mobile_apps/model/base_response.dart';
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_detail_result.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
@@ -483,10 +485,23 @@ class ApiService {
     var body = {
       "token": pref.getString("token")
     };
-
     var response = await client.post("$baseUrl/restApi/get_transaction_fnb", body: body);
     if(response.statusCode == 200){
       return GetTransactionResult.fromJson(json.decode(response.body));
+    }else{
+      return null;
+    }
+  }
+
+  Future<GetTransactionDetailResult> getTransactionDetail(String code) async{
+    SharedPreferences pref = await _prefs;
+    var body = {
+      "code" : code
+    };
+
+    var response = await client.post("$baseUrl/restApi/get_detail_transaction_fnb",body: body);
+    if(response.statusCode == 200){
+      return GetTransactionDetailResult.fromJson(json.decode(response.body));
     }else{
       return null;
     }

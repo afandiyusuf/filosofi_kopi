@@ -1,11 +1,14 @@
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
+import 'package:filkop_mobile_apps/bloc/transaction/transaction_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/order_box.dart';
 import 'package:filkop_mobile_apps/view/component/transaction_card.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_transaction.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
@@ -182,7 +185,10 @@ class _HomePageState extends State<HomePage> {
                             List<Widget> _allTransactions =
                                 List<TransactionCard>.from(
                                     _currentTransactions.map((e) =>
-                                        TransactionCard(transaction: e)));
+                                        TransactionCard(transaction: e, onTap: (){
+                                          context.bloc<TransactionBloc>().add(SelectTransaction(e));
+                                          Navigator.pushNamed(context, DetailTransaction.tag);
+                                        },)));
                             return Column(
                               children: [
                                 Divider(),

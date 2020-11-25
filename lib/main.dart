@@ -8,6 +8,8 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/province/province_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/sub_district/sub_district_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/transaction/transaction_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/transaction/transaction_state.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
 import 'package:filkop_mobile_apps/repository/apparel_repository.dart';
 import 'package:filkop_mobile_apps/repository/cart_apparel_repository.dart';
@@ -21,6 +23,7 @@ import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_apparel_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_transaction.dart';
 import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/on_boarding_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
@@ -90,6 +93,9 @@ class _MainAppState extends State<MainApp> {
           create: (_) => GosendBloc(
             cartRepository: CartRepository(apiService: ApiService())
           ),
+        ),
+        BlocProvider<TransactionBloc>(
+          create: (_) => TransactionBloc(TransactionInit()),
         )
       ],
       child: MaterialApp(
@@ -108,6 +114,7 @@ class _MainAppState extends State<MainApp> {
           DetailApparelScreen.tag : (context) => DetailApparelScreen(),
           ConfirmOrder.tag : (context) => ConfirmOrder(),
           ReferralCodeScreen.tag : (context) => ReferralCodeScreen(),
+          DetailTransaction.tag : (context) => DetailTransaction()
         },
       ),
     );

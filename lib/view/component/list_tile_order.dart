@@ -6,8 +6,9 @@ class ListTileOrder extends StatelessWidget {
   final String image;
   final Function onTap;
   final Function onDeleteTap;
+  final bool usingDelete;
 
-  ListTileOrder({this.name, this.total, this.price, this.image, this.onTap, this.onDeleteTap});
+  ListTileOrder({this.name, this.total, this.price, this.image, this.onTap, this.onDeleteTap, this.usingDelete = true});
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +17,17 @@ class ListTileOrder extends StatelessWidget {
         onTap();
       },
       child: ListTile(
-        leading: Image.network(image),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+            child: Image.network(image)),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               width: MediaQuery.of(context).size.width * 0.3,
                 child: Text(name, maxLines: 1, softWrap: true,)),
-            Container(
+
+            usingDelete == true ? Container(
               alignment: Alignment.center,
               padding: EdgeInsets.all(0),
               width: 40,
@@ -40,7 +44,7 @@ class ListTileOrder extends StatelessWidget {
                 },
                 child: Center(child: Icon(Icons.delete, color: Colors.white, size: 18,)),
               ),
-            )
+            ):Container()
           ],
         ),
         subtitle: Row(

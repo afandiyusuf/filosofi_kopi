@@ -93,6 +93,7 @@ class _MainAppState extends State<MainApp> {
         )
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         initialRoute: rootRoute,
         routes: {
           rootRoute : (context) => rootScreen,
@@ -107,7 +108,6 @@ class _MainAppState extends State<MainApp> {
           DetailApparelScreen.tag : (context) => DetailApparelScreen(),
           ConfirmOrder.tag : (context) => ConfirmOrder(),
           ReferralCodeScreen.tag : (context) => ReferralCodeScreen(),
-
         },
       ),
     );

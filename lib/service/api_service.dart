@@ -319,40 +319,54 @@ class ApiService {
       'lat': latitude.toString(),
       'long': longitude.toString()
     };
+    print(body);
+    var response;
     try {
-      final response =
+      response =
           await client.post("$baseUrl/restApi/gosend_fnb", body: body);
+    } catch (_) {
+      print("error try catch $_");
+      return null;
+    }
+      print(response.body);
       if (response.statusCode == 200) {
         final parsed = json.decode(response.body);
         //check return api error or not
         if (parsed['errors'] == null) {
+
           //check is serviceable or not
           List<Gosend> retData = [];
 
           if (parsed['Instant']['serviceable'] == true) {
             try {
               retData.add(Gosend.fromJson(parsed['Instant']));
-            } catch (_) {}
+            }catch(_){
+              print("error parsed from instant $_");
+            }
           }
-
+          print(parsed);
           if (parsed['SameDay']['serviceable'] == true) {
             try {
               retData.add(Gosend.fromJson(parsed['SameDay']));
-            } catch (_) {}
+            } catch (_) {
+              print("error try from sameday $_");
+            }
           }
           if (retData.length == 0) {
             retData = null;
           }
+
+          print(retData);
           return retData;
         } else {
+          print("response has error");
           return null;
         }
       } else {
+        print("error status code");
         return null;
       }
-    } catch (_) {
-      return null;
-    }
+
   }
 
   Future<String> addTransactionFnb(

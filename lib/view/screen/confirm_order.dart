@@ -151,24 +151,31 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                     key: _formKey,
                                     child: Column(
                                       children: [
-                                        CustomTextField(label: "Penerima",controller: _nameTxt, validator: (String value){
-                                          if(value.isEmpty){
-                                            return 'Tidak boleh kosong';
-                                          }
-                                          return null;
-                                        },),
-                                        CustomTextField(label:"No. Telp",controller: _telpTxt, validator: (String value){
-                                          if(value.isEmpty){
-                                            return "Tidak boleh kosong";
-                                          }
-                                          return null;
-                                        },),
+                                        CustomTextField(
+                                          label: "Penerima",
+                                          controller: _nameTxt,
+                                          validator: (String value) {
+                                            if (value.isEmpty) {
+                                              return 'Tidak boleh kosong';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        CustomTextField(
+                                          label: "No. Telp",
+                                          controller: _telpTxt,
+                                          validator: (String value) {
+                                            if (value.isEmpty) {
+                                              return "Tidak boleh kosong";
+                                            }
+                                            return null;
+                                          },
+                                        ),
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
-
                               Container(
                                   alignment: Alignment.centerLeft,
                                   margin: EdgeInsets.only(left: 15),
@@ -192,22 +199,29 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   UserAddress userAddress =
                                       addressState.addressModel.allAddress[0];
                                   try {
-                                    currentUserAddress = addressState.addressModel.allAddress.firstWhere((element) => element.selected == 1);
-                                  }catch(_){
-                                    currentUserAddress = addressState.addressModel.allAddress[0];
+                                    currentUserAddress = addressState
+                                        .addressModel.allAddress
+                                        .firstWhere(
+                                            (element) => element.selected == 1);
+                                  } catch (_) {
+                                    currentUserAddress =
+                                        addressState.addressModel.allAddress[0];
                                   }
 
                                   userAddress = currentUserAddress;
                                   try {
-                                    currentLat = double.parse(userAddress.latitude);
-                                  }catch(_){
+                                    currentLat =
+                                        double.parse(userAddress.latitude);
+                                  } catch (_) {
                                     currentLat = 0;
                                   }
-                                  try{
-                                    currentLong = double.parse(userAddress.longitude);
-                                  }catch(_){
+                                  try {
+                                    currentLong =
+                                        double.parse(userAddress.longitude);
+                                  } catch (_) {
                                     currentLong = 0;
                                   }
+                                  currentCartModel.selectedGosend = null;
                                   context.bloc<GosendBloc>().add(FetchGosend(
                                       store: state.orderBox.location,
                                       long: currentLong,
@@ -234,10 +248,6 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                 print(addressState);
                                 return Container();
                               }),
-
-
-
-
                               BlocBuilder<GosendBloc, GosendState>(
                                   builder: (context, gosendState) {
                                 if (gosendState is GosendUpdated) {
@@ -318,7 +328,6 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                       child: CircularProgressIndicator()),
                                 );
                               }),
-
                             ],
                           );
                         } else {
@@ -361,7 +370,8 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                     }),
                   ),
 
-                  BlocBuilder<CartProductBloc, CartProductState>(builder: (context, state) {
+                  BlocBuilder<CartProductBloc, CartProductState>(
+                      builder: (context, state) {
                     if (state is CartInitState) {
                       fetchCart(context);
                     }
@@ -376,8 +386,8 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                       CartProductModel cartModel = state.cartModel;
                       currentCartModel = cartModel;
                       cartModel.calculateTotalWithDelivery();
-                      List<ListTileOrder> listOrder =
-                          List<ListTileOrder>.from(cartModel.allProductItems.map((e) {
+                      List<ListTileOrder> listOrder = List<ListTileOrder>.from(
+                          cartModel.allProductItems.map((e) {
                         return ListTileOrder(
                           name: e.name,
                           total: e.total,
@@ -434,6 +444,33 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                               ),
                             ),
                           ),
+                          cartModel.selectedGosend != null
+                              ? Column(children: [
+                                  Divider(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: Row(
+                                        children: [
+                                          Text("Biaya kirim:"),
+                                          Text(
+                                            "${rupiah(double.parse(cartModel.selectedGosend.price.toString()))}",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15),
+                                          )
+                                        ],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                      ),
+                                    ),
+                                  ),
+                                ])
+                              : Container(),
                           Divider(
                             height: 20,
                           ),
@@ -508,13 +545,12 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                 );
               }
             }),
-
-            BlocListener<CartProductBloc,CartProductState>(
-              listener: (context, stateCart){
-                if(stateCart is CartEmptyState){
+            BlocListener<CartProductBloc, CartProductState>(
+              listener: (context, stateCart) {
+                if (stateCart is CartEmptyState) {
                   Navigator.pop(context);
                 }
-                if(stateCart is AddTransactionSuccess){
+                if (stateCart is AddTransactionSuccess) {
                   Fluttertoast.showToast(
                       msg: "Add Transaction Success",
                       toastLength: Toast.LENGTH_SHORT,
@@ -522,10 +558,11 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                       timeInSecForIosWeb: 1,
                       backgroundColor: Colors.black,
                       textColor: Colors.white,
-                      fontSize: 16.0
-                  );
-                  context.bloc<CartProductBloc>().add(FetchCart(location: currentOrderBox.location));
-                }else if(stateCart is AddTransactionError){
+                      fontSize: 16.0);
+                  context
+                      .bloc<CartProductBloc>()
+                      .add(FetchCart(location: currentOrderBox.location));
+                } else if (stateCart is AddTransactionError) {
                   _showAlertValidation(stateCart.message, context);
                 }
               },
@@ -690,11 +727,10 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
       return;
     }
-    if(currentGosend == null){
+    if (currentGosend == null) {
       Fluttertoast.showToast(
           msg: "Pilih metode pengiriman terlebih dahulu",
           toastLength: Toast.LENGTH_SHORT,
@@ -702,27 +738,26 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
       return;
     }
 
-    if(_formKey.currentState.validate()){
+    if (_formKey.currentState.validate()) {
       context.bloc<CartProductBloc>().add(AddTransaction(
-        firstName: _nameTxt.text,
-        lastName: '',
-        email: '',
-        phone: _telpTxt.text,
-        shipping: 'gosend',
-        shippingType: currentGosend.shipmentMethod,
-        shippingCost: currentGosend.price.toString(),
-        voucher: '',
-        latitude: currentUserAddress.latitude,
-        longitude: currentUserAddress.longitude,
-        store: currentOrderBox.location,
-        addressId: currentUserAddress.id,
-      ));
-    }else{
+            firstName: _nameTxt.text,
+            lastName: '',
+            email: '',
+            phone: _telpTxt.text,
+            shipping: 'gosend',
+            shippingType: currentGosend.shipmentMethod,
+            shippingCost: currentGosend.price.toString(),
+            voucher: '',
+            latitude: currentUserAddress.latitude,
+            longitude: currentUserAddress.longitude,
+            store: currentOrderBox.location,
+            addressId: currentUserAddress.id,
+          ));
+    } else {
       Fluttertoast.showToast(msg: "Nama dan alamat tidak boleh kosong");
     }
   }

@@ -11,6 +11,7 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
+import 'package:filkop_mobile_apps/model/cart_apparel_model.dart' as CartApparelModel;
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/view/component/cart_bottom.dart';
@@ -118,7 +119,7 @@ class _MainScreenState extends State<MainScreen> {
                                               total: "$totalItems",
                                               price: "${rupiah(totalPrice.toDouble())}",
                                               onPressed: () {
-                                                _showBottomSheetProduct(context);
+                                                _showBottomSheetApparel(context);
                                               },
                                             ),
                                           );
@@ -235,7 +236,93 @@ class _MainScreenState extends State<MainScreen> {
       context.bloc<CartApparelBloc>().add(CartApparelEvent.FetchCart(location: location));
     }
   }
+  void _showBottomSheetApparel(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return BlocBuilder<CartApparelBloc, CartApparelState.CartApparelState>(
+              builder: (context, state) {
+                if (state is CartApparelState.CartInitState) {
+                  fetchCart(context);
+                }
 
+                if (state is CartApparelState.CartEmptyState) {
+                  return Container(
+                    child: Center(child: Text("Cart Kosong")),
+                  );
+                }
+
+                if (state is CartApparelState.CartUpdated) {
+                  CartApparelModel.CartApparelModel cartModel = state.cartModel;
+                  return Container(
+                      child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0, vertical: 8),
+                                child: Text("Shopping Cart"),
+                              ),
+                              Divider(
+                                height: 5,
+                              ),
+                              Expanded(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: cartModel.getTotalTypeItems(),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    CartApparelModel.CartItem cartItem =
+                                    cartModel.getCartItemByIndex(index);
+                                    return ListTileOrder(
+                                        name: cartItem.name,
+                                        price: rupiah(cartItem.total.toDouble()),
+                                        total: cartItem.amount.toString(),
+                                        image: cartItem.photo,
+                                        onTap: () {
+                                          _goToDetail(
+                                              cartItem.convertToProduct(), context);
+                                        },
+                                        onDeleteTap: () async {
+                                          SharedPreferences pref =
+                                          await SharedPreferences.getInstance();
+                                          String location =
+                                          pref.getString('location');
+                                          _showAlertDelete(context, cartItem.name,
+                                              cartItem.cartId, location);
+                                        });
+                                  },
+                                ),
+                              ),
+                              CartBottom(
+                                onPressed: () {
+                                  _goToConfirmButton(context);
+                                },
+                                total: cartModel.getTotalItems().toString(),
+                                price: rupiah(cartModel.getTotalPrice().toDouble()),
+                                marginBottom: 0,
+                              )
+                            ],
+                          )));
+                }
+
+                if (state is CartUpdating) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (state is CartEmptyState) {
+                  return Container();
+                }
+
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              });
+        });
+  }
 
 
   void _showBottomSheetProduct(context) {

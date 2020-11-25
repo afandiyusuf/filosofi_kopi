@@ -35,7 +35,7 @@ class Store{
         name: map['name'],
         location: map['link'],
         id: int.parse(map['id']),
-        image: storeImageBaseUrl+map['photo_1']
+        image: "${map["link_image"]}${map['photo_1']}"
     );
   }
 }

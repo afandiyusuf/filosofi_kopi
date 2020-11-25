@@ -57,7 +57,7 @@ class CartApparelModel {
   void calculateTotalWithDelivery(){
     getTotalPrice();
     if(selectedGosend != null) {
-      total = subtotal + selectedGosend.price;
+      total = subtotal + selectedGosend.price.round();
     }else{
       total = subtotal;
     }
@@ -130,8 +130,8 @@ class CartItem {
         amount: data['amount'] == null ? null : int.parse(data['amount']),
         productPrice: data['product_price'] == null ? null : data['product_price'] ,
         menuDiscount: data['menu_discount']  == null ? null : data['menu_discount'],
-        name: data['name']  == null ? null : data['name'],
-        photo: data['photo'] == null ? null : "${data['link_image']}${data['photo']}",
+        name: data['product_name']  == null ? null : data['product_name'],
+        photo: data['product_image'] == null ? null : "${data['link_image']}${data['product_image']}",
         total: data['total']  == null ? null : data['total'],
         description: data['description']  == null ? null : data['description']
     );

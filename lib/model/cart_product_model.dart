@@ -58,7 +58,8 @@ class CartProductModel {
   void calculateTotalWithDelivery(){
     getTotalPrice();
     if(selectedGosend != null) {
-      total = subtotal + selectedGosend.price;
+      int gosendPrice = selectedGosend.price.round();
+      total = subtotal + gosendPrice;
     }else{
       total = subtotal;
     }

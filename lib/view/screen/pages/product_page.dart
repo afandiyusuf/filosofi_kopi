@@ -142,6 +142,7 @@ class _ProductPageState extends State<ProductPage> {
                     child: Container(
                       margin: EdgeInsets.only(top: 30),
                       child: GridView.count(
+                        physics: BouncingScrollPhysics(),
                           padding: EdgeInsets.all(0),
                           crossAxisCount: 2,
                           shrinkWrap: true,

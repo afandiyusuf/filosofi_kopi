@@ -120,21 +120,21 @@ class _AddressFormState extends State<AddressForm> {
               child: Expanded(
                 child: ListView(
                   children: [
-//                    Container(
-//                        width: MediaQuery.of(context).size.width,
-//                        height: MediaQuery.of(context).size.height * 0.2,
-//                        child: GoogleMap(
-//
-//                          onMapCreated: _onMapCreated,
-//                          initialCameraPosition: _cameraPosition,
-//                          zoomControlsEnabled: false,
-//                          markers: _markers,
-//                          myLocationButtonEnabled: true,
-//                          liteModeEnabled: true,
-//                          tiltGesturesEnabled: false,
-//                          zoomGesturesEnabled: false,
-//
-//                        )),
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        child: GoogleMap(
+
+                          onMapCreated: _onMapCreated,
+                          initialCameraPosition: _cameraPosition,
+                          zoomControlsEnabled: false,
+                          markers: _markers,
+                          myLocationButtonEnabled: true,
+                          liteModeEnabled: true,
+                          tiltGesturesEnabled: false,
+                          zoomGesturesEnabled: false,
+
+                        )),
                     Divider(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(8.0),

@@ -122,20 +122,6 @@ class _ApparelPageState extends State<ApparelPage> {
 
                 if (apparelState is ApparelDataLoaded) {
                   apparels = apparelState.apparels;
-//                  if(context.bloc<CartBloc>().state is CartInitState){
-//                    OrderBoxModel orderBox =
-//                        context.bloc<OrderBoxBloc>().orderBox;
-//                    context.bloc<CartBloc>().add(FetchCart(location: orderBox.location));
-//                  }
-//                  if(context.bloc<CartBloc>().state is CartUpdated){
-//                    CartUpdated state = context.bloc<CartBloc>().state;
-//                    CartModel cm = state.cartModel;
-//
-//                    products.sortByBought(cm);
-//                  }else{
-//                    print("not sort");
-//                  }
-
                   return Expanded(
                     child: Container(
                       margin: EdgeInsets.only(top: 30),

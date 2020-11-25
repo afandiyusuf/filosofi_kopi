@@ -1,4 +1,3 @@
-import 'package:filkop_mobile_apps/config.dart';
 import 'package:flutter/material.dart';
 class StoreDatas extends ChangeNotifier {
   List<Store> stores;

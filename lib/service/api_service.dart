@@ -5,6 +5,7 @@ import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart' as Apparel;
@@ -474,6 +475,20 @@ class ApiService {
       }
     }catch(_){
       return 'unexpected error ${_.toString()}';
+    }
+  }
+
+  Future<GetTransactionResult> getTransactionFnb() async {
+    SharedPreferences pref = await _prefs;
+    var body = {
+      "token": pref.getString("token")
+    };
+
+    var response = await client.post("$baseUrl/restApi/get_transaction_fnb", body: body);
+    if(response.statusCode == 200){
+      return GetTransactionResult.fromJson(json.decode(response.body));
+    }else{
+      return null;
     }
   }
 }

@@ -1,7 +1,9 @@
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
+import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/order_box.dart';
 import 'package:filkop_mobile_apps/view/component/transaction_card.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
@@ -10,9 +12,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage();
 
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Future<GetTransactionResult> _getTransactionResult = ApiService().getTransactionFnb();
+  @override
+  void initState() {
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -145,30 +158,45 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  Divider(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text("Transaksi Kamu:")),
-                        SizedBox(height:10),
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child:Column(
-                              children: [
-                                TransactionCard(),
-                                TransactionCard(),
-                                TransactionCard(),
-                                TransactionCard()
-                              ],
-                            )
-                        ),
-                      ],
-                    ),
+                  FutureBuilder<GetTransactionResult>(
+                    future: _getTransactionResult,
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.done) {
+                        GetTransactionResult _resultData = snapshot.data;
+                        if(_resultData.data.length > 0) {
+                          List<Widget> _allTransactions = List<TransactionCard>.from(_resultData.data.map((e) => TransactionCard(transaction:e)));
+                          return Column(
+                            children: [
+                              Divider(),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text("Transaksi Kamu:")),
+                                    SizedBox(height: 10),
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Column(
+                                          children: _allTransactions,
+                                        )
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        }else{
+                          return Container();
+                        }
+                      }
+                      return Container();
+                    }
                   ),
+
                 ],
               ),
             ),

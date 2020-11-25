@@ -198,9 +198,6 @@ class _MainScreenState extends State<MainScreen> {
         ));
   }
 
-  TextStyle _bottomNavBarStyle() {
-    return TextStyle(fontSize: 9);
-  }
 
   _onItemTapped(BuildContext context, int index) {
     if (context.bloc<OrderBoxBloc>().state is OrderBoxDefault &&

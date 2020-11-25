@@ -64,16 +64,24 @@ class TransactionCard extends StatelessWidget {
           ),
           Positioned(
             right: 5,
-              bottom: 0,
-              child: RaisedButton(
+              bottom: 5,
+              child: Container(
+                height: 25,
+                child: RaisedButton(
+                  color: Colors.black,
+                  padding: EdgeInsets.only(top: 5,bottom: 5,left: 5,right: 5),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Text(
-              "Tap untuk melihat detail",
-              style: TextStyle(fontSize: 8),
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Text(
+                  "Tap untuk melihat detail",
+                  style: TextStyle(fontSize: 8, color: Colors.white),
+                ),
             ),
             onPressed: () {},
-          ))
+          ),
+              ))
         ],
       ),
     );

@@ -20,12 +20,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<GetTransactionResult> _getTransactionResult = ApiService().getTransactionFnb();
+  Future<GetTransactionResult> _getTransactionResult =
+      ApiService().getTransactionFnb();
+
   @override
   void initState() {
-
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -95,7 +97,8 @@ class _HomePageState extends State<HomePage> {
                                     )),
                                 Text(
                                   "Add Point",
-                                  style: TextStyle(color: Style.primaryTextColor),
+                                  style:
+                                      TextStyle(color: Style.primaryTextColor),
                                 ),
                               ],
                             ),
@@ -113,7 +116,8 @@ class _HomePageState extends State<HomePage> {
               physics: BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  BlocBuilder<OrderBoxBloc, OrderBoxState>(builder: (context, state) {
+                  BlocBuilder<OrderBoxBloc, OrderBoxState>(
+                      builder: (context, state) {
                     if (state is OrderBoxUpdating) {
                       return CircularProgressIndicator();
                     }
@@ -127,12 +131,14 @@ class _HomePageState extends State<HomePage> {
                           location: state.orderBox.location,
                           stateButton: state.orderBox.stateButton,
                           onPressedDikirim: () {
-                            context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(
-                                stateButton: OrderBoxModel.DIKIRIM));
+                            context.bloc<OrderBoxBloc>().add(
+                                OrderBoxUpdateStateButton(
+                                    stateButton: OrderBoxModel.DIKIRIM));
                           },
                           onPressedAmbilSendiri: () {
-                            context.bloc<OrderBoxBloc>().add(OrderBoxUpdateStateButton(
-                                stateButton: OrderBoxModel.AMBIL_SENDIRI));
+                            context.bloc<OrderBoxBloc>().add(
+                                OrderBoxUpdateStateButton(
+                                    stateButton: OrderBoxModel.AMBIL_SENDIRI));
                           },
                         ),
                       );
@@ -159,44 +165,54 @@ class _HomePageState extends State<HomePage> {
                     height: 20,
                   ),
                   FutureBuilder<GetTransactionResult>(
-                    future: _getTransactionResult,
-                    builder: (context, snapshot) {
-                      if(snapshot.connectionState == ConnectionState.done) {
-                        GetTransactionResult _resultData = snapshot.data;
-                        if(_resultData.data.length > 0) {
-                          List<Widget> _allTransactions = List<TransactionCard>.from(_resultData.data.map((e) => TransactionCard(transaction:e)));
-                          return Column(
-                            children: [
-                              Divider(),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 30),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text("Transaksi Kamu:")),
-                                    SizedBox(height: 10),
-                                    Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Column(
-                                          children: _allTransactions,
-                                        )
-                                    ),
-                                  ],
+                      future: _getTransactionResult,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          GetTransactionResult _resultData = snapshot.data;
+                          if (_resultData.data.length > 0) {
+                            List<Transaction> _currentTransactions = _resultData
+                                .data
+                                .where((element) =>
+                                    element.status == "1" ||
+                                    element.status == "2" ||
+                                    element.status == "3" ||
+                                    element.status == "4" ||
+                                    element.status == "6")
+                                .toList();
+                            List<Widget> _allTransactions =
+                                List<TransactionCard>.from(
+                                    _currentTransactions.map((e) =>
+                                        TransactionCard(transaction: e)));
+                            return Column(
+                              children: [
+                                Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text("Transaksi Kamu:")),
+                                      SizedBox(height: 10),
+                                      Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Column(
+                                            children: _allTransactions,
+                                          )),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        }else{
-                          return Container();
+                              ],
+                            );
+                          } else {
+                            return Container();
+                          }
                         }
-                      }
-                      return Container();
-                    }
-                  ),
-
+                        return Container();
+                      }),
                 ],
               ),
             ),

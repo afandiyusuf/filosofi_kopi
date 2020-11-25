@@ -12,10 +12,11 @@ import 'package:filkop_mobile_apps/view/component/add_note_button.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field_decoration.dart';
 import 'package:filkop_mobile_apps/view/component/detail_thumbnail.dart';
+import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+import 'package:supercharged/supercharged.dart';
 
 class DetailProductScreen extends StatefulWidget {
   static final String tag = '/detail-product-page';
@@ -41,8 +42,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
     return BlocBuilder<OrderBoxBloc, OrderBoxState>(builder: (context, state) {
       if (state is OrderBoxUpdated) {
         Product product = state.orderBox.selectedProduct;
-        FlutterMoneyFormatter fmf = FlutterMoneyFormatter(amount: double.parse(product.price));
-        String priceFormatted = fmf.copyWith(symbol: 'Rp.', symbolAndNumberSeparator: ' ').output.symbolOnLeft;
+        String priceFormatted = rupiah(product.price.toDouble());
         _total = state.orderBox.selectedProductTotal;
         return Scaffold(
           appBar: CustomAppBar(

@@ -1,11 +1,24 @@
 import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
-class TransactionCard extends StatelessWidget {
+
+class TransactionCard extends StatefulWidget {
   final Transaction transaction;
 
   const TransactionCard({Key key, this.transaction}) : super(key: key);
 
+  @override
+  _TransactionCardState createState() => _TransactionCardState();
+}
+
+class _TransactionCardState extends State<TransactionCard> {
+  @override
+  void initState() {
+    initializeDateFormatting();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -37,6 +50,14 @@ class TransactionCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
+                        Text("Kode Transaksi", style: TextStyle(fontSize: 10),),
+                        SizedBox(width: 10,),
+                        Text("${widget.transaction.code}", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),)
+                      ],
+                    ),
+                    Row(
+                      children: [
+
                         Text(
                           "Status transaksi:",
                           style: TextStyle(fontSize: 10),
@@ -45,7 +66,7 @@ class TransactionCard extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                          "${transaction.statusName}",
+                          "${widget.transaction.statusName}",
                           style: TextStyle(
                               fontSize: 10, fontWeight: FontWeight.bold),
                         )
@@ -54,8 +75,8 @@ class TransactionCard extends StatelessWidget {
                     Container(
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: Text(
-                          "${transaction.createdDate}",
-                          style: TextStyle(fontSize: 8),
+                          "${ DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(widget.transaction.createdDate)}",
+                          style: TextStyle(fontSize: 10),
                         )),
                   ],
                 )

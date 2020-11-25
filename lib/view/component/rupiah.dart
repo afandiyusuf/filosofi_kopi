@@ -1,12 +1,10 @@
-import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:flutter_multi_formatter/formatters/money_input_enums.dart';
 
-String rupiah(double total){
-  FlutterMoneyFormatter fmf = FlutterMoneyFormatter(
-      amount: total);
-  return fmf
-      .copyWith(
-      symbol: 'Rp.',
-      symbolAndNumberSeparator: ' ')
-      .output
-      .symbolOnLeft;
+String rupiah(double total) {
+  return toCurrencyString("$total",
+      mantissaLength: 0,
+      thousandSeparator: ThousandSeparator.Period,
+      leadingSymbol: "Rp ",
+      shorteningPolicy: ShorteningPolicy.NoShortening, );
 }

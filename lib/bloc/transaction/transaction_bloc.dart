@@ -22,6 +22,41 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
       transactionDetailResult =  await ApiService().getTransactionDetail(event.transaction.code);
     }
 
+    if(event is SelectPayment){
+      print(event.bankChoice);
+      var bank = event.bankChoice;
+      var transCode = selectedTransaction.code;
+      if(bank == "bca" || bank == "mandiri" || bank == "bri"){
+        await ApiService().createPaymentXendit(bank, transCode);
+      }else if(bank == "cimb" || bank == "bri"){
+        await ApiService().createPaymentIpay(bank, transCode);
+      }else {
+        print("simulate wait");
+        await Future.delayed(Duration(seconds: 2));
+      }
+      transactionDetailResult =  await ApiService().getTransactionDetail(transCode);
+      GetTransactionResult getTransactionResult = await ApiService().getTransactionFnb();
+      selectedTransaction = getTransactionResult.data.firstWhere((element) => element.code == selectedTransaction.code);
+    }
+
+    if( event is ChangePayment){
+      var bank = event.bankChoice;
+      var transCode = selectedTransaction.code;
+      //delete
+      await ApiService().deletePayment(transCode);
+      if(bank == "bca" || bank == "mandiri" || bank == "bri"){
+        await ApiService().createPaymentXendit(bank, transCode);
+      }else if(bank == "cimb" || bank == "bri"){
+        await ApiService().createPaymentIpay(bank, transCode);
+      }else {
+        print("simulate wait");
+        await Future.delayed(Duration(seconds: 2));
+      }
+      transactionDetailResult =  await ApiService().getTransactionDetail(transCode);
+      GetTransactionResult getTransactionResult = await ApiService().getTransactionFnb();
+      selectedTransaction = getTransactionResult.data.firstWhere((element) => element.code == selectedTransaction.code);
+    }
+
     yield TransactionUpdated(selectedCode: selectedTransaction, transactionDetail: transactionDetailResult);
   }
 

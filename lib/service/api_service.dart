@@ -506,4 +506,36 @@ class ApiService {
       return null;
     }
   }
+
+  Future<bool> createPaymentIpay(String bankCode, String transactionCode)async{
+    var body = {
+      "code": transactionCode,
+      "bank": bankCode
+    };
+
+    var response = await client.post("$baseUrl/restApi/create_ipay", body: body);
+    print(response.body);
+    return true;
+  }
+
+  Future<bool> createPaymentXendit(String bankCode, String transactionCode)async{
+    var body = {
+      "code": transactionCode,
+      "bank": bankCode
+    };
+
+    var response = await client.post("$baseUrl/restApi/create_xendit", body: body);
+    print(response.body);
+    return true;
+  }
+  
+  Future<bool> deletePayment(String transactionCode) async {
+    var body = {
+      "code": transactionCode
+    };
+    
+    var response = await client.post("$baseUrl/restApi/delete_payment", body:body);
+    print(response.body);
+    return true;
+  }
 }

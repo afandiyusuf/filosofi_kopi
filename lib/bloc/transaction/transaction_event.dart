@@ -15,3 +15,13 @@ class GetTransactionDetail extends TransactionEvent{
   final Transaction transaction;
   GetTransactionDetail(this.transaction);
 }
+
+class SelectPayment extends TransactionEvent{
+  final String bankChoice;
+  SelectPayment({this.bankChoice});
+}
+
+class ChangePayment extends TransactionEvent{
+  final String bankChoice;
+  ChangePayment({this.bankChoice});
+}

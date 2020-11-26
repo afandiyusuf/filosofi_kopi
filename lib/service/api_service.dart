@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
 import 'package:filkop_mobile_apps/model/base_response.dart';
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
@@ -8,6 +7,7 @@ import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_detail_result.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
+import 'package:filkop_mobile_apps/model/get_user_result.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart' as Apparel;
@@ -142,7 +142,7 @@ class ApiService {
 
     final response =
         await client.post("$baseUrl/restApi/add_to_cart_fnb", body: body);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
@@ -537,5 +537,18 @@ class ApiService {
     var response = await client.post("$baseUrl/restApi/delete_payment", body:body);
     print(response.body);
     return true;
+  }
+
+  Future<GetUserResult> getUser() async{
+    SharedPreferences pref = await _prefs;
+    var body = {
+      "token": pref.getString("token")
+    };
+    var response = await client.post("$baseUrl/restApi/get_user", body: body);
+    if(response.statusCode == 200) {
+      return GetUserResult.fromJson(json.decode(response.body));
+    }else{
+      return null;
+    }
   }
 }

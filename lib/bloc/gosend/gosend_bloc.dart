@@ -14,6 +14,7 @@ class GosendBloc extends Bloc<GosendEvent,GosendState>{
   Stream<GosendState> mapEventToState(GosendEvent event) async* {
     yield GosendUpdating();
     if(event is FetchGosend){
+      print("GOSEND FETCH");
       datas = await cartRepository.getGosendData(event.store, event.long, event.lat);
       if(datas != null) {
         if (datas.length == 0) {
@@ -28,6 +29,7 @@ class GosendBloc extends Bloc<GosendEvent,GosendState>{
     }
     if(event is UnpickGosend){
       selectedGosend = null;
+      print("GOSEND UNPICK BRO");
       yield(GosendUpdated(datas: datas, selectedGosend: selectedGosend));
     }
 
@@ -45,6 +47,8 @@ class GosendBloc extends Bloc<GosendEvent,GosendState>{
                 datas.firstWhere((element) => element.shipmentMethod ==
                     "Instant");
           }
+
+          print("GOSEND PICKED BRO");
           yield GosendPicked(datas: datas, selectedGosend: selectedGosend);
         }
       }else{

@@ -13,9 +13,11 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
+import 'package:filkop_mobile_apps/model/get_user_result.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/add_new_address_card.dart';
 import 'package:filkop_mobile_apps/view/component/address_card.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
@@ -51,7 +53,23 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
   final _formKey = GlobalKey<FormState>();
   var _nameTxt = TextEditingController();
   var _telpTxt = TextEditingController();
+  @override
+  void initState() {
+    fetchGosend();
+    super.initState();
+  }
 
+  void fetchGosend()async{
+    Future<SharedPreferences> pref = SharedPreferences.getInstance();
+    SharedPreferences _pref = await pref;
+    String location = await _pref.getString('location');
+
+    context.bloc<GosendBloc>().add(
+        FetchGosend(
+            store: location,
+            long: currentLong,
+            lat: currentLat));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,21 +239,32 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   } catch (_) {
                                     currentLong = 0;
                                   }
-                                  currentCartModel.selectedGosend = null;
-                                  context.bloc<GosendBloc>().add(FetchGosend(
-                                      store: state.orderBox.location,
-                                      long: currentLong,
-                                      lat: currentLat));
-                                  return AddressCard(
-                                    userAddress: userAddress,
-                                    onSelect: () {
-                                      Navigator.pushNamed(
-                                          context, AddressPage.tag);
-                                    },
-                                    onEdit: () {},
-                                    onDelete: () {},
-                                    usingActionButton: false,
-                                  );
+
+                                  return BlocBuilder<CartProductBloc,
+                                          CartProductState>(
+                                      builder: (context, carBlocStateSec) {
+                                    if (carBlocStateSec is CartUpdated) {
+                                      currentCartModel =
+                                          carBlocStateSec.cartModel;
+
+                                      currentCartModel.selectedGosend = null;
+
+
+                                      return AddressCard(
+                                        userAddress: userAddress,
+                                        onSelect: () {
+                                          Navigator.pushNamed(
+                                              context, AddressPage.tag);
+                                        },
+                                        onEdit: () {},
+                                        onDelete: () {},
+                                        usingActionButton: false,
+                                      );
+                                    } else {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    }
+                                  });
                                 }
                                 if (addressState is AddressEmpty) {
                                   return AddNewAddressCard(
@@ -252,7 +281,6 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                   builder: (context, gosendState) {
                                 if (gosendState is GosendUpdated) {
                                   currentGosend = gosendState.selectedGosend;
-
                                   return InkWell(
                                     onTap: () {
                                       _showBottomSheet(context);
@@ -381,9 +409,10 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                         child: Center(child: Text("Cart Kosong")),
                       );
                     }
-
+                    print("$state");
                     if (state is CartUpdated) {
                       CartProductModel cartModel = state.cartModel;
+                      print(state.cartModel);
                       currentCartModel = cartModel;
                       cartModel.calculateTotalWithDelivery();
                       List<ListTileOrder> listOrder = List<ListTileOrder>.from(
@@ -718,7 +747,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
         });
   }
 
-  void confirmTransaction(BuildContext context) {
+  void confirmTransaction(BuildContext context) async {
     if (currentUserAddress == null) {
       Fluttertoast.showToast(
           msg: "Pilih alamat pengiriman terlebih dahulu",
@@ -743,10 +772,11 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
     }
 
     if (_formKey.currentState.validate()) {
+      GetUserResult users = await ApiService().getUser();
       context.bloc<CartProductBloc>().add(AddTransaction(
             firstName: _nameTxt.text,
             lastName: '',
-            email: '',
+            email: users.data.data.email,
             phone: _telpTxt.text,
             shipping: 'gosend',
             shippingType: currentGosend.shipmentMethod,

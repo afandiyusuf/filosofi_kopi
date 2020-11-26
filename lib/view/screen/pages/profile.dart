@@ -1,3 +1,5 @@
+import 'package:filkop_mobile_apps/model/get_user_result.dart';
+import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
 import 'package:filkop_mobile_apps/view/component/profile_button.dart';
@@ -5,9 +7,16 @@ import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  Future<GetUserResult> _getUserResult = ApiService().getUser();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,19 +34,35 @@ class Profile extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text("Rio Dewanto"),
-                        Container(
-                            margin: EdgeInsets.only(top: 12),
-                            child: Text(
-                              "dewantoro@gmail.com",
-                              style: TextStyle(fontSize: 12),
-                            )),
-                        Text("+6262362328472", style: TextStyle(fontSize: 12))
-                      ],
+                    FutureBuilder<GetUserResult>(
+                      future:_getUserResult,
+                      builder: (context, snapshot) {
+                        if(snapshot.connectionState == ConnectionState.done) {
+                          if(snapshot.hasData) {
+                            UserProfile userProfile =  snapshot.data.data.data;
+
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text("${userProfile.firstName} ${userProfile.lastName}"),
+                                Container(
+                                    margin: EdgeInsets.only(top: 12),
+                                    child: Text(
+                                      "${userProfile.email}",
+                                      style: TextStyle(fontSize: 12),
+                                    )),
+                                Text("${userProfile.phone}",
+                                    style: TextStyle(fontSize: 12))
+                              ],
+                            );
+                          }else{
+                            return Center(child:Text("Terjadi kesalahan"));
+                          }
+                        }else{
+                          return Center(child:CircularProgressIndicator());
+                        }
+                      }
                     ),
                     PrimaryButton(
                       label: "Edit",
@@ -100,7 +125,10 @@ class Profile extends StatelessWidget {
               padding: EdgeInsets.only(left:12,right: 12, top:30,bottom: 30),
               leadingIcon: Icons.exit_to_app,
               label: "Logout",
-              onTap: () {
+              onTap: () async {
+                Future<SharedPreferences> pref = SharedPreferences.getInstance();
+                SharedPreferences _pref = await pref;
+                _pref.clear();
                 Navigator.pop(context);
               },
             )

@@ -172,23 +172,26 @@ class _HomePageState extends State<HomePage> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           GetTransactionResult _resultData = snapshot.data;
+                          if(_resultData.data != null){
                           if (_resultData.data.length > 0) {
                             List<Transaction> _currentTransactions = _resultData
                                 .data
                                 .where((element) =>
-                                    element.status == "1" ||
-                                    element.status == "2" ||
-                                    element.status == "3" ||
-                                    element.status == "4" ||
-                                    element.status == "6")
+                            element.status == "1" ||
+                                element.status == "2" ||
+                                element.status == "3" ||
+                                element.status == "4" ||
+                                element.status == "6")
                                 .toList();
                             List<Widget> _allTransactions =
-                                List<TransactionCard>.from(
-                                    _currentTransactions.map((e) =>
-                                        TransactionCard(transaction: e, onTap: (){
-                                          context.bloc<TransactionBloc>().add(SelectTransaction(e));
-                                          Navigator.pushNamed(context, DetailTransaction.tag);
-                                        },)));
+                            List<TransactionCard>.from(
+                                _currentTransactions.map((e) =>
+                                    TransactionCard(transaction: e, onTap: () {
+                                      context.bloc<TransactionBloc>().add(
+                                          SelectTransaction(e));
+                                      Navigator.pushNamed(
+                                          context, DetailTransaction.tag);
+                                    },)));
                             return Column(
                               children: [
                                 Divider(),
@@ -197,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                                       horizontal: 30),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Align(
                                           alignment: Alignment.centerLeft,
@@ -213,6 +216,9 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             );
+                          }else{
+                            return Container();
+                          }
                           } else {
                             return Container();
                           }

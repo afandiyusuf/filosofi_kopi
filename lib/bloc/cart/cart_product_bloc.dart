@@ -31,6 +31,7 @@ class CartProductBloc extends Bloc<CartProductEvent, CartProductState> {
       } catch (_) {
         print("add to cart api error");
         yield CartUpdateError(cartModel: null);
+        return;
       }
       print(status);
       if (status) {

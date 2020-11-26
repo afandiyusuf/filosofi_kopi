@@ -40,7 +40,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   String provinceValue;
   String cityValue;
   String realCityValue;
-
+  bool passwordVisibility = true;
+  bool cPassowrdVisibility = true;
   String gender = "Laki - laki";
   List<String> genders = ['Laki - laki', 'Perempuan'];
 
@@ -48,7 +49,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
+        firstDate: DateTime(1950, 1),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
@@ -183,23 +184,25 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(
                           top: 0, bottom: 0, left: 12, right: 12),
-                      child: DropdownButton<String>(
-                        underline: Container(),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            gender = newValue;
-                          });
-                        },
-                        value: gender,
-                        icon: Icon(Icons.arrow_drop_down),
-                        iconSize: 24,
-                        items: genders
-                            .map<DropdownMenuItem<String>>((String data) {
-                          return DropdownMenuItem<String>(
-                            value: data,
-                            child: Text(data),
-                          );
-                        }).toList(),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          underline: Container(),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              gender = newValue;
+                            });
+                          },
+                          value: gender,
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 24,
+                          items: genders
+                              .map<DropdownMenuItem<String>>((String data) {
+                            return DropdownMenuItem<String>(
+                              value: data,
+                              child: Text(data),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ),
@@ -235,22 +238,24 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         child: Padding(
                           padding: const EdgeInsets.only(
                               top: 0, bottom: 0, left: 12, right: 12),
-                          child: DropdownButton<String>(
-                            underline: Container(),
-                            onChanged: (String newValue) {
-                              Province selectedProvince = datas.firstWhere(
-                                  (element) => element.name == newValue);
-                              setState(() {
-                                provinceValue = newValue;
-                                cityValue = null;
-                                context.bloc<CityBloc>().add(FetchCity(
-                                    provinceId: selectedProvince.id));
-                              });
-                            },
-                            value: provinceValue,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 24,
-                            items: dropDownItem,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              underline: Container(),
+                              onChanged: (String newValue) {
+                                Province selectedProvince = datas.firstWhere(
+                                    (element) => element.name == newValue);
+                                setState(() {
+                                  provinceValue = newValue;
+                                  cityValue = null;
+                                  context.bloc<CityBloc>().add(FetchCity(
+                                      provinceId: selectedProvince.id));
+                                });
+                              },
+                              value: provinceValue,
+                              icon: Icon(Icons.arrow_drop_down),
+                              iconSize: 24,
+                              items: dropDownItem,
+                            ),
                           ),
                         ),
                       );
@@ -298,19 +303,21 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 cityValue = state.selectedCities;
                                 realCityValue = state.realCityName;
 
-                                return DropdownButton<String>(
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      cityValue = newValue;
-                                      realCityValue = citiesData.firstWhere((city) => city.name == newValue).realCityName;
-                                      context.bloc<CityBloc>().add(SelectCity(newValue,realCityValue));
-                                    });
-                                  },
-                                  value: cityValue,
-                                  icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 24,
-                                  items: dropDownItem,
-                                  underline: Container(),
+                                return DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        cityValue = newValue;
+                                        realCityValue = citiesData.firstWhere((city) => city.name == newValue).realCityName;
+                                        context.bloc<CityBloc>().add(SelectCity(newValue,realCityValue));
+                                      });
+                                    },
+                                    value: cityValue,
+                                    icon: Icon(Icons.arrow_drop_down),
+                                    iconSize: 24,
+                                    items: dropDownItem,
+                                    underline: Container(),
+                                  ),
                                 );
                               }
                               return Container();
@@ -320,33 +327,58 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       margin: EdgeInsets.only(top: 40, bottom: 5),
                       child: Text("Password",
                           style: TextStyle(fontWeight: FontWeight.bold))),
-                  TextFormField(
-                    obscureText: true,
-                    controller: _passwordTxt,
-                    decoration: CustomTextFieldDecoration.create(),
-                    validator: (value) {
-                      print(value.length);
-                      if (value.length <= 5) {
-                        return "password must be 6 character or more";
-                      }
-                      return null;
-                    },
+                  Stack(
+                    children: [
+                      TextFormField(
+                        obscureText: passwordVisibility,
+                        controller: _passwordTxt,
+                        decoration: CustomTextFieldDecoration.create(),
+                        validator: (value) {
+                          print(value.length);
+                          if (value.length <= 5) {
+                            return "password must be 6 character or more";
+                          }
+                          return null;
+                        },
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: IconButton(icon: Icon( (passwordVisibility)? Icons.visibility : Icons.visibility_off, size: 20,), onPressed: (){
+                          setState(() {
+                            passwordVisibility = !passwordVisibility;
+                          });
+                        }),
+                      )
+                    ],
                   ),
                   Container(
                       margin: EdgeInsets.only(top: 40, bottom: 5),
                       child: Text("Confirm Password",
                           style: TextStyle(fontWeight: FontWeight.bold))),
-                  TextFormField(
-                    obscureText: true,
-                    controller: _cPasswordTxt,
-                    decoration: CustomTextFieldDecoration.create(),
-                    validator: (value) {
-                      if (value != _passwordTxt.text) {
-                        return "password confirmation must be same with your password";
-                      }
+                  Stack(
+                    children: [
+                      TextFormField(
+                        obscureText: cPassowrdVisibility,
+                        controller: _cPasswordTxt,
+                        decoration: CustomTextFieldDecoration.create(),
+                        validator: (value) {
+                          if (value != _passwordTxt.text) {
+                            return "password confirmation must be same with your password";
+                          }
 
-                      return null;
-                    },
+                          return null;
+                        },
+                      ),
+
+                      Positioned(
+                        right: 0,
+                        child: IconButton(icon: Icon( (cPassowrdVisibility)? Icons.visibility : Icons.visibility_off, size: 20), onPressed: (){
+                          setState(() {
+                            cPassowrdVisibility = !cPassowrdVisibility;
+                          });
+                        }),
+                      )
+                    ],
                   ),
                   Container(
                       margin: EdgeInsets.only(top: 40, bottom: 5),

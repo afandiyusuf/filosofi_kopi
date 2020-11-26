@@ -19,6 +19,7 @@ import 'package:filkop_mobile_apps/repository/rajaongkir_repository.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/service/rajaongkir_service.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/before_login_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
 import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_apparel_screen.dart';
@@ -100,9 +101,10 @@ class _MainAppState extends State<MainApp> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: rootRoute,
+        initialRoute: BeforeLoginScreen.tag,
         routes: {
-          rootRoute : (context) => rootScreen,
+          BeforeLoginScreen.tag : (context) => BeforeLoginScreen(),
+          OnBoardingScreen.tag : (context) => OnBoardingScreen(),
           AddressPage.tag : (context) => AddressPage(),
           SignInScreen.tag : (context) => SignInScreen(),
           MainScreen.tag : (context) => MainScreen(),

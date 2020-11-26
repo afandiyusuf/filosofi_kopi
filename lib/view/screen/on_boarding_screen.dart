@@ -24,28 +24,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   List _stateBool = [true, false, false];
   List _colors = [Colors.black, Colors.white, Colors.white];
   bool _visibleNextButton = true;
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  void checkLogin(BuildContext context) async{
-    SharedPreferences pref = await _prefs;
-    if(pref.getString("token") != null){
-      String token = pref.getString("token");
-      int response = await ApiService().checkLogin({"token":token});
-      if(response == 1){
-        Navigator.pushNamed(context, MainScreen.tag);
-      }else if(response == 0){
-        //logout
-      }else{
-        //something went wrong
-      }
-    }
-  }
+
+
   @override
   void initState() {
     super.initState();
-    new Future.delayed(Duration.zero,() {
-      checkLogin(context);
-    });
   }
   @override
   Widget build(BuildContext context) {
@@ -57,12 +41,15 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             padding: const EdgeInsets.only(top: 40, left: 0),
             child: Container(
               alignment: AlignmentDirectional.topStart,
-              child: MaterialButton(
-                minWidth: 0,
-                onPressed: () {
-                  _back();
-                },
-                child: Icon(Icons.arrow_back_ios),
+              child: Visibility(
+                visible: (_stateButton != 0) ? true : false,
+                child: MaterialButton(
+                  minWidth: 0,
+                  onPressed: () {
+                    _back();
+                  },
+                  child: Icon(Icons.arrow_back_ios),
+                ),
               ),
             ),
           ),
@@ -211,8 +198,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   _back() {
+    if(_stateButton == 0){
+      return;
+    }
     setState(() {
       _stateButton--;
+
     });
     _updateOtherVariable();
   }

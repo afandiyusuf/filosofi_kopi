@@ -16,6 +16,7 @@ import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supercharged/supercharged.dart';
 
 class DetailProductScreen extends StatefulWidget {
@@ -204,6 +205,29 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                                     "Add to cart",
                                     style: TextStyle(color: Colors.white),
                                   )),
+                                  decoration: BoxDecoration(color: Colors.black),
+                                ),
+                              ),
+                            );
+                          }
+
+                          if(cartState is CartUpdateError){
+                            Fluttertoast.showToast(msg: "Terjadi kesalahan Server, mohon ulangi lagi");
+
+                            return Visibility(
+                              visible: (_total > 0) ? true : false,
+                              child: InkWell(
+                                onTap: () {
+                                  _updateCart(context, product, state.orderBox.location);
+                                },
+                                child: Container(
+                                  width: size.width * 0.4,
+                                  height: 50,
+                                  child: Center(
+                                      child: Text(
+                                        "Add to cart",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
                                   decoration: BoxDecoration(color: Colors.black),
                                 ),
                               ),

@@ -12,8 +12,8 @@ class FetchApparel extends ApparelEvent{
 }
 
 class SetApparelByCategory extends ApparelEvent{
-  final String categoryName;
-  const SetApparelByCategory({this.categoryName});
+  final int categoryId;
+  const SetApparelByCategory({this.categoryId});
 }
 
 class RefreshApparel extends ApparelEvent{}

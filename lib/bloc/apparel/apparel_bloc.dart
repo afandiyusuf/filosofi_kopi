@@ -30,7 +30,7 @@ class ApparelBloc extends Bloc<ApparelEvent, ApparelState>{
     if(event is SetApparelByCategory){
       print("SET PRODUCT BY CATEGORY?");
       try{
-         _apparelModel.setByCategory(event.categoryName);
+         _apparelModel.setByCategory(event.categoryId);
          yield ApparelDataLoaded(apparels: _apparelModel);
       }catch(_){
         print(_.toString());

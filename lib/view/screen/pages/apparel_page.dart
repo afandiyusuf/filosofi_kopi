@@ -97,7 +97,7 @@ class _ApparelPageState extends State<ApparelPage> {
                             name: category.name,
                             selected: category.selected,
                             onTap: () {
-                              _selectCategory(category.name, context);
+                              _selectCategory(category.name,category.id, context);
                             },
                           );
                         }),
@@ -197,12 +197,12 @@ class _ApparelPageState extends State<ApparelPage> {
     Navigator.pushNamed(context, DetailApparelScreen.tag);
   }
 
-  _selectCategory(String categoryName, BuildContext context) {
+  _selectCategory(String categoryName,int categoryId,  BuildContext context) {
     context
         .bloc<CategoryApparelBloc>()
         .add(SelectCategoryApparel(categoryName));
     context
         .bloc<ApparelBloc>()
-        .add(SetApparelByCategory(categoryName: categoryName));
+        .add(SetApparelByCategory(categoryId: categoryId));
   }
 }

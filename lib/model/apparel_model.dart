@@ -69,14 +69,15 @@ class ApparelModel {
     products.sort((a,b) => b.bought.compareTo(a.bought));
 
   }
-  setByCategory(String category){
+  setByCategory(int category){
     reset();
-//    if(category == "All"){
-//      reset();
-//    }else {
-//      products = List.of(
-//          _initProducts.where((element) => element.categoryText == category));
-//    }
+    if(category == 0){
+      reset();
+    }else {
+      String categoryString = "$category";
+      products = List.of(
+          _initProducts.where((element) => element.catId[0].categoryId == categoryString));
+    }
   }
   reset(){
     products = List.of(_initProducts);

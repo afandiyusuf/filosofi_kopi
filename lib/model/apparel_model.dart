@@ -1,3 +1,4 @@
+import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 
 class ApparelModel {
@@ -36,7 +37,7 @@ class ApparelModel {
     return products[index];
   }
 
-  void sortByBought(CartProductModel cartModel) {
+  void sortByBought(CartApparelModel cartModel) {
     print("sort here");
     print(cartModel.allProductItems.length);
     print(products.length);
@@ -45,8 +46,8 @@ class ApparelModel {
     products.forEach((product) {
       product.bought = 0;
       cartModel.allProductItems.forEach((cartItem) {
-        if(cartItem.menuId == product.id){
-          product.bought = cartItem.qty;
+        if(cartItem.productId == product.id){
+          product.bought = cartItem.amount;
         }
       });
     });
@@ -62,7 +63,7 @@ class ApparelModel {
     print("start sorting cart model ${cartModel.allProductItems.length}");
     data = "";
     cartModel.allProductItems.forEach((element) {
-      data = "$data,${element.menuId} : ${element.qty}";
+      data = "$data,${element.productId} : ${element.amount}";
     });
     print(data);
 

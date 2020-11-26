@@ -1,15 +1,18 @@
+import 'dart:convert';
+
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_event.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_state.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_product_bloc.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_product_event.dart';
-import 'package:filkop_mobile_apps/bloc/cart/cart_product_state.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_event.dart';
+import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_state.dart';
 import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_event.dart';
 import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_state.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
+import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/repository/category_apparel_repository.dart';
@@ -39,16 +42,16 @@ class _ApparelPageState extends State<ApparelPage> {
   @override
   void initState() {
     //fetch orderaox
-    FetchCart();
+    fetchCartInit();
     super.initState();
   }
 
   void fetchCartInit() async {
-//    var _pref = await pref;
-//    var location = _pref.getString('location');
-//    if(location != null) {
-//      context.bloc<CartBloc>().add(FetchCart(location: location));
-//    }
+    var _pref = await pref;
+    var location = _pref.getString('location');
+    if (location != null) {
+      context.bloc<CartApparelBloc>().add(FetchCart(location: location));
+    }
   }
 
   @override
@@ -97,7 +100,8 @@ class _ApparelPageState extends State<ApparelPage> {
                             name: category.name,
                             selected: category.selected,
                             onTap: () {
-                              _selectCategory(category.name,category.id, context);
+                              _selectCategory(
+                                  category.name, category.id, context);
                             },
                           );
                         }),
@@ -122,6 +126,21 @@ class _ApparelPageState extends State<ApparelPage> {
 
                 if (apparelState is ApparelDataLoaded) {
                   apparels = apparelState.apparels;
+                  print("products is $apparels");
+                  if(context.bloc<CartApparelBloc>().state is CartInitState){
+                    OrderBoxModel orderBox =
+                        context.bloc<OrderBoxBloc>().orderBox;
+                    context.bloc<CartApparelBloc>().add(FetchCart(location: orderBox.location));
+                  }
+                  if(context.bloc<CartApparelBloc>().state is CartUpdated){
+                    CartUpdated state = context.bloc<CartApparelBloc>().state;
+                    CartApparelModel cm = state.cartModel;
+
+                    apparels.sortByBought(cm);
+                  }else{
+                    print("not sort");
+                  }
+
                   return Expanded(
                     child: Container(
                       margin: EdgeInsets.only(top: 30),
@@ -136,27 +155,28 @@ class _ApparelPageState extends State<ApparelPage> {
                             Apparel _apparel = apparels.getByIndex(index);
                             String priceFormatted =
                                 rupiah(double.parse(_apparel.price));
-//                            return BlocBuilder<CartBloc, CartState>(
-//                                builder: (context, state) {
-                            int total = 0;
-//                                  if(state is CartUpdated){
-//                                    CartModel cartModel = state.cartModel;
-//                                    total = cartModel.getTotalItemsByIndex(_product.id);
-//                                  }
-                            return ProductCard(
-                              id: int.parse(_apparel.id),
-                              name: _apparel.name,
-                              price: priceFormatted,
-                              category: _apparel.catId[0].categoryId,
-                              image:
-                                  "${_apparel.image[0].linkImage}${_apparel.image[0].name}",
-                              total: total,
-                              onTap: () {
-                                _goToDetail(_apparel, context);
-                              },
-                            );
-                            //  }
-                            // );
+                            return BlocBuilder<CartApparelBloc,
+                                CartApparelState>(builder: (context, state) {
+                              var total = 0;
+                              if (state is CartUpdated) {
+                                CartApparelModel cartModel = state.cartModel;
+                                total =
+                                    cartModel.getTotalItemsByIndex(_apparel.id);
+                                print("TOTAL IS $total");
+                              }
+                              return ProductCard(
+                                id: int.parse(_apparel.id),
+                                name: _apparel.name,
+                                price: priceFormatted,
+                                category: _apparel.catId[0].categoryId,
+                                image:
+                                    "${_apparel.image[0].linkImage}${_apparel.image[0].name}",
+                                total: total,
+                                onTap: () {
+                                  _goToDetail(_apparel, context);
+                                },
+                              );
+                            });
                           })),
                     ),
                   );
@@ -181,10 +201,10 @@ class _ApparelPageState extends State<ApparelPage> {
 
   _goToDetail(Apparel product, BuildContext context) {
     int total = 0;
-    if (context.bloc<CartProductBloc>().state is CartUpdated) {
+    if (context.bloc<CartApparelBloc>().state is CartUpdated) {
       print("result is");
-      print(context.bloc<CartProductBloc>().state is CartUpdated);
-      CartUpdated state = context.bloc<CartProductBloc>().state;
+      print(context.bloc<CartApparelBloc>().state is CartUpdated);
+      CartUpdated state = context.bloc<CartApparelBloc>().state;
       if (state.cartModel != null) {
         //get total menu
         total = state.cartModel.getTotalItemsByIndex(product.id);
@@ -197,7 +217,7 @@ class _ApparelPageState extends State<ApparelPage> {
     Navigator.pushNamed(context, DetailApparelScreen.tag);
   }
 
-  _selectCategory(String categoryName,int categoryId,  BuildContext context) {
+  _selectCategory(String categoryName, int categoryId, BuildContext context) {
     context
         .bloc<CategoryApparelBloc>()
         .add(SelectCategoryApparel(categoryName));

@@ -39,7 +39,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     //fetch orderaox
-    FetchCart();
+    fetchCartInit();
     super.initState();
   }
 

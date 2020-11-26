@@ -34,7 +34,7 @@ class CartApparelModel {
     return allProductItems[index];
   }
   CartItem getCartItemByApparel(Apparel product){
-    CartItem item =  allProductItems.firstWhere((element) => element.menuId == product.id, orElse: ()=> null);
+    CartItem item =  allProductItems.firstWhere((element) => element.productId == product.id, orElse: ()=> null);
     return item;
   }
 
@@ -75,11 +75,11 @@ class CartApparelModel {
 
     if (allProductItems.length != 0) {
       CartItem cartItem = allProductItems.firstWhere((el) =>
-      el.menuId == product.id, orElse: () => null);
+      el.productId == product.id, orElse: () => null);
       print(cartItem);
       if (cartItem != null) {
         allProductItems.forEach((element) {
-          if (element.menuId == product.id) {
+          if (element.productId == product.id) {
             diffTotal = total - element.amount.toInt();
             element.amount = total;
           }
@@ -96,10 +96,10 @@ class CartApparelModel {
 
   int getTotalItemsByIndex(String id) {
     CartItem cartItem = allProductItems.firstWhere((el) =>
-    el.menuId == id, orElse: () => null);
+    el.productId == id, orElse: () => null);
     if (cartItem != null) {
       print(cartItem.amount);
-      return cartItem.amount.toInt();
+      return cartItem.amount;
     } else {
       return 0;
     }
@@ -109,7 +109,7 @@ class CartApparelModel {
 
 class CartItem {
   final String cartId;
-  final String menuId;
+  final String productId;
   String notes;
   int amount;
   final String productPrice;
@@ -120,13 +120,13 @@ class CartItem {
   String total;
 
   CartItem(
-      {this.photo, this.total, this.productPrice, this.menuDiscount, this.name, this.amount, this.menuId, this.cartId, this.notes, this.description});
+      {this.photo, this.total, this.productPrice, this.menuDiscount, this.name, this.amount, this.productId, this.cartId, this.notes, this.description});
 
   factory CartItem.fromJson(data){
     return CartItem(
         cartId: data['cart_id'],
         notes: data['notes'] == null ? null : data['notes'],
-        menuId: data['menu_id']  == null ? null : data['menu_id'],
+        productId: data['product_id']  == null ? null : data['product_id'],
         amount: data['amount'] == null ? null : int.parse(data['amount']),
         productPrice: data['product_price'] == null ? null : data['product_price'] ,
         menuDiscount: data['menu_discount']  == null ? null : data['menu_discount'],
@@ -139,7 +139,7 @@ class CartItem {
 
   Product convertToProduct() {
     return Product(
-      id: menuId,
+      id: productId,
       name: name,
       price: productPrice,
       image: photo,

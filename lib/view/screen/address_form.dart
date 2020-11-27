@@ -17,6 +17,8 @@ import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -120,21 +122,21 @@ class _AddressFormState extends State<AddressForm> {
               child: Expanded(
                 child: ListView(
                   children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        child: GoogleMap(
-
-                          onMapCreated: _onMapCreated,
-                          initialCameraPosition: _cameraPosition,
-                          zoomControlsEnabled: false,
-                          markers: _markers,
-                          myLocationButtonEnabled: true,
-                          liteModeEnabled: true,
-                          tiltGesturesEnabled: false,
-                          zoomGesturesEnabled: false,
-
-                        )),
+//                    Container(
+//                        width: MediaQuery.of(context).size.width,
+//                        height: MediaQuery.of(context).size.height * 0.2,
+//                        child: GoogleMap(
+//
+//                          onMapCreated: _onMapCreated,
+//                          initialCameraPosition: _cameraPosition,
+//                          zoomControlsEnabled: false,
+//                          markers: _markers,
+//                          myLocationButtonEnabled: true,
+//                          liteModeEnabled: true,
+//                          tiltGesturesEnabled: false,
+//                          zoomGesturesEnabled: false,
+//
+//                        )),
                     Divider(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -179,6 +181,7 @@ class _AddressFormState extends State<AddressForm> {
                                   child: Text(province.name),
                                 );
                               }).toList();
+
                               if (provinceValue == null) {
                                 provinceValue = datas[0].name;
                                 context.bloc<CityBloc>().add(FetchCity(provinceId: datas[0].id));
@@ -194,6 +197,7 @@ class _AddressFormState extends State<AddressForm> {
                                   child: DropdownButton<String>(
                                     underline: Container(),
                                     onChanged: (String newValue) {
+                                      _unfocusText(context);
                                       Province selectedProvince = datas.firstWhere((element) => element.name == newValue);
                                       setState(() {
                                         provinceValue = newValue;
@@ -246,10 +250,10 @@ class _AddressFormState extends State<AddressForm> {
 
                                         cityValue = state.selectedCities;
                                         realCityValue = citiesData[0].realCityName;
-                                        var id = citiesData.firstWhere((city) => city.name == state.selectedCities).id;
-                                        context.bloc<SubDistrictBloc>().add(FetchSubDistrict(cityId: id));
+
                                         return DropdownButton<String>(
                                           onChanged: (String newValue) {
+                                            _unfocusText(context);
                                             setState(() {
                                               cityValue = newValue;
                                               realCityValue = citiesData.firstWhere((city) => city.name == newValue).realCityName;
@@ -311,6 +315,7 @@ class _AddressFormState extends State<AddressForm> {
 
                                         return DropdownButton<Subdistrict>(
                                           onChanged: (Subdistrict newValue) {
+                                            _unfocusText(context);
                                             setState(() {
                                               subdistrictId = newValue.subdistrictId;
                                               subdistrictSelected = newValue;
@@ -350,7 +355,10 @@ class _AddressFormState extends State<AddressForm> {
       ),
     );
   }
-
+  void _unfocusText(BuildContext context) {
+    FocusScope.of(context).requestFocus(new FocusNode());
+    TextEditingController().clear();
+  }
   saveAddress(BuildContext context) {
     if (_formKey.currentState.validate()) {
       UserAddress address = UserAddress(
@@ -374,8 +382,8 @@ class _AddressFormState extends State<AddressForm> {
       } else {
         context.bloc<AddressBloc>().add(AddAddress(address: address));
       }
-
-      Navigator.popUntil(context, ModalRoute.withName(AddressPage.tag));
+      context.bloc<AddressBloc>().add(FetchAddress());
+      Navigator.popUntil(context, ModalRoute.withName(MainScreen.tag));
     }
   }
 }

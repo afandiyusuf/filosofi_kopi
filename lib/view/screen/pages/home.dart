@@ -25,10 +25,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<GetTransactionResult> _getTransactionResult =
       ApiService().getTransactionFnb();
+  bool _running = false;
+  void _refreshTransaction() async {
+
+    if(_running == false){
+      print("Stop");
+      return;
+    }
+    print("running");
+    setState(() {
+      _getTransactionResult = ApiService().getTransactionFnb();
+    });
+
+    await Future.delayed(Duration(seconds: 5));
+    _refreshTransaction();
+  }
 
   @override
   void initState() {
+    _running = true;
+    _refreshTransaction();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _running = false;
+    super.dispose();
   }
 
   @override
@@ -170,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                   FutureBuilder<GetTransactionResult>(
                       future: _getTransactionResult,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasData) {
                           GetTransactionResult _resultData = snapshot.data;
                           if(_resultData.data != null){
                           if (_resultData.data.length > 0) {

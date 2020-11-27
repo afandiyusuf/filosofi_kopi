@@ -45,18 +45,77 @@ class TransactionDetail {
 
   List<CartItemTransactionDetail> cart;
   List<UserDetailTransaction> transaction;
-  dynamic invoice;
+  Invoice invoice;
 
   factory TransactionDetail.fromJson(Map<String, dynamic> json) => TransactionDetail(
     cart: json["cart"] == null ? null : List<CartItemTransactionDetail>.from(json["cart"].map((x) => CartItemTransactionDetail.fromJson(x))),
     transaction: json["transaction"] == null ? null : List<UserDetailTransaction>.from(json["transaction"].map((x) => UserDetailTransaction.fromJson(x))),
-    invoice: json["invoice"],
+    invoice: json["invoice"] == null ? null : Invoice.fromJson(json["invoice"]),
   );
 
   Map<String, dynamic> toJson() => {
     "cart": cart == null ? null : List<dynamic>.from(cart.map((x) => x.toJson())),
     "transaction": transaction == null ? null : List<dynamic>.from(transaction.map((x) => x.toJson())),
     "invoice": invoice,
+  };
+}
+class Invoice {
+  Invoice({
+    this.transId,
+    this.paymentChannel,
+    this.paymentCode,
+    this.firstName,
+    this.lastName,
+    this.total,
+    this.email,
+    this.status,
+    this.address,
+    this.shipping,
+    this.shippingCost,
+    this.shippingType,
+  });
+
+  String transId;
+  String paymentChannel;
+  String paymentCode;
+  String firstName;
+  String lastName;
+  String total;
+  String email;
+  String status;
+  String address;
+  String shipping;
+  String shippingCost;
+  String shippingType;
+
+  factory Invoice.fromJson(Map<String, dynamic> json) => Invoice(
+    transId: json["trans_id"] == null ? null : json["trans_id"],
+    paymentChannel: json["payment_channel"] == null ? null : json["payment_channel"],
+    paymentCode: json["payment_code"] == null ? null : json["payment_code"],
+    firstName: json["first_name"] == null ? null : json["first_name"],
+    lastName: json["last_name"] == null ? null : json["last_name"],
+    total: json["total"] == null ? null : json["total"],
+    email: json["email"] == null ? null : json["email"],
+    status: json["status"] == null ? null : json["status"],
+    address: json["address"] == null ? null : json["address"],
+    shipping: json["shipping"] == null ? null : json["shipping"],
+    shippingCost: json["shipping_cost"] == null ? null : json["shipping_cost"],
+    shippingType: json["shipping_type"] == null ? null : json["shipping_type"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "trans_id": transId == null ? null : transId,
+    "payment_channel": paymentChannel == null ? null : paymentChannel,
+    "payment_code": paymentCode == null ? null : paymentCode,
+    "first_name": firstName == null ? null : firstName,
+    "last_name": lastName == null ? null : lastName,
+    "total": total == null ? null : total,
+    "email": email == null ? null : email,
+    "status": status == null ? null : status,
+    "address": address == null ? null : address,
+    "shipping": shipping == null ? null : shipping,
+    "shipping_cost": shippingCost == null ? null : shippingCost,
+    "shipping_type": shippingType == null ? null : shippingType,
   };
 }
 
@@ -151,3 +210,6 @@ class UserDetailTransaction {
     "total": total == null ? null : total,
   };
 }
+
+
+

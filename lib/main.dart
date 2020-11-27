@@ -99,25 +99,33 @@ class _MainAppState extends State<MainApp> {
           create: (_) => TransactionBloc(TransactionInit()),
         )
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: BeforeLoginScreen.tag,
-        routes: {
-          BeforeLoginScreen.tag : (context) => BeforeLoginScreen(),
-          OnBoardingScreen.tag : (context) => OnBoardingScreen(),
-          AddressPage.tag : (context) => AddressPage(),
-          SignInScreen.tag : (context) => SignInScreen(),
-          MainScreen.tag : (context) => MainScreen(),
-          CreateAccountScreen.tag : (context) => CreateAccountScreen(),
-          VerifyPhoneScreen.tag : (context) => VerifyPhoneScreen(),
-          LoginScreen.tag : (context) => LoginScreen(),
-          PickOurStoresScreen.tag : (context) => PickOurStoresScreen(),
-          DetailProductScreen.tag : (context) => DetailProductScreen(),
-          DetailApparelScreen.tag : (context) => DetailApparelScreen(),
-          ConfirmOrder.tag : (context) => ConfirmOrder(),
-          ReferralCodeScreen.tag : (context) => ReferralCodeScreen(),
-          DetailTransaction.tag : (context) => DetailTransaction()
+      child: GestureDetector(
+        onTap: (){
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+            FocusManager.instance.primaryFocus.unfocus();
+          }
         },
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          initialRoute: BeforeLoginScreen.tag,
+          routes: {
+            BeforeLoginScreen.tag : (context) => BeforeLoginScreen(),
+            OnBoardingScreen.tag : (context) => OnBoardingScreen(),
+            AddressPage.tag : (context) => AddressPage(),
+            SignInScreen.tag : (context) => SignInScreen(),
+            MainScreen.tag : (context) => MainScreen(),
+            CreateAccountScreen.tag : (context) => CreateAccountScreen(),
+            VerifyPhoneScreen.tag : (context) => VerifyPhoneScreen(),
+            LoginScreen.tag : (context) => LoginScreen(),
+            PickOurStoresScreen.tag : (context) => PickOurStoresScreen(),
+            DetailProductScreen.tag : (context) => DetailProductScreen(),
+            DetailApparelScreen.tag : (context) => DetailApparelScreen(),
+            ConfirmOrder.tag : (context) => ConfirmOrder(),
+            ReferralCodeScreen.tag : (context) => ReferralCodeScreen(),
+            DetailTransaction.tag : (context) => DetailTransaction()
+          },
+        ),
       ),
     );
   }

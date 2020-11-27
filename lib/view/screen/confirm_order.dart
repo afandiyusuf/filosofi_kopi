@@ -674,8 +674,11 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
             height: 300,
             child: BlocBuilder<GosendBloc, GosendState>(
               builder: (context, state) {
-                if (state is GosendUpdated || state is GosendPicked) {
-                  List<Gosend> datas = state.props[0];
+                if (state is GosendUpdated ) {
+                  List<Gosend> datas = state.datas;
+
+                  print("DATAS IS");
+                  print(datas);
                   return ListView.builder(
                       itemCount: datas.length,
                       itemBuilder: (context, index) {
@@ -698,6 +701,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                         }
 
                         if (state is GosendPicked) {
+                          print("GOSEND PICKED");
                           if (state.selectedGosend.shipmentMethod ==
                               datas[index].shipmentMethod) {
                             secondItem = Container(
@@ -718,7 +722,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                             );
                           }
                         }
-
+                        print("BOTTOM");
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(

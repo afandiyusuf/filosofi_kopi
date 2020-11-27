@@ -188,6 +188,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         child: DropdownButton<String>(
                           underline: Container(),
                           onChanged: (String newValue) {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus.unfocus();
+                            }
+
                             setState(() {
                               gender = newValue;
                             });
@@ -242,6 +247,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             child: DropdownButton<String>(
                               underline: Container(),
                               onChanged: (String newValue) {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                  FocusManager.instance.primaryFocus.unfocus();
+                                }
+
                                 Province selectedProvince = datas.firstWhere(
                                     (element) => element.name == newValue);
                                 setState(() {
@@ -306,6 +316,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 return DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     onChanged: (String newValue) {
+                                      FocusScopeNode currentFocus = FocusScope.of(context);
+                                      if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                        FocusManager.instance.primaryFocus.unfocus();
+                                      }
+
                                       setState(() {
                                         cityValue = newValue;
                                         realCityValue = citiesData.firstWhere((city) => city.name == newValue).realCityName;

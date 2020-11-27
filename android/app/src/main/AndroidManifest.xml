@@ -10,8 +10,8 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Filosofi Kopi"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Filosofi Kopi Mobile App"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

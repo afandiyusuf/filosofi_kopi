@@ -4,6 +4,9 @@
 
 import 'dart:convert';
 
+import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
+import 'package:supercharged/supercharged.dart';
+
 DetailApparelResponse detailApparelResponseFromJson(String str) => DetailApparelResponse.fromJson(json.decode(str));
 
 String detailApparelResponseToJson(DetailApparelResponse data) => json.encode(data.toJson());
@@ -19,13 +22,13 @@ class DetailApparelResponse {
   int status;
   bool success;
   String msg;
-  Data data;
+  DetailApparel data;
 
   factory DetailApparelResponse.fromJson(Map<String, dynamic> json) => DetailApparelResponse(
     status: json["status"] == null ? null : json["status"],
     success: json["success"] == null ? null : json["success"],
     msg: json["msg"] == null ? null : json["msg"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
+    data: json["data"] == null ? null : DetailApparel.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -36,8 +39,8 @@ class DetailApparelResponse {
   };
 }
 
-class Data {
-  Data({
+class DetailApparel {
+  DetailApparel({
     this.id,
     this.code,
     this.name,
@@ -71,7 +74,7 @@ class Data {
   Stock stock;
   List<Image> image;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory DetailApparel.fromJson(Map<String, dynamic> json) => DetailApparel(
     id: json["id"] == null ? null : json["id"],
     code: json["code"] == null ? null : json["code"],
     name: json["name"] == null ? null : json["name"],
@@ -168,6 +171,21 @@ class Stock {
     this.xl,
     this.xxl,
   });
+
+  updateDepensOnCartItem(List<CartItem> cartItems, String productId){
+    cartItems.forEach((element) {
+      int totalS = s.toInt();
+      int totalM = m.toInt();
+      int totalL = l.toInt();
+      int totalXL = xl.toInt();
+      int totalXXL = xxl.toInt();
+      if(element.productId == productId){
+        if(element.size == "s"){
+          totalS -= element.amount.toInt();
+        }
+      }
+    });
+  }
 
   String s;
   String m;

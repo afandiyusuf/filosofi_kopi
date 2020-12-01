@@ -7,8 +7,9 @@ class ListTileOrder extends StatelessWidget {
   final Function onTap;
   final Function onDeleteTap;
   final bool usingDelete;
+  final String size;
 
-  ListTileOrder({this.name, this.total, this.price, this.image, this.onTap, this.onDeleteTap, this.usingDelete = true});
+  ListTileOrder({this.name, this.total, this.price, this.image, this.onTap, this.onDeleteTap, this.usingDelete = true, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,12 @@ class ListTileOrder extends StatelessWidget {
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text("$total barang"),
+            Row(
+              children: [
+                Text("$total barang "),
+                (size != null)?Text("- $size"):Container()
+              ],
+            ),
             Text("$price", style: TextStyle(
                 fontSize: 13
             ),)

@@ -11,6 +11,7 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
+import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart' as CartApparelModel;
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
@@ -18,6 +19,8 @@ import 'package:filkop_mobile_apps/view/component/cart_bottom.dart';
 import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/confirm_order.dart';
+import 'package:filkop_mobile_apps/view/screen/confirm_order_apparel.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_apparel_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/apparel_page.dart';
 import 'package:filkop_mobile_apps/view/screen/pages/home.dart';
@@ -41,6 +44,7 @@ class _MainScreenState extends State<MainScreen> {
   PageController _pageController = PageController();
   List<Widget> screens;
   int _pageIndex = 0;
+  String _cartId;
   @override
   void initState() {
     super.initState();
@@ -60,6 +64,21 @@ class _MainScreenState extends State<MainScreen> {
             BlocListener<CartProductBloc, CartProductState>(
               listener: (context, cartStateListener) {
                 if (cartStateListener is DeleteItemSuccess) {
+                  Fluttertoast.showToast(
+                      msg: "Hapus item berhasil",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                }
+              },
+              child: Container(),
+            ),
+            BlocListener<CartApparelBloc, CartApparelState.CartApparelState>(
+              listener: (context, cartStateListener) {
+                if (cartStateListener is CartApparelState.DeleteItemSuccess) {
                   Fluttertoast.showToast(
                       msg: "Hapus item berhasil",
                       toastLength: Toast.LENGTH_LONG,
@@ -211,8 +230,8 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  void _goToConfirmButton(context) {
-    Navigator.pushNamed(context, ConfirmOrder.tag);
+  void _goToConfirmButton(context, String destination) {
+    Navigator.pushNamed(context,destination);
   }
 
   void fetchCart(BuildContext context) async {
@@ -251,6 +270,7 @@ class _MainScreenState extends State<MainScreen> {
 
                 if (state is CartApparelState.CartUpdated) {
                   CartApparelModel.CartApparelModel cartModel = state.cartModel;
+
                   return Container(
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -273,13 +293,14 @@ class _MainScreenState extends State<MainScreen> {
                                     CartApparelModel.CartItem cartItem =
                                     cartModel.getCartItemByIndex(index);
                                     return ListTileOrder(
-                                        name: cartItem.name,
+                                        name: "${cartItem.name}",
                                         price: rupiah(cartItem.total.toDouble()),
                                         total: cartItem.amount.toString(),
                                         image: cartItem.photo,
+                                        size: cartItem.size,
                                         onTap: () {
                                           _goToDetail(
-                                              cartItem.convertToProduct(), context);
+                                              null, context,isProduct :false, apparel: cartItem );
                                         },
                                         onDeleteTap: () async {
                                           SharedPreferences pref =
@@ -287,14 +308,14 @@ class _MainScreenState extends State<MainScreen> {
                                           String location =
                                           pref.getString('location');
                                           _showAlertDelete(context, cartItem.name,
-                                              cartItem.cartId, location);
+                                              cartItem.cartId, location,isApparel: true);
                                         });
                                   },
                                 ),
                               ),
                               CartBottom(
                                 onPressed: () {
-                                  _goToConfirmButton(context);
+                                  _goToConfirmButton(context, ConfirmOrderApparel.tag);
                                 },
                                 total: cartModel.getTotalItems().toString(),
                                 price: rupiah(cartModel.getTotalPrice().toDouble()),
@@ -383,7 +404,7 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           CartBottom(
                             onPressed: () {
-                              _goToConfirmButton(context);
+                              _goToConfirmButton(context, ConfirmOrder.tag);
                             },
                             total: cartModel.getTotalItems().toString(),
                             price: rupiah(cartModel.getTotalPrice().toDouble()),
@@ -411,7 +432,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _showAlertDelete(
-      BuildContext context, String name, String cartId, String store) async {
+      BuildContext context, String name, String cartId, String store, {bool isApparel = false}) async {
     print("here");
     print("$cartId, $store");
     await animated_dialog_box.showInOutDailog(
@@ -426,9 +447,15 @@ class _MainScreenState extends State<MainScreen> {
           color: Colors.red,
           child: Text('Ya, Hapus!'),
           onPressed: () {
-            context
-                .bloc<CartProductBloc>()
-                .add(DeleteProductItemFromCart(cartId: cartId, store: store));
+            if(isApparel) {
+              context
+                  .bloc<CartApparelBloc>()
+                  .add(CartApparelEvent.DeleteApparelItemFromCart(cartId: cartId, store: store));
+            }else {
+              context
+                  .bloc<CartProductBloc>()
+                  .add(DeleteProductItemFromCart(cartId: cartId, store: store));
+            }
             Navigator.of(context).pop();
           },
         ),
@@ -454,18 +481,41 @@ class _MainScreenState extends State<MainScreen> {
         ));
   }
 
-  _goToDetail(Product product, BuildContext context) {
-    int total = 0;
-    if (context.bloc<CartProductBloc>().state is CartUpdated) {
-      CartUpdated state = context.bloc<CartProductBloc>().state;
-      if (state.cartModel != null) {
-        //get total menu
-        total = state.cartModel.getTotalItemsByIndex(product.id);
+  _goToDetail(Product product, BuildContext context,{bool isProduct = true, CartApparelModel.CartItem apparel}) {
+    if(isProduct) {
+      int total = 0;
+      if (context
+          .bloc<CartProductBloc>()
+          .state is CartUpdated) {
+        CartUpdated state = context
+            .bloc<CartProductBloc>()
+            .state;
+        if (state.cartModel != null) {
+          //get total menu
+          total = state.cartModel.getTotalItemsByIndex(product.id);
+        }
+      }
+      context
+          .bloc<OrderBoxBloc>()
+          .add(OrderBoxSelectProduct(selectedProduct: product, total: total));
+      Navigator.pushNamed(context, DetailProductScreen.tag);
+    }else{
+      int total = 0;
+      if (context
+          .bloc<CartApparelBloc>()
+          .state is CartApparelState.CartUpdated) {
+        CartApparelState.CartUpdated state = context
+            .bloc<CartApparelBloc>()
+            .state;
+        if (state.cartModel != null) {
+          //get total menu
+          total = state.cartModel.getTotalByCartId(apparel.cartId);
+          CartApparelModel.CartApparelModel cartModel = state.cartModel;
+
+          context.bloc<OrderBoxBloc>().add(OrderBoxSelectApparel(selectedApparel: apparel.convertToApparel(),total: total, cartId: apparel.cartId));
+          Navigator.pushNamed(context, DetailApparelScreen.tag);
+        }
       }
     }
-    context
-        .bloc<OrderBoxBloc>()
-        .add(OrderBoxSelectProduct(selectedProduct: product, total: total));
-    Navigator.pushNamed(context, DetailProductScreen.tag);
   }
 }

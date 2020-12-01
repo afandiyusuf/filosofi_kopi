@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
-import 'package:filkop_mobile_apps/model/gosend_model.dart';
+import 'package:filkop_mobile_apps/model/delivery_response.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -22,9 +22,11 @@ class UpdateApparelCart extends CartApparelEvent {
   final Apparel product;
   final int total;
   final String store;
+  final String size;
+  final String cartId;
 
   UpdateApparelCart(
-      {@required this.product, @required this.total, @required this.store});
+      {@required this.product, @required this.total, @required this.store, this.size,this.cartId});
 }
 
 
@@ -42,9 +44,10 @@ class FetchCart extends CartApparelEvent {
 }
 
 class UpdateDeliveryMethodCart extends CartApparelEvent {
-  final Gosend deliverySelected;
+  final Delivery deliverySelected;
+  final Result deliveryResultSelected;
 
-  UpdateDeliveryMethodCart({this.deliverySelected});
+  UpdateDeliveryMethodCart({this.deliverySelected, this.deliveryResultSelected});
 }
 
 class DisposeCartEvent extends CartApparelEvent {}

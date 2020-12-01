@@ -9,8 +9,8 @@ class CartApparelRepository {
   CartApparelRepository({@required this.apiService});
 
   Future<bool> addToCartApparel(String productId, String total, String store,
-      String notes) {
-    return apiService.addToCartApparel(productId, total, notes, store);
+      String notes, String size) {
+    return apiService.addToCartApparel(productId, total, notes, store, size);
   }
 
   Future<CartApparelModel> getCart(String store) {
@@ -19,6 +19,9 @@ class CartApparelRepository {
 
   Future<bool> deleteItemFromCart(String cartId) {
     return apiService.deleteItemFromCartApparel(cartId);
+  }
+  Future<bool> deleteItemApparelFromCart(String cartId) {
+    return apiService.deleteItemApparelFromCartApparel(cartId);
   }
 
   Future<List<Gosend>> getGosendData(String store, double long, double lat) {

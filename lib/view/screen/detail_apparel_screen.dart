@@ -8,11 +8,13 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
+import 'package:filkop_mobile_apps/model/delivery_response.dart';
 import 'package:filkop_mobile_apps/model/detail_aparel_response.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/add_note_button.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field_decoration.dart';
+import 'package:filkop_mobile_apps/view/component/detail_screen_loading.dart';
 import 'package:filkop_mobile_apps/view/component/detail_thumbnail.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/component/variant_widget.dart';
@@ -34,13 +36,22 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
   bool noteAdded = false;
   int _total = 0;
   TextEditingController _nominalTextController;
-  Future<DetailApparelResponse> detailApparel;
+  Future<DetailApparelResponse> detailApparelResponse;
+  DetailApparel _detailApparel;
   int _selectedIndexVariant;
+  List<CartItem> _allCartItem;
   String variantSelected;
   List<bool> selectedVariant = [false, false, false, false, false];
   int _stockTotal = 0;
+  String cartId;
+
+
   @override
   void initState() {
+    var state = context.bloc<CartApparelBloc>().state;
+    if(state is CartUpdated){
+      _allCartItem = state.cartModel.allProductItems;
+    }
     super.initState();
     _nominalTextController = TextEditingController(text: "0");
   }
@@ -52,9 +63,13 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
       if (state is OrderBoxUpdated) {
         Apparel apparel = state.orderBox.selectedApparel;
         String priceFormatted = rupiah(apparel.price.toDouble());
+        
         _total = state.orderBox.selectedApparelTotal;
-        if (detailApparel == null) {
-          detailApparel = ApiService().getDetailApparel(apparel.id);
+        cartId = state.orderBox.cartIdApparel;
+        if (detailApparelResponse == null) {
+          detailApparelResponse = ApiService().getDetailApparel(apparel.id);
+
+
         }
 
         return Scaffold(
@@ -62,16 +77,17 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
             titleText: apparel.name,
           ),
           body: FutureBuilder<DetailApparelResponse>(
-              future: detailApparel,
+              future: detailApparelResponse,
               builder: (context, snapshot) {
+
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return Container(width:MediaQuery.of(context).size.width, height:MediaQuery.of(context).size.height,child: DetailScreenLoading());
                 }
 
                 DetailApparelResponse apparelDetail = snapshot.data;
                 Stock stocks = apparelDetail.data.stock;
+                _detailApparel = apparelDetail.data;
+
 
                 List<Widget> stockWidget = [
                   VariantWidget(
@@ -154,7 +170,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                       scrollDirection: Axis.vertical,
                       children: <Widget>[
                         DetailThumbnail(
-                          image: "${apparel.image[0].linkImage}${apparel.image[0].name}",
+                          image: "${_detailApparel.image[0].linkImage}${_detailApparel.image[0].name}",
                         ),
                         Container(
                           margin: EdgeInsets.only(top: 20),
@@ -178,7 +194,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                               ),
                             ),
                             Spacer(),
-                            Column(
+                            (snapshot.data.data.showSize == "1")?Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Row(
@@ -189,7 +205,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                                   fontSize: 10,
                                 ),)
                               ],
-                            ),
+                            ):Container(),
                           ],
                         ),
                         Divider(),
@@ -428,9 +444,9 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
   _updateCart(BuildContext context, Apparel apparel, String location, {CartItem cartItem}) {
     print("total is $_total");
     if (_total > 0) {
-      context.bloc<CartApparelBloc>().add(UpdateApparelCart(product: apparel, total: _total, store: location));
+      context.bloc<CartApparelBloc>().add(UpdateApparelCart(product: apparel, total: _total, store: location, size: variantSelected, cartId: cartId));
     } else {
-      context.bloc<CartApparelBloc>().add(DeleteApparelItemFromCart(cartId: cartItem.cartId, store: location));
+      context.bloc<CartApparelBloc>().add(DeleteApparelItemFromCart(cartId: cartId, store: location));
     }
   }
 

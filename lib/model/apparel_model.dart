@@ -37,6 +37,10 @@ class ApparelModel {
     return products[index];
   }
 
+  setAvailOnly(){
+    products.removeWhere((element) => element.avail == "sold");
+  }
+
   void sortByBought(CartApparelModel cartModel) {
     print("sort here");
     print(cartModel.allProductItems.length);

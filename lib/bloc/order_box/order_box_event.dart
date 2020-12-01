@@ -42,7 +42,8 @@ class OrderBoxSetTotalSelectedProduct extends OrderBoxEvent{
 class OrderBoxSelectApparel extends OrderBoxEvent{
   final Apparel selectedApparel;
   final int total;
-  OrderBoxSelectApparel({@required this.selectedApparel, this.total = 0});
+  final String cartId;
+  OrderBoxSelectApparel( {@required this.selectedApparel, this.total = 0, this.cartId});
 }
 class OrderBoxUnselectApparel extends OrderBoxEvent{}
 

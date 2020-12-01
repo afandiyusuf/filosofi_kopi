@@ -16,6 +16,9 @@ class OrderBoxBloc extends Bloc<OrderBoxEvent, OrderBoxState>{
   @override
   Stream<OrderBoxState> mapEventToState(OrderBoxEvent event) async* {
     yield OrderBoxUpdating();
+    if(_orderBox != null){
+      _orderBox.cartIdApparel = null;
+    }
     if(event is OrderBoxUpdate){
       print("order update");
       _orderBox = event.orderBox;
@@ -55,8 +58,10 @@ class OrderBoxBloc extends Bloc<OrderBoxEvent, OrderBoxState>{
       print("select apparel");
       _orderBox.selectedApparel = event.selectedApparel;
       _orderBox.selectedApparelTotal = event.total;
+      _orderBox.cartIdApparel = event.cartId;
       _orderBox.initialSelectedApparelTotal = event.total;
     }
+
 
     if(event is OrderBoxUnselectApparel){
       print("unselect apparel");

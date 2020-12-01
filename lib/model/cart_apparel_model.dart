@@ -1,13 +1,14 @@
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
-import 'package:filkop_mobile_apps/model/gosend_model.dart';
-import 'package:filkop_mobile_apps/model/product_model.dart';
+import 'package:filkop_mobile_apps/model/delivery_response.dart';
+import 'package:supercharged/supercharged.dart';
 
 class CartApparelModel {
   List<CartItem> allProductItems = [];
   List<CartItem> lastHistory;
   int subtotal;
   int total;
-  Gosend selectedGosend;
+  Delivery selectedDelivery;
+  Result selectedDeliveryResult;
   CartApparelModel({this.allProductItems});
 
   factory CartApparelModel.fromJson(data, location){
@@ -25,9 +26,25 @@ class CartApparelModel {
     });
     return total;
   }
+  double getTotalWeight(){
+    double total = 0;
+    allProductItems.forEach((element) {
+      total += element.weight * element.amount.toDouble();
+    });
 
+    return total;
+  }
   int getTotalTypeItems() {
     return allProductItems.length;
+  }
+
+  int getTotalByCartId(String cartId){
+    CartItem ct = allProductItems.firstWhere((element) => element.cartId == cartId,orElse: null);
+    if(ct != null){
+      return ct.amount;
+    }else{
+      return 0;
+    }
   }
 
   CartItem getCartItemByIndex(int index) {
@@ -56,8 +73,8 @@ class CartApparelModel {
 
   void calculateTotalWithDelivery(){
     getTotalPrice();
-    if(selectedGosend != null) {
-      total = subtotal + selectedGosend.price.round();
+    if(selectedDelivery != null) {
+      total = subtotal + selectedDelivery.cost[0].value;
     }else{
       total = subtotal;
     }
@@ -116,11 +133,13 @@ class CartItem {
   final String menuDiscount;
   final String name;
   final String photo;
+  final String size;
   final String description;
+  final double weight;
   String total;
 
   CartItem(
-      {this.photo, this.total, this.productPrice, this.menuDiscount, this.name, this.amount, this.productId, this.cartId, this.notes, this.description});
+      {this.size,this.photo, this.total, this.productPrice, this.menuDiscount, this.name, this.amount, this.productId, this.cartId, this.notes, this.description,this.weight});
 
   factory CartItem.fromJson(data){
     return CartItem(
@@ -133,17 +152,18 @@ class CartItem {
         name: data['product_name']  == null ? null : data['product_name'],
         photo: data['product_image'] == null ? null : "${data['link_image']}${data['product_image']}",
         total: data['total']  == null ? null : data['total'],
-        description: data['description']  == null ? null : data['description']
+        description: data['description']  == null ? null : data['description'],
+        size: data['size'] == null ? null : data['size'],
+        weight: data['weight'] == null ? null : data['weight'].toString().toDouble()
     );
   }
 
-  Product convertToProduct() {
-    return Product(
+  Apparel convertToApparel() {
+    return Apparel(
       id: productId,
       name: name,
       price: productPrice,
-      image: photo,
-      description: description,
+      avail: "avail",
     );
   }
 }

@@ -19,23 +19,20 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
     yield CartUpdating();
 
     if (event is UpdateApparelCart) {
-      int diffTotal = event.total;
-      try {
-        diffTotal = _cartModel.getDiffTotal(event.product, event.total);
-      } catch (_) {
-        print("get diff total error");
-        yield CartUpdateError(cartModel: null);
-      }
 
+      if(event.cartId != null){
+        //delete first
+        await cartRepository.deleteItemApparelFromCart(event.cartId);
+        print("DELETE SUCCESS");
+      }
       bool status = false;
       try {
         status = await cartRepository.addToCartApparel(event.product.id.toString(),
-            diffTotal.toString(), event.store, "");
+            event.total.toString(), event.store, "", event.size);
       } catch (_) {
         print("add to cart api error");
         yield CartUpdateError(cartModel: null);
       }
-      print(status);
       if (status) {
         //refresh cart
         _cartModel = await cartRepository.getCart(event.store);
@@ -75,8 +72,10 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
     }
 
     if (event is UpdateDeliveryMethodCart) {
-      _cartModel.selectedGosend = event.deliverySelected;
+      print("UPDATING HERE");
+      _cartModel.selectedDelivery = event.deliverySelected;
       _cartModel.calculateTotalWithDelivery();
+      _cartModel.selectedDeliveryResult = event.deliveryResultSelected;
       yield CartUpdated(cartModel: _cartModel);
     }
 
@@ -120,11 +119,17 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
         yield AddTransactionError(response);
       }
     }
+    if(_cartModel == null){
+      yield CartEmptyState();
+      return;
+    }
     if(_cartModel.allProductItems != null) {
       if (_cartModel.allProductItems.length > 0) {
         yield CartUpdated(cartModel: _cartModel);
+        return;
       } else {
         yield CartEmptyState();
+        return;
       }
     }
 

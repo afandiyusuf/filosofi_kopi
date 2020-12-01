@@ -5,6 +5,7 @@ import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
+import 'package:filkop_mobile_apps/model/delivery_response.dart';
 import 'package:filkop_mobile_apps/model/detail_aparel_response.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_detail_result.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
@@ -162,14 +163,14 @@ class ApiService {
   }
 
   Future<bool> addToCartApparel(
-      String productId, String total, String notes, String store) async {
+      String productId, String total, String notes, String store, String size) async {
     print("CALL FROM HERE");
     SharedPreferences pref = await _prefs;
     final body = {
       'token': pref.getString('token'),
       'product_id': productId,
       'amount': total,
-      "size":"s"
+      "size":size
     };
 
     print(body);
@@ -262,6 +263,27 @@ class ApiService {
       return false;
     }
   }
+
+  Future<bool> deleteItemApparelFromCartApparel(String cartId) async {
+    SharedPreferences pref = await _prefs;
+    final body = {'token': pref.getString('token'), 'cart_id': cartId};
+
+    final response =
+    await client.post("$baseUrl/restApi/remove_cart_apparel", body: body);
+
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      if (parsed['success']) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+
 
   Future<bool> deleteItemFromCartApparel(String cartId) async {
     SharedPreferences pref = await _prefs;
@@ -564,5 +586,35 @@ class ApiService {
     }else{
       return null;
     }
+  }
+
+  Future<List<Result>> getAllDelivery(String destinationId, String weight) async {
+    var body = {
+      "subdistrict_id":destinationId,
+      "weight":weight,
+      "courier":"jne",
+    };
+    List<Result> retData = [];
+    //fetch jne
+    print(body);
+    print("HERE");
+    var response = await client.post("$baseUrl/restApi/cost",body: body);
+    print("response body is");
+    print("$baseUrl/restApi/cost");
+    print(response.body);
+    if(response.statusCode == 200){
+     var deliveryResponse = DeliveryResponse.fromJson(jsonDecode(response.body));
+     retData..addAll(deliveryResponse.rajaongkir.results);
+    }
+    //fetch jnt
+    body['courier'] = "jnt";
+    response = await client.post("$baseUrl/restApi/cost",body: body);
+    print(response.body);
+    if(response.statusCode == 200){
+      var deliveryResponse2 = DeliveryResponse.fromJson(jsonDecode(response.body));
+      retData..addAll(deliveryResponse2.rajaongkir.results);
+    }
+
+    return retData;
   }
 }

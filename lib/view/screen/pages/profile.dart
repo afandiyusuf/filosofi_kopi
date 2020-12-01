@@ -6,6 +6,7 @@ import 'package:filkop_mobile_apps/view/component/profile_button.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_placeholder_textlines/flutter_placeholder_textlines.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -60,7 +61,19 @@ class _ProfileState extends State<Profile> {
                             return Center(child:Text("Terjadi kesalahan"));
                           }
                         }else{
-                          return Center(child:CircularProgressIndicator());
+                          return Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                PlaceholderLines(count: 1),
+                                Container(
+                                    margin: EdgeInsets.only(top: 12),
+                                    child:PlaceholderLines(count: 1,)),
+                                PlaceholderLines(count: 1,)
+                              ],
+                            ),
+                          );
                         }
                       }
                     ),

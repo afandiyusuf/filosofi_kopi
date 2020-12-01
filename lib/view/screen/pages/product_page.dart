@@ -79,7 +79,28 @@ class _ProductPageState extends State<ProductPage> {
                       .add(FetchCategoryProduct());
                 }
                 if(state is CategoryProductUpdating){
-                  return Center(child: CircularProgressIndicator(),);
+                  return Center(
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 0),
+                        height: 30,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 5,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                  margin: EdgeInsets.only(left: 5, right: 5),
+                                  width: 100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 15, left: 15),
+                                    child: Center(child:Container(width: 40,)),
+                                  ),
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      borderRadius: BorderRadius.circular(20),
+                                  )
+                              );
+                            }),
+                      ));
                 }
 
                 if (state is CategoryProductUpdated) {
@@ -143,7 +164,7 @@ class _ProductPageState extends State<ProductPage> {
                       margin: EdgeInsets.only(top: 30),
                       child: GridView.count(
                         physics: BouncingScrollPhysics(),
-                          padding: EdgeInsets.all(0),
+                          padding: EdgeInsets.all(0).copyWith(bottom: 60),
                           crossAxisCount: 2,
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,

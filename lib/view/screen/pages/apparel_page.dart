@@ -23,6 +23,7 @@ import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_apparel_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApparelPage extends StatefulWidget {
@@ -81,8 +82,27 @@ class _ApparelPageState extends State<ApparelPage> {
                 }
                 if (state is CategoryApparelUpdating) {
                   return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 0),
+                        height: 30,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 5,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                  margin: EdgeInsets.only(left: 5, right: 5),
+                                  width: 100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 15, left: 15),
+                                    child: Center(child:Container(width: 40,)),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(20),
+                                  )
+                              );
+                            }),
+                      ));
                 }
 
                 if (state is CategoryApparelUpdated) {
@@ -126,6 +146,7 @@ class _ApparelPageState extends State<ApparelPage> {
 
                 if (apparelState is ApparelDataLoaded) {
                   apparels = apparelState.apparels;
+                  apparels.setAvailOnly();
                   print("products is $apparels");
                   if(context.bloc<CartApparelBloc>().state is CartInitState){
                     OrderBoxModel orderBox =
@@ -136,7 +157,7 @@ class _ApparelPageState extends State<ApparelPage> {
                     CartUpdated state = context.bloc<CartApparelBloc>().state;
                     CartApparelModel cm = state.cartModel;
 
-                    apparels.sortByBought(cm);
+//                    apparels.sortByBought(cm);
                   }else{
                     print("not sort");
                   }
@@ -146,7 +167,7 @@ class _ApparelPageState extends State<ApparelPage> {
                       margin: EdgeInsets.only(top: 30),
                       child: GridView.count(
                           physics: BouncingScrollPhysics(),
-                          padding: EdgeInsets.all(0),
+                          padding: EdgeInsets.all(0).copyWith(bottom: 60),
                           crossAxisCount: 2,
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
@@ -160,8 +181,8 @@ class _ApparelPageState extends State<ApparelPage> {
                               var total = 0;
                               if (state is CartUpdated) {
                                 CartApparelModel cartModel = state.cartModel;
-                                total =
-                                    cartModel.getTotalItemsByIndex(_apparel.id);
+//                                total =
+//                                    cartModel.getTotalItemsByIndex(_apparel.id);
                                 print("TOTAL IS $total");
                               }
                               return ProductCard(
@@ -213,7 +234,7 @@ class _ApparelPageState extends State<ApparelPage> {
     print("total is $total");
     context
         .bloc<OrderBoxBloc>()
-        .add(OrderBoxSelectApparel(selectedApparel: product, total: total));
+        .add(OrderBoxSelectApparel(selectedApparel: product, total: 0));
     Navigator.pushNamed(context, DetailApparelScreen.tag);
   }
 

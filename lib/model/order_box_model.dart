@@ -10,6 +10,7 @@ class OrderBoxModel{
   String state = "default";
   Product selectedProduct;
   Apparel selectedApparel;
+  String cartIdApparel;
   int selectedApparelTotal = 0;
   int selectedProductTotal = 0;
   int initialSelectedProductTotal = 0;

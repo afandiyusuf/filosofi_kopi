@@ -5,6 +5,7 @@ import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_product_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
+import 'package:filkop_mobile_apps/model/detail_aparel_response.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_detail_result.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
 import 'package:filkop_mobile_apps/model/get_user_result.dart';
@@ -547,6 +548,19 @@ class ApiService {
     var response = await client.post("$baseUrl/restApi/get_user", body: body);
     if(response.statusCode == 200) {
       return GetUserResult.fromJson(json.decode(response.body));
+    }else{
+      return null;
+    }
+  }
+
+  Future<DetailApparelResponse> getDetailApparel(String id) async{
+    var body = {
+      "id":id
+    };
+    var response = await client.post("$baseUrl/restApi/get_detail_product",body: body);
+
+    if(response.statusCode == 200){
+      return DetailApparelResponse.fromJson(jsonDecode(response.body));
     }else{
       return null;
     }

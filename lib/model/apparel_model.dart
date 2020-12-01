@@ -1,5 +1,4 @@
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
-import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 
 class ApparelModel {
   List<Apparel> products;

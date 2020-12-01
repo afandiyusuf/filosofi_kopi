@@ -51,6 +51,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
     var state = context.bloc<CartApparelBloc>().state;
     if(state is CartUpdated){
       _allCartItem = state.cartModel.allProductItems;
+
     }
     super.initState();
     _nominalTextController = TextEditingController(text: "0");
@@ -86,8 +87,11 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
 
                 DetailApparelResponse apparelDetail = snapshot.data;
                 Stock stocks = apparelDetail.data.stock;
+                stocks.updateDepensOnCartItem(_allCartItem, apparelDetail.data.id);
                 _detailApparel = apparelDetail.data;
-
+                if(_detailApparel.showSize == "0"){
+                  _stockTotal = 99;
+                }
 
                 List<Widget> stockWidget = [
                   VariantWidget(
@@ -292,11 +296,15 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                                   context.bloc<CartApparelBloc>().add(FetchCart());
                                 }
                                 if (cartState is CartUpdated) {
+
                                   if (_total > 0) {
+                                    CartItem cartItem = cartState.cartModel.getCartItemByApparel(apparel);
+
                                     return InkWell(
                                       onTap: () {
                                         CartItem cartItem = cartState.cartModel.getCartItemByApparel(apparel);
                                         _updateCart(context, apparel, state.orderBox.location, cartItem: cartItem);
+
                                       },
                                       child: Container(
                                         width: size.width * 0.4,

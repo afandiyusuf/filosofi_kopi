@@ -182,6 +182,26 @@ class Stock {
       if(element.productId == productId){
         if(element.size == "s"){
           totalS -= element.amount.toInt();
+          s = totalS.toString();
+        }
+        if(element.size == "m"){
+          totalM -= m.toInt();
+          m = totalM.toString();
+        }
+
+        if(element.size == "l"){
+          totalL -= l.toInt();
+          l = totalL.toString();
+        }
+
+        if(element.size == "xl"){
+          totalXL -= xl.toInt();
+          xl = totalXL.toString();
+        }
+
+        if(element.size == "xxl"){
+          totalXXL -= xxl.toInt();
+          xxl = totalXXL.toString();
         }
       }
     });

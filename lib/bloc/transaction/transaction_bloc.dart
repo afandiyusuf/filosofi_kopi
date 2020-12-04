@@ -19,7 +19,7 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
     }
 
     if(event is GetTransactionDetail){
-      transactionDetailResult =  await ApiService().getTransactionDetail(event.transaction.code);
+      transactionDetailResult = await ApiService().getTransactionDetail(event.transaction.code,event.transaction.isApparel);
     }
 
     if(event is SelectPayment){
@@ -34,8 +34,13 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
         print("simulate wait");
         await Future.delayed(Duration(seconds: 2));
       }
-      transactionDetailResult =  await ApiService().getTransactionDetail(transCode);
-      GetTransactionResult getTransactionResult = await ApiService().getTransactionFnb();
+      transactionDetailResult =  await ApiService().getTransactionDetail(transCode,selectedTransaction.isApparel);
+      GetTransactionResult getTransactionResult;
+      if(selectedTransaction.isApparel == false) {
+        getTransactionResult = await ApiService().getTransactionFnb();
+      }else{
+        getTransactionResult = await ApiService().getTransactionApparel();
+      }
       selectedTransaction = getTransactionResult.data.firstWhere((element) => element.code == selectedTransaction.code);
     }
 
@@ -52,8 +57,13 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
         print("simulate wait");
         await Future.delayed(Duration(seconds: 2));
       }
-      transactionDetailResult =  await ApiService().getTransactionDetail(transCode);
-      GetTransactionResult getTransactionResult = await ApiService().getTransactionFnb();
+      transactionDetailResult =  await ApiService().getTransactionDetail(transCode,selectedTransaction.isApparel);
+      GetTransactionResult getTransactionResult;
+      if(selectedTransaction.isApparel == false) {
+         getTransactionResult = await ApiService().getTransactionFnb();
+      }else{
+        getTransactionResult = await ApiService().getTransactionApparel();
+      }
       selectedTransaction = getTransactionResult.data.firstWhere((element) => element.code == selectedTransaction.code);
     }
 

@@ -528,13 +528,18 @@ class ApiService {
   }
 
 
-  Future<GetTransactionDetailResult> getTransactionDetail(String code) async{
+  Future<GetTransactionDetailResult> getTransactionDetail(String code,bool isApparel) async{
     SharedPreferences pref = await _prefs;
     var body = {
       "code" : code
     };
+    var response;
+    if(!isApparel) {
+      response = await client.post("$baseUrl/restApi/get_detail_transaction_fnb", body: body);
+    }else{
+      response = await client.post("$baseUrl/restApi/get_detail_transaction", body: body);
+    }
 
-    var response = await client.post("$baseUrl/restApi/get_detail_transaction_fnb",body: body);
     if(response.statusCode == 200){
       return GetTransactionDetailResult.fromJson(json.decode(response.body));
     }else{

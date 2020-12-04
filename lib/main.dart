@@ -26,6 +26,7 @@ import 'package:filkop_mobile_apps/view/screen/create_account_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_apparel_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_transaction.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_transaction_apparel.dart';
 import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/on_boarding_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
@@ -125,7 +126,8 @@ class _MainAppState extends State<MainApp> {
             ConfirmOrder.tag : (context) => ConfirmOrder(),
             ConfirmOrderApparel.tag : (_) => ConfirmOrderApparel(),
             ReferralCodeScreen.tag : (context) => ReferralCodeScreen(),
-            DetailTransaction.tag : (context) => DetailTransaction()
+            DetailTransaction.tag : (context) => DetailTransaction(),
+            DetailTransactionApparel.tag : (_) => DetailTransactionApparel()
           },
         ),
       ),

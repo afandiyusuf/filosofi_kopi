@@ -40,7 +40,7 @@ class _TransactionCardState extends State<TransactionCard> {
                           borderRadius: BorderRadius.circular(10)),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.asset("images/food_icon.png")),
+                          child: (widget.transaction.isApparel)?Image.asset("images/logo-font.png") : Image.asset("images/food_icon.png")),
                     ),
                   ),
                   Column(

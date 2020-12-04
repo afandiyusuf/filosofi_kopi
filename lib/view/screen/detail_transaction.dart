@@ -19,8 +19,8 @@ class DetailTransaction extends StatefulWidget {
 }
 
 class _DetailTransactionState extends State<DetailTransaction> {
-  String selectedBank = "cimb";
-  List<String> _allBanks = ["bni", "cimb", "bri", "mandiri", "bca", "permata", "gopay", "alfamart", "credit card"];
+  String selectedBank = "bca";
+  List<String> _allBanks = ["bca","mandiri","bri"];
   Transaction _transaction;
 
   @override

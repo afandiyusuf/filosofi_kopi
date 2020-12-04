@@ -121,8 +121,7 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
           event.shippingCost,
           event.voucher,
           event.latitude,
-          event.longitude,
-          event.store);
+          event.longitude);
       if(response == 'success'){
         yield AddTransactionSuccess();
         return;

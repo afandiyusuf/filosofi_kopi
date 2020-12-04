@@ -460,8 +460,7 @@ class ApiService {
       String shippingCost,
       String voucher,
       String latitude,
-      String longitude,
-      String store) async {
+      String longitude) async {
 
     SharedPreferences pref = await _prefs;
 
@@ -478,7 +477,6 @@ class ApiService {
       'latitude' : latitude,
       'longitude' : longitude,
       'token' : pref.getString('token'),
-      'store':store,
     };
 
     print("ADD REQUEST BODY");
@@ -515,6 +513,20 @@ class ApiService {
       return null;
     }
   }
+
+  Future<GetTransactionResult> getTransactionApparel() async {
+    SharedPreferences pref = await _prefs;
+    var body = {
+      "token": pref.getString("token")
+    };
+    var response = await client.post("$baseUrl/restApi/get_transaction", body: body);
+    if(response.statusCode == 200){
+      return GetTransactionResult.fromJson(json.decode(response.body),isApparel: true);
+    }else{
+      return null;
+    }
+  }
+
 
   Future<GetTransactionDetailResult> getTransactionDetail(String code) async{
     SharedPreferences pref = await _prefs;

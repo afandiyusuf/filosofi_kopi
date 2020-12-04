@@ -38,8 +38,7 @@ class CartApparelRepository {
       String shippingCost,
       String voucher,
       String latitude,
-      String longitude,
-      String store) {
+      String longitude) {
     return apiService.addTransactionApparel(
         firstName,
         lastName,
@@ -51,8 +50,7 @@ class CartApparelRepository {
         shippingCost,
         voucher,
         latitude,
-        longitude,
-        store);
+        longitude);
   }
 
 }

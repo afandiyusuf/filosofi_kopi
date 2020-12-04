@@ -24,12 +24,13 @@ class GetTransactionResult {
   String msg;
   List<Transaction> data;
 
-  factory GetTransactionResult.fromJson(Map<String, dynamic> json) => GetTransactionResult(
+  factory GetTransactionResult.fromJson(Map<String, dynamic> json, {isApparel = false}) {
+    return GetTransactionResult(
     status: json["status"] == null ? null : json["status"],
     success: json["success"] == null ? null : json["success"],
     msg: json["msg"] == null ? null : json["msg"],
-    data: json["data"] == null ? null : List<Transaction>.from(json["data"].map((x) => Transaction.fromJson(x))),
-  );
+    data: json["data"] == null ? null : List<Transaction>.from(json["data"].map((x) => Transaction.fromJson(x,isApparel: isApparel))),
+  );}
 
   Map<String, dynamic> toJson() => {
     "status": status == null ? null : status,
@@ -44,6 +45,7 @@ class Transaction {
     this.code,
     this.status,
     this.createdDate, this.statusName,
+    this.isApparel
   });
   static const int ON_CART = 0;
   static const int WAITING_PAYMENT = 1;
@@ -52,17 +54,26 @@ class Transaction {
   static const int CANCEL_ORDER = 4;
   static const int REFUND = 5;
   static const int INIT = 6;
+  bool isApparel = false;
   String code;
   String status;
   DateTime createdDate;
   final String statusName;
 
-  factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
+  factory Transaction.fromJson(Map<String, dynamic> json, {bool isApparel}){
+    DateTime _createdDate;
+    if(isApparel){
+      _createdDate = json["date"] == null ? null : DateTime.parse(json["date"]);
+    }else{
+      _createdDate = json["created_date"] == null ? null : DateTime.parse(json["created_date"]);
+    }
+    return Transaction(
     code: json["code"] == null ? null : json["code"],
     status: json["status"] == null ? null : json["status"],
-    createdDate: json["created_date"] == null ? null : DateTime.parse(json["created_date"]),
-    statusName: _getStatusName(int.parse(json["status"]))
-  );
+    createdDate: _createdDate,
+    statusName: _getStatusName(int.parse(json["status"])),
+    isApparel: (isApparel == true)? true : false,
+  );}
 
   Map<String, dynamic> toJson() => {
     "code": code == null ? null : code,

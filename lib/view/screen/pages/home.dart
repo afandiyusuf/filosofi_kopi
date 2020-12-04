@@ -23,20 +23,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<GetTransactionResult> _getTransactionResult =
-      ApiService().getTransactionFnb();
+//  Future<GetTransactionResult> _getTransactionResult =
+//      ApiService().getTransactionFnb();
+  Future<List<Transaction>> _allTransactions;
+
   bool _running = false;
   void _refreshTransaction() async {
-
+    GetTransactionResult fnbTransaction;
+    GetTransactionResult apparelTransaction;
+    List<Transaction> _allTransactionLocal = [];
     if(_running == false){
       print("Stop");
       return;
     }
     print("running");
-    setState(() {
-      _getTransactionResult = ApiService().getTransactionFnb();
-    });
 
+    fnbTransaction = await ApiService().getTransactionFnb();
+    apparelTransaction =  await ApiService().getTransactionApparel();
+    if(fnbTransaction.success == true){
+      if(fnbTransaction.data != null) {
+        if (fnbTransaction.data.isNotEmpty) {
+          _allTransactionLocal.addAll(fnbTransaction.data);
+        }
+      }
+    }
+    if(apparelTransaction.success == true){
+      if(apparelTransaction.data != null){
+        if(apparelTransaction.data.isNotEmpty){
+          _allTransactionLocal.addAll(apparelTransaction.data);
+        }
+      }
+    }
+    setState(() {
+      _allTransactions = Future.value(_allTransactionLocal);
+    });
     await Future.delayed(Duration(seconds: 5));
     _refreshTransaction();
   }
@@ -190,15 +210,15 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 20,
                   ),
-                  FutureBuilder<GetTransactionResult>(
-                      future: _getTransactionResult,
+                  FutureBuilder<List<Transaction>>(
+                      future: _allTransactions,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          GetTransactionResult _resultData = snapshot.data;
-                          if(_resultData.data != null){
-                          if (_resultData.data.length > 0) {
+                          List<Transaction> _resultData = snapshot.data;
+                          if(_resultData != null){
+                          if (_resultData.length > 0) {
                             List<Transaction> _currentTransactions = _resultData
-                                .data
+                                
                                 .where((element) =>
                             element.status == "1" ||
                                 element.status == "2" ||

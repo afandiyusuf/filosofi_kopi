@@ -442,7 +442,7 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
                               cartModel.allProductItems.map((e) {
                                 return ListTileOrder(
                                   name: e.name,
-                                  total: e.total,
+                                  total: e.amount.toString(),
                                   price: rupiah(double.parse(e.total)),
                                   image: e.photo,
                                   onTap: () {
@@ -876,13 +876,12 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
         lastName: '',
         email: users.data.data.email,
         phone: _telpTxt.text,
-        shipping: 'gosend',
-        shippingType: currentGosend.shipmentMethod,
-        shippingCost: currentGosend.price.toString(),
+        shipping: selectedResultDelivery.code,
+        shippingType: selectedDelivery.service,
+        shippingCost: selectedDeliveryCost.value.toString(),
         voucher: '',
         latitude: currentUserAddress.latitude,
         longitude: currentUserAddress.longitude,
-        store: currentOrderBox.location,
         addressId: currentUserAddress.id,
       ));
     } else {

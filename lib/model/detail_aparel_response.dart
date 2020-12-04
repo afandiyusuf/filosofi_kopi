@@ -173,38 +173,42 @@ class Stock {
   });
 
   updateDepensOnCartItem(List<CartItem> cartItems, String productId){
-    cartItems.forEach((element) {
-      int totalS = s.toInt();
-      int totalM = m.toInt();
-      int totalL = l.toInt();
-      int totalXL = xl.toInt();
-      int totalXXL = xxl.toInt();
-      if(element.productId == productId){
-        if(element.size == "s"){
-          totalS -= element.amount.toInt();
-          s = totalS.toString();
-        }
-        if(element.size == "m"){
-          totalM -= m.toInt();
-          m = totalM.toString();
-        }
+    if(cartItems != null) {
+      cartItems.forEach((element) {
+        int totalS = s.toInt();
+        int totalM = m.toInt();
+        int totalL = l.toInt();
+        int totalXL = xl.toInt();
+        int totalXXL = xxl.toInt();
+        if (element.productId == productId) {
+          if (element.size == "s") {
+            totalS -= element.amount.toInt();
+            s = totalS.toString();
+          }
+          if (element.size == "m") {
+            totalM -= m.toInt();
+            m = totalM.toString();
+          }
 
-        if(element.size == "l"){
-          totalL -= l.toInt();
-          l = totalL.toString();
-        }
+          if (element.size == "l") {
+            totalL -= l.toInt();
+            l = totalL.toString();
+          }
 
-        if(element.size == "xl"){
-          totalXL -= xl.toInt();
-          xl = totalXL.toString();
-        }
+          if (element.size == "xl") {
+            totalXL -= xl.toInt();
+            xl = totalXL.toString();
+          }
 
-        if(element.size == "xxl"){
-          totalXXL -= xxl.toInt();
-          xxl = totalXXL.toString();
+          if (element.size == "xxl") {
+            totalXXL -= xxl.toInt();
+            xxl = totalXXL.toString();
+          }
         }
-      }
-    });
+      });
+    }else{
+      return;
+    }
   }
 
   String s;

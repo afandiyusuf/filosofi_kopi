@@ -32,18 +32,22 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
       } catch (_) {
         print("add to cart api error");
         yield CartUpdateError(cartModel: null);
+        return;
       }
       if (status) {
         //refresh cart
         _cartModel = await cartRepository.getCart(event.store);
         if (_cartModel != null) {
           yield CartUpdated(cartModel: _cartModel);
+          return;
         } else {
           yield CartEmptyState();
+          return;
         }
       } else {
         _cartModel.rollBack();
         yield CartUpdated(cartModel: _cartModel);
+        return;
       }
     }
 
@@ -64,10 +68,12 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
         print("finish update cart here");
         _cartModel = newestCartModel;
         yield CartUpdated(cartModel: _cartModel);
+        return;
       } else {
         print("cart empty");
         _cartModel = null;
         yield CartEmptyState();
+        return;
       }
     }
 
@@ -77,6 +83,7 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
       _cartModel.calculateTotalWithDelivery();
       _cartModel.selectedDeliveryResult = event.deliveryResultSelected;
       yield CartUpdated(cartModel: _cartModel);
+      return;
     }
 
     if (event is FetchCart) {
@@ -87,15 +94,18 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
         _cartModel = newestCartModel;
         print(_cartModel);
         yield CartUpdated(cartModel: _cartModel);
+        return;
       } else {
         print("cart empty");
         yield CartEmptyState();
+        return;
       }
     }
 
     if (event is DisposeCartEvent) {
       _cartModel = CartApparelModel();
       yield CartEmptyState();
+      return;
     }
 
     if (event is AddTransaction) {
@@ -115,10 +125,13 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
           event.store);
       if(response == 'success'){
         yield AddTransactionSuccess();
+        return;
       }else{
         yield AddTransactionError(response);
+        return;
       }
     }
+
     if(_cartModel == null){
       yield CartEmptyState();
       return;
@@ -132,7 +145,5 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
         return;
       }
     }
-
-    
   }
 }

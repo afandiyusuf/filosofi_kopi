@@ -22,6 +22,7 @@ class SignInScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.8,
                 height: 40,
                 child: RaisedButton(
+                  key: Key('create-account-button'),
                   onPressed: () {
                     _goToCreateAccount(context);
                   },
@@ -42,6 +43,7 @@ class SignInScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.8,
                 height: 40,
                 child: RaisedButton(
+                  key: Key('login-button'),
                   onPressed: () {
                     _gotoLoginScreen(context);
                   },

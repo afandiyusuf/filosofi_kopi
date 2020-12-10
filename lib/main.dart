@@ -32,6 +32,8 @@ import 'package:filkop_mobile_apps/view/screen/on_boarding_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/verify_phone_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/vouchers/detail_voucher_page.dart';
+import 'package:filkop_mobile_apps/view/screen/vouchers/main_voucher_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filkop_mobile_apps/view/screen/signin_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
@@ -127,7 +129,9 @@ class _MainAppState extends State<MainApp> {
             ConfirmOrderApparel.tag : (_) => ConfirmOrderApparel(),
             ReferralCodeScreen.tag : (context) => ReferralCodeScreen(),
             DetailTransaction.tag : (context) => DetailTransaction(),
-            DetailTransactionApparel.tag : (_) => DetailTransactionApparel()
+            DetailTransactionApparel.tag : (_) => DetailTransactionApparel(),
+            MainVoucherScreen.tag : (_) => MainVoucherScreen(),
+            DetailVoucherPage.tag : (_) => DetailVoucherPage()
           },
         ),
       ),

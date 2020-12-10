@@ -44,6 +44,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               child: Visibility(
                 visible: (_stateButton != 0) ? true : false,
                 child: MaterialButton(
+                  key:Key('back-button'),
                   minWidth: 0,
                   onPressed: () {
                     _back();
@@ -59,9 +60,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
+                  key:Key('icon'),
                   width:100,
                     child: Image.asset('images/logo-font.png')),
                 Container(
+                  key:Key('title'),
                   margin: EdgeInsets.only(top: 0, bottom: 20),
                   child: Text(
                     _titleBenefits[_stateButton],
@@ -72,6 +75,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   ),
                 ),
                 Container(
+                  key:Key('description'),
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: Text(
                     _benefits[_stateButton],
@@ -83,6 +87,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     InkWell(
+                      key:Key('indicator-1'),
                       onTap: () {
                         _goToState(0);
                       },
@@ -98,6 +103,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       ),
                     ),
                     InkWell(
+                      key:Key('indicator-2'),
                       onTap: () {
                         _goToState(1);
                       },
@@ -113,6 +119,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       ),
                     ),
                     InkWell(
+                      key:Key('indicator-3'),
                       onTap: () {
                         _goToState(2);
                       },
@@ -148,6 +155,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   Visibility(
                     visible: _visibleNextButton,
                     child: MaterialButton(
+                      key:Key('next-button'),
                       minWidth: 0,
                       padding: EdgeInsets.only(left:10,right: 5,top:5,bottom: 5),
                       color: Style.primaryColor,

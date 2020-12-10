@@ -10,6 +10,7 @@ import 'package:filkop_mobile_apps/view/component/order_box.dart';
 import 'package:filkop_mobile_apps/view/component/transaction_card.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_transaction.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/vouchers/main_voucher_screen.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -127,7 +128,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Container(
                           child: RaisedButton(
-                            onPressed: () {},
+                            padding: EdgeInsets.all(0).copyWith(left:3).copyWith(right: 10),
+                            onPressed: () {
+                              Navigator.pushNamed(context, MainVoucherScreen.tag);
+                            },
                             color: Style.primaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -136,13 +140,23 @@ class _HomePageState extends State<HomePage> {
                               children: <Widget>[
                                 Container(
                                     margin: EdgeInsets.only(right: 10),
-                                    child: Icon(
-                                      Icons.add_circle_outline,
-                                      color: Colors.white,
-                                      size: 16,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Container(
+                                        width: 20,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(100),
+                                          color: Colors.white,
+                                        ),
+                                        child:Padding(
+                                          padding: const EdgeInsets.all(1.0),
+                                          child: Image.asset("images/coupon.png"),
+                                        )
+                                      ),
                                     )),
                                 Text(
-                                  "Add Point",
+                                  "My Coupon",
                                   style:
                                       TextStyle(color: Style.primaryTextColor),
                                 ),

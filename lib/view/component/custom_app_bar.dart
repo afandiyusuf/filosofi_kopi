@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final String titleText;
   final bool usingBack;
-
-  CustomAppBar({this.titleText, this.usingBack = true});
+  final PreferredSizeWidget bottom;
+  CustomAppBar({this.titleText, this.usingBack = true, this.bottom});
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
@@ -17,6 +17,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       ),),
       centerTitle: true,
       elevation: 0,
+      bottom: bottom,
       leading: Builder(
         builder: (BuildContext context) {
           return Visibility(

@@ -3,7 +3,7 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/bloc/transaction/transaction_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
-import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/order_box.dart';
@@ -24,14 +24,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-//  Future<GetTransactionResult> _getTransactionResult =
-//      ApiService().getTransactionFnb();
+  GetTransactionsResponse _getTransactionsResponse;
   Future<List<Transaction>> _allTransactions;
-
   bool _running = false;
   void _refreshTransaction() async {
-    GetTransactionResult fnbTransaction;
-    GetTransactionResult apparelTransaction;
     List<Transaction> _allTransactionLocal = [];
     if(_running == false){
       print("Stop");
@@ -39,22 +35,8 @@ class _HomePageState extends State<HomePage> {
     }
     print("running");
 
-    fnbTransaction = await ApiService().getTransactionFnb();
-    apparelTransaction =  await ApiService().getTransactionApparel();
-    if(fnbTransaction.success == true){
-      if(fnbTransaction.data != null) {
-        if (fnbTransaction.data.isNotEmpty) {
-          _allTransactionLocal.addAll(fnbTransaction.data);
-        }
-      }
-    }
-    if(apparelTransaction.success == true){
-      if(apparelTransaction.data != null){
-        if(apparelTransaction.data.isNotEmpty){
-          _allTransactionLocal.addAll(apparelTransaction.data);
-        }
-      }
-    }
+    _getTransactionsResponse = await ApiService().getAllTransactions();
+   _allTransactionLocal.addAll(_getTransactionsResponse.data.data);
     setState(() {
       _allTransactions = Future.value(_allTransactionLocal);
     });
@@ -234,11 +216,11 @@ class _HomePageState extends State<HomePage> {
                             List<Transaction> _currentTransactions = _resultData
                                 
                                 .where((element) =>
-                            element.status == "1" ||
-                                element.status == "2" ||
-                                element.status == "3" ||
-                                element.status == "4" ||
-                                element.status == "6")
+                            element.trans.status == "1" ||
+                                element.trans.status == "2" ||
+                                element.trans.status == "3" ||
+                                element.trans.status == "4" ||
+                                element.trans.status == "6")
                                 .toList();
                             List<Widget> _allTransactions =
                             List<TransactionCard>.from(

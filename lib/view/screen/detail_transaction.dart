@@ -2,7 +2,9 @@ import 'package:filkop_mobile_apps/bloc/transaction/transaction_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
 import 'package:filkop_mobile_apps/bloc/transaction/transaction_state.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_detail_result.dart';
-import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
+import 'package:filkop_mobile_apps/utils/banks.dart';
+import 'package:filkop_mobile_apps/utils/transaction_status.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
@@ -20,7 +22,7 @@ class DetailTransaction extends StatefulWidget {
 
 class _DetailTransactionState extends State<DetailTransaction> {
   String selectedBank = "bca";
-  List<String> _allBanks = ["bca","mandiri","bri"];
+  List<String> _allBanks = [Banks.BCA,Banks.MANDIRI,Banks.BRI,Banks.CIMB,Banks.BNI,Banks.PERMATA_VA,Banks.GOPAY,Banks.ALFAMART,Banks.CREDIT_CARD];
   Transaction _transaction;
 
   @override
@@ -81,7 +83,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                (state.selectedCode.status == "6" || state.selectedCode.status == "1")
+                                (state.selectedCode.trans.status == "6" || state.selectedCode.trans.status == "1")
                                     ? Card(
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                                         child: Padding(
@@ -125,7 +127,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                                                     )
                                                   : Container(),
                                               Text(
-                                                (state.selectedCode.status == 6)
+                                                (state.selectedCode.trans.status == "6")
                                                     ? "Pilih metode pembayaran:"
                                                     : "Ganti metode pembayaran",
                                                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -156,7 +158,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                                               BlocBuilder<TransactionBloc, TransactionState>(
                                                   builder: (context, buttonState) {
                                                 if (buttonState is TransactionUpdated) {
-                                                  if (buttonState.selectedCode.status == "6") {
+                                                  if (buttonState.selectedCode.trans.status == "6") {
                                                     return Container(
                                                       width: double.infinity,
                                                       child: PrimaryButton(
@@ -168,7 +170,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                                                         },
                                                       ),
                                                     );
-                                                  } else if (buttonState.selectedCode.status == "1") {
+                                                  } else if (buttonState.selectedCode.trans.status == "1") {
                                                     return Container(
                                                       width: double.infinity,
                                                       child: PrimaryButton(
@@ -184,7 +186,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                                                     return Container(
                                                       width: double.infinity,
                                                       child: PrimaryButton(
-                                                        label: "Pilih Metode ${buttonState.selectedCode.status}",
+                                                        label: "Pilih Metode ${buttonState.selectedCode.trans.status}",
                                                         onPressed: () {},
                                                       ),
                                                     );
@@ -214,7 +216,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                                             height: 10,
                                           ),
                                           Text(
-                                            "${state.selectedCode.code}",
+                                            "${state.selectedCode.trans.code}",
                                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                           ),
                                           SizedBox(
@@ -266,7 +268,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                                                   "Order Status:",
                                                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                                 ),
-                                                Text("${state.selectedCode.statusName}"),
+                                                Text("${TransactionStatus.getStringStatus(state.selectedCode.trans.status)}"),
                                                 SizedBox(
                                                   height: 20,
                                                 ),
@@ -274,7 +276,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                                                   "Tanggal Pemesanan:",
                                                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                                 ),
-                                                Text("${state.selectedCode.createdDate}"),
+                                                Text("${state.selectedCode.trans.createdDate}"),
                                                 SizedBox(
                                                   height: 20,
                                                 ),
@@ -324,8 +326,9 @@ class _DetailTransactionState extends State<DetailTransaction> {
                 padding: const EdgeInsets.all(20.0),
                 child: BlocBuilder<TransactionBloc, TransactionState>(builder: (context, buttonState) {
                   if (buttonState is TransactionUpdated) {
-                    print(buttonState.selectedCode.status);
-                    if (buttonState.selectedCode.status == "6") {
+                    print(buttonState.selectedCode.trans.status);
+                    String _status = buttonState.selectedCode.trans.status;
+                    if (_status == TransactionStatus.cDEFAULT) {
                       return Container(
                         width: double.infinity,
                         child: PrimaryButton(
@@ -335,7 +338,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                           },
                         ),
                       );
-                    } else if (buttonState.selectedCode.status == "1") {
+                    } else if (buttonState.selectedCode.trans.status == TransactionStatus.cWAITING_PAYMENT) {
                       return Container(
                         width: double.infinity,
                         child: PrimaryButton(

@@ -1,4 +1,4 @@
-import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +40,7 @@ class _TransactionCardState extends State<TransactionCard> {
                           borderRadius: BorderRadius.circular(10)),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: (widget.transaction.isApparel)?Image.asset("images/logo-font.png") : Image.asset("images/food_icon.png")),
+                          child: (widget.transaction.type == Type.FNB)?Image.asset("images/logo-font.png") : Image.asset("images/food_icon.png")),
                     ),
                   ),
                   Column(
@@ -54,7 +54,7 @@ class _TransactionCardState extends State<TransactionCard> {
                         children: [
                           Text("Kode Transaksi", style: TextStyle(fontSize: 10),),
                           SizedBox(width: 10,),
-                          Text("${widget.transaction.code}", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),)
+                          Text("${widget.transaction.trans.code}", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),)
                         ],
                       ),
                       Row(
@@ -68,7 +68,7 @@ class _TransactionCardState extends State<TransactionCard> {
                             width: 5,
                           ),
                           Text(
-                            "${widget.transaction.statusName}",
+                            "${widget.transaction.trans.status}",
                             style: TextStyle(
                                 fontSize: 10, fontWeight: FontWeight.bold),
                           )
@@ -77,7 +77,7 @@ class _TransactionCardState extends State<TransactionCard> {
                       Container(
                           width: MediaQuery.of(context).size.width * 0.4,
                           child: Text(
-                            "${ DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(widget.transaction.createdDate)}",
+                            "${ DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(widget.transaction.trans.createdDate)}",
                             style: TextStyle(fontSize: 10),
                           )),
                     ],

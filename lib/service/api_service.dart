@@ -8,6 +8,7 @@ import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/delivery_response.dart';
 import 'package:filkop_mobile_apps/model/detail_aparel_response.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_detail_result.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
 import 'package:filkop_mobile_apps/model/get_user_result.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
@@ -509,6 +510,18 @@ class ApiService {
     var response = await client.post("$baseUrl/restApi/get_transaction_fnb", body: body);
     if(response.statusCode == 200){
       return GetTransactionResult.fromJson(json.decode(response.body));
+    }else{
+      return null;
+    }
+  }
+  Future<GetTransactionsResponse> getAllTransactions() async {
+    SharedPreferences pref = await _prefs;
+    var body = {
+      "token": pref.getString("token")
+    };
+    var response = await client.post("$baseUrl/restApi/get_transaction", body: body);
+    if(response.statusCode == 200){
+      return GetTransactionsResponse.fromJson(json.decode(response.body));
     }else{
       return null;
     }

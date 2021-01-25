@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:filkop_mobile_apps/model/get_transaction_result.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
 
 class TransactionEvent extends Equatable{
   List<Object> get props => [];

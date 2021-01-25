@@ -38,7 +38,6 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
   TextEditingController _nominalTextController;
   Future<DetailApparelResponse> detailApparelResponse;
   DetailApparel _detailApparel;
-  int _selectedIndexVariant;
   List<CartItem> _allCartItem;
   String variantSelected;
   List<bool> selectedVariant = [false, false, false, false, false];
@@ -87,11 +86,16 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
 
                 DetailApparelResponse apparelDetail = snapshot.data;
                 Stock stocks = apparelDetail.data.stock;
+                print("PRINT STOCK IS ${stocks.stock}");
                 stocks.updateDepensOnCartItem(_allCartItem, apparelDetail.data.id);
                 _detailApparel = apparelDetail.data;
                 if(_detailApparel.showSize == "0"){
-                  _stockTotal = 99;
+                  variantSelected = "stock";
+                  _stockTotal = stocks.stock.toInt();
+                  print("STOCK TOTAL IS $_stockTotal");
                 }
+
+
 
                 List<Widget> stockWidget = [
                   VariantWidget(
@@ -101,7 +105,6 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                     onTap: () {
                       if (stocks.s == "0") return;
                       setState(() {
-                        _selectedIndexVariant = 0;
                         variantSelected = "s";
                         _stockTotal = stocks.s.toInt();
                         selectedVariant = [true, false, false, false, false];
@@ -115,7 +118,6 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                     onTap: () {
                       if (stocks.m == "0") return;
                       setState(() {
-                        _selectedIndexVariant = 1;
                         variantSelected = "m";
                         _stockTotal = stocks.m.toInt();
                         selectedVariant = [false, true, false, false, false];
@@ -129,7 +131,6 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                     onTap: () {
                       if (stocks.l == "0") return;
                       setState(() {
-                        _selectedIndexVariant = 2;
                         variantSelected = "l";
                         _stockTotal = stocks.l.toInt();
                         selectedVariant = [false, false, true, false, false];
@@ -143,7 +144,6 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                     onTap: () {
                       if (stocks.xl == "0") return;
                       setState(() {
-                        _selectedIndexVariant = 3;
                         variantSelected = "xl";
                         _stockTotal = stocks.xl.toInt();
                         selectedVariant = [false, false, false, true, false];
@@ -157,7 +157,6 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                     onTap: () {
                       if (stocks.xxl == "0") return;
                       setState(() {
-                        _selectedIndexVariant = 4;
                         variantSelected = "xxl";
                         _stockTotal = stocks.xxl.toInt();
                         selectedVariant = [false, false, false, false, true];
@@ -209,7 +208,9 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                                   fontSize: 10,
                                 ),)
                               ],
-                            ):Container(),
+                            ):Text("Stock: ${_getTotalStock(variantSelected,stocks)}", style: TextStyle(
+                              fontSize: 10,
+                            ),),
                           ],
                         ),
                         Divider(),
@@ -361,7 +362,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                                 }
 
                                 if (cartState is CartUpdateError) {
-                                  Fluttertoast.showToast(msg: "Terjadi kesalahan Server, mohon ulangi lagi");
+//                                  Fluttertoast.showToast(msg: "Terjadi kesalahan Server, mohon ulangi lagi");
 
                                   return Visibility(
                                     visible: (_total > 0) ? true : false,
@@ -417,6 +418,7 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
   }
 
   String _getTotalStock(String variant, Stock stock) {
+    print("VARIANT?$variant");
     switch (variant) {
       case "s":
         return stock.s;
@@ -432,6 +434,10 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
         break;
       case "xxl":
         return stock.xxl;
+        break;
+      case "stock":
+        print("SHOULD RETURN ${stock.stock}");
+        return stock.stock;
         break;
     }
     return "0";

@@ -171,8 +171,11 @@ class ApiService {
       'token': pref.getString('token'),
       'product_id': productId,
       'amount': total,
-      "size":size
+
     };
+    if(size != null){
+      body['size'] = size;
+    }
 
     print(body);
 
@@ -610,7 +613,7 @@ class ApiService {
       "id":id
     };
     var response = await client.post("$baseUrl/restApi/get_detail_product",body: body);
-
+    print(response.body);
     if(response.statusCode == 200){
       return DetailApparelResponse.fromJson(jsonDecode(response.body));
     }else{

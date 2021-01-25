@@ -170,6 +170,7 @@ class Stock {
     this.l,
     this.xl,
     this.xxl,
+    this.stock
   });
 
   updateDepensOnCartItem(List<CartItem> cartItems, String productId){
@@ -180,29 +181,27 @@ class Stock {
         int totalL = l.toInt();
         int totalXL = xl.toInt();
         int totalXXL = xxl.toInt();
+        int totalStock = stock.toInt();
         if (element.productId == productId) {
           if (element.size == "s") {
             totalS -= element.amount.toInt();
             s = totalS.toString();
-          }
-          if (element.size == "m") {
+          }else if (element.size == "m") {
             totalM -= m.toInt();
             m = totalM.toString();
-          }
-
-          if (element.size == "l") {
+          }else if (element.size == "l") {
             totalL -= l.toInt();
             l = totalL.toString();
-          }
-
-          if (element.size == "xl") {
+          }else if (element.size == "xl") {
             totalXL -= xl.toInt();
             xl = totalXL.toString();
-          }
-
-          if (element.size == "xxl") {
+          }else if (element.size == "xxl") {
             totalXXL -= xxl.toInt();
             xxl = totalXXL.toString();
+          }else {
+            print(element.size);
+            totalStock -= stock.toInt();
+            stock = totalStock.toString();
           }
         }
       });
@@ -216,6 +215,7 @@ class Stock {
   String l;
   String xl;
   String xxl;
+  String stock;
 
   factory Stock.fromJson(Map<String, dynamic> json) => Stock(
     s: json["s"] == null ? null : json["s"],
@@ -223,6 +223,7 @@ class Stock {
     l: json["l"] == null ? null : json["l"],
     xl: json["xl"] == null ? null : json["xl"],
     xxl: json["xxl"] == null ? null : json["xxl"],
+    stock: json["stock"] == null ? null : json["stock"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -231,5 +232,6 @@ class Stock {
     "l": l == null ? null : l,
     "xl": xl == null ? null : xl,
     "xxl": xxl == null ? null : xxl,
+    "stock": stock == null ? null : stock,
   };
 }

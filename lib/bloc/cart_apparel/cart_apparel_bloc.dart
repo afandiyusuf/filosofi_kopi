@@ -126,6 +126,7 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
         yield AddTransactionSuccess();
         return;
       }else{
+        print("ADD TRANSACTION ERROR FROM BLOC");
         yield AddTransactionError(response);
         return;
       }

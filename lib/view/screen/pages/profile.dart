@@ -18,6 +18,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   Future<GetUserResult> _getUserResult = ApiService().getUser();
+  bool isEdit = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +79,12 @@ class _ProfileState extends State<Profile> {
                       }
                     ),
                     PrimaryButton(
-                      label: "Edit",
+                      label: (!isEdit)?"Edit":"Submit",
+                      onPressed: (){
+                        setState(() {
+                          isEdit = !isEdit;
+                        });
+                      },
                     )
                   ],
                 ),

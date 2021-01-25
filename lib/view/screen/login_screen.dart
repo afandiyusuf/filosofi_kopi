@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController _usernameTxt = TextEditingController(text:"");
   TextEditingController _passwordTxt = TextEditingController(text:"");
-
+  bool passwordVisibility = false;
   @override
   void initState(){
     super.initState();
@@ -63,17 +63,29 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontWeight: FontWeight.bold,
                             ),)
                         ),
-                        TextFormField(
-                          validator: (value){
-                            if(value.isEmpty){
-                              return 'Please your password';
-                            }
-                            return null;
-                          },
-                          keyboardType: TextInputType.visiblePassword,
-                          controller: _passwordTxt,
-                          obscureText: true,
-                          decoration: CustomTextFieldDecoration.create(),
+                        Stack(
+                          children: [
+                            TextFormField(
+                              obscureText: passwordVisibility,
+                              controller: _passwordTxt,
+                              decoration: CustomTextFieldDecoration.create(),
+                              validator: (value) {
+                                print(value.length);
+                                if (value.length <= 5) {
+                                  return "password must be 6 character or more";
+                                }
+                                return null;
+                              },
+                            ),
+                            Positioned(
+                              right: 0,
+                              child: IconButton(icon: Icon( (passwordVisibility)? Icons.visibility : Icons.visibility_off, size: 20,), onPressed: (){
+                                setState(() {
+                                  passwordVisibility = !passwordVisibility;
+                                });
+                              }),
+                            )
+                          ],
                         ),
                         Container(
                           margin: EdgeInsets.only(top:60),
@@ -109,8 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
     ));
 
     BaseResponse response = await ApiService().login(_usernameTxt.text, _passwordTxt.text);
-    
       if(response.success == true){
+        print("HEREEEE");
          Navigator.pushNamed(context, MainScreen.tag);
       }else{
         _scaffoldKey?.currentState?.showSnackBar(SnackBar(

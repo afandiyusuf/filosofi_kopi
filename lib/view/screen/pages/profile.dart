@@ -4,7 +4,9 @@ import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
 import 'package:filkop_mobile_apps/view/component/profile_button.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/flutter_placeholder_textlines.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -148,7 +150,7 @@ class _ProfileState extends State<Profile> {
                 Future<SharedPreferences> pref = SharedPreferences.getInstance();
                 SharedPreferences _pref = await pref;
                 _pref.clear();
-                Navigator.pop(context);
+                Navigator.pushNamedAndRemoveUntil(context,SignInScreen.tag,ModalRoute.withName("/"));
               },
             )
           ],

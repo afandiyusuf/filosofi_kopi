@@ -216,13 +216,6 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                         Divider(),
                         Html(data: snapshot.data.data.description),
                         Divider(),
-//                  Container(
-//                    margin: EdgeInsets.only(top: 10),
-//                    child: Text(
-//                      apparel.name.toUpperCase(),
-//                      style: TextStyle(color: Colors.black, fontSize: 15),
-//                    ),
-//                  ),
                         Visibility(
                           visible: !noteAdded,
                           child: Container(

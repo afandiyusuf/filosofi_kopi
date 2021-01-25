@@ -6,6 +6,7 @@ import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
+import 'package:filkop_mobile_apps/utils/transaction_status.dart';
 import 'package:filkop_mobile_apps/view/component/order_box.dart';
 import 'package:filkop_mobile_apps/view/component/transaction_card.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_transaction.dart';
@@ -216,11 +217,7 @@ class _HomePageState extends State<HomePage> {
                             List<Transaction> _currentTransactions = _resultData
                                 
                                 .where((element) =>
-                            element.trans.status == "1" ||
-                                element.trans.status == "2" ||
-                                element.trans.status == "3" ||
-                                element.trans.status == "4" ||
-                                element.trans.status == "6")
+                            element.trans.status != TransactionStatus.cCANCELLED)
                                 .toList();
                             List<Widget> _allTransactions =
                             List<TransactionCard>.from(

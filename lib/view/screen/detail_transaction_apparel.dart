@@ -3,6 +3,7 @@ import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
 import 'package:filkop_mobile_apps/bloc/transaction/transaction_state.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_detail_result.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
+import 'package:filkop_mobile_apps/utils/transaction_status.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
@@ -20,7 +21,7 @@ class DetailTransactionApparel extends StatefulWidget {
 
 class _DetailTransactionApparelState extends State<DetailTransactionApparel> {
   String selectedBank = "bca";
-  List<String> _allBanks = ["bca","mandiri","bri"];
+  List<String> _allBanks = ["bca", "mandiri", "bri"];
   Transaction _transaction;
 
   @override
@@ -36,22 +37,22 @@ class _DetailTransactionApparelState extends State<DetailTransactionApparel> {
   @override
   Widget build(BuildContext context) {
     List<DropdownMenuItem<String>> _allDropdownMenu =
-    List<DropdownMenuItem<String>>.from(_allBanks.map((e) => DropdownMenuItem<String>(
-      child: Container(
-          child: Row(
-            children: [
-              Container(height: 25, width: 100, child: Image.asset("images/$e.png")),
-              SizedBox(
-                width: 30,
-              ),
-              Text(
-                "${e.toUpperCase()}",
-                style: TextStyle(fontSize: 12),
-              ),
-            ],
-          )),
-      value: e,
-    )));
+        List<DropdownMenuItem<String>>.from(_allBanks.map((e) => DropdownMenuItem<String>(
+              child: Container(
+                  child: Row(
+                children: [
+                  Container(height: 25, width: 100, child: Image.asset("images/$e.png")),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  Text(
+                    "${e.toUpperCase()}",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
+              )),
+              value: e,
+            )));
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Detail Transaksi",
@@ -67,12 +68,12 @@ class _DetailTransactionApparelState extends State<DetailTransactionApparel> {
                     TransactionDetail _detail = state.transactionDetail.data;
                     if (state.transactionDetail != null) {
                       List<Widget> _listOrder = List<Widget>.from(_detail.cart.map((e) => ListTileOrder(
-                        name: e.name,
-                        price: rupiah(e.price.toDouble()),
-                        image: "https://filkopcdn.b-cdn.net/upload/images/product/${e.productImage}",
-                        total: e.qty,
-                        usingDelete: false,
-                      )));
+                            name: e.name,
+                            price: rupiah(e.price.toDouble()),
+                            image: "https://filkopcdn.b-cdn.net/upload/images/product/${e.productImage}",
+                            total: e.qty,
+                            usingDelete: false,
+                          )));
                       return Container(
                         height: MediaQuery.of(context).size.height,
                         child: SingleChildScrollView(
@@ -81,124 +82,143 @@ class _DetailTransactionApparelState extends State<DetailTransactionApparel> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                (state.selectedCode.trans.status == "6" || state.selectedCode.trans.status == "1")
+                                (state.selectedCode.trans.status == TransactionStatus.cDEFAULT ||
+                                        state.selectedCode.trans.status == TransactionStatus.cWAITING_PAYMENT)
                                     ? Card(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Segera selesaikan transaksi anda sebelum stok habis.",
-                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Divider(),
-                                        (state.transactionDetail.data.invoice != null)
-                                            ? Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text("Transfer pembayaran ke no rekening:", style: TextStyle(
-                                                fontWeight: FontWeight.bold
-                                            ),),
-                                            SizedBox(height: 10,),
-                                            Row(children: [
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Segera selesaikan transaksi anda sebelum stok habis.",
+                                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Divider(),
+                                              (state.transactionDetail.data.invoice != null)
+                                                  ? Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          "Transfer pembayaran ke no rekening:",
+                                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                                width: 80,
+                                                                child: Image.asset("images/" +
+                                                                    state.transactionDetail.data.invoice.paymentChannel
+                                                                        .toLowerCase() +
+                                                                    ".png")),
+                                                            SizedBox(
+                                                              width: 20,
+                                                            ),
+                                                            Text(
+                                                              "${state.transactionDetail.data.invoice.paymentCode}",
+                                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Text("Jumlah yang harus dibayar:"),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                          "${rupiah(state.transactionDetail.data.invoice.total.toDouble())}",
+                                                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 30,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : Container(),
+                                              Text(
+                                                (state.selectedCode.trans.status == "6")
+                                                    ? "Pilih metode pembayaran:"
+                                                    : "Ganti metode pembayaran",
+                                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
                                               Container(
-                                                  width:80,
-                                                  child: Image.asset("images/"+state.transactionDetail.data.invoice.paymentChannel.toLowerCase()+".png")),
-                                              SizedBox(width: 20,),
-                                              Text("${state.transactionDetail.data.invoice.paymentCode}", style: TextStyle(
-                                                  fontWeight: FontWeight.bold
-                                              ),)
-                                            ],),
-                                            SizedBox(height: 20,),
-                                            Text("Jumlah yang harus dibayar:"),
-                                            SizedBox(height: 10,),
-                                            Text("${rupiah(state.transactionDetail.data.invoice.total.toDouble())}", style: TextStyle(
-                                                fontSize: 25,fontWeight: FontWeight.bold
-                                            ),),
-                                            SizedBox(height: 30,),
-                                          ],
-                                        )
-                                            : Container(),
-                                        Text(
-                                          (state.selectedCode.trans.status == "6")
-                                              ? "Pilih metode pembayaran:"
-                                              : "Ganti metode pembayaran",
-                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          child: DropdownButtonHideUnderline(
-                                              child: DropdownButton<String>(
-                                                items: _allDropdownMenu,
-                                                value: selectedBank,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    selectedBank = value;
-                                                  });
-                                                },
-                                              )),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Divider(),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        BlocBuilder<TransactionBloc, TransactionState>(
-                                            builder: (context, buttonState) {
-                                              if (buttonState is TransactionUpdated) {
-                                                if (buttonState.selectedCode.trans.status == "6") {
-                                                  return Container(
-                                                    width: double.infinity,
-                                                    child: PrimaryButton(
-                                                      label: "Pilih Metode Pembayaran",
-                                                      onPressed: () {
-                                                        context
-                                                            .bloc<TransactionBloc>()
-                                                            .add(SelectPayment(bankChoice: selectedBank));
-                                                      },
-                                                    ),
-                                                  );
-                                                } else if (buttonState.selectedCode.trans.status == "1") {
-                                                  return Container(
-                                                    width: double.infinity,
-                                                    child: PrimaryButton(
-                                                      label: "Ganti Metode Pembayaran",
-                                                      onPressed: () {
-                                                        context
-                                                            .bloc<TransactionBloc>()
-                                                            .add(ChangePayment(bankChoice: selectedBank));
-                                                      },
-                                                    ),
-                                                  );
+                                                width: double.infinity,
+                                                child: DropdownButtonHideUnderline(
+                                                    child: DropdownButton<String>(
+                                                  items: _allDropdownMenu,
+                                                  value: selectedBank,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      selectedBank = value;
+                                                    });
+                                                  },
+                                                )),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Divider(),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              BlocBuilder<TransactionBloc, TransactionState>(
+                                                  builder: (context, buttonState) {
+                                                if (buttonState is TransactionUpdated) {
+                                                  if (buttonState.selectedCode.trans.status ==
+                                                      TransactionStatus.cDEFAULT) {
+                                                    return Container(
+                                                      width: double.infinity,
+                                                      child: PrimaryButton(
+                                                        label: "Pilih Metode Pembayaran",
+                                                        onPressed: () {
+                                                          context
+                                                              .bloc<TransactionBloc>()
+                                                              .add(SelectPayment(bankChoice: selectedBank));
+                                                        },
+                                                      ),
+                                                    );
+                                                  } else if (buttonState.selectedCode.trans.status == "1") {
+                                                    return Container(
+                                                      width: double.infinity,
+                                                      child: PrimaryButton(
+                                                        label: "Ganti Metode Pembayaran",
+                                                        onPressed: () {
+                                                          context.bloc<TransactionBloc>().add(ChangePayment(
+                                                              bankChoice: selectedBank, context: context));
+                                                        },
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Container(
+                                                      width: double.infinity,
+                                                      child: PrimaryButton(
+                                                        label: "Pilih Metode ${buttonState.selectedCode.trans.status}",
+                                                        onPressed: () {},
+                                                      ),
+                                                    );
+                                                  }
                                                 } else {
-                                                  return Container(
-                                                    width: double.infinity,
-                                                    child: PrimaryButton(
-                                                      label: "Pilih Metode ${buttonState.selectedCode.trans.status}",
-                                                      onPressed: () {},
-                                                    ),
+                                                  return Center(
+                                                    child: CircularProgressIndicator(),
                                                   );
                                                 }
-                                              } else {
-                                                return Center(
-                                                  child: CircularProgressIndicator(),
-                                                );
-                                              }
-                                            })
-                                      ],
-                                    ),
-                                  ),
-                                )
+                                              })
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     : Container(),
                                 Card(
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -325,7 +345,7 @@ class _DetailTransactionApparelState extends State<DetailTransactionApparel> {
                 child: BlocBuilder<TransactionBloc, TransactionState>(builder: (context, buttonState) {
                   if (buttonState is TransactionUpdated) {
                     print(buttonState.selectedCode.trans.status);
-                    if (buttonState.selectedCode.trans.status == "6") {
+                    if (buttonState.selectedCode.trans.status == TransactionStatus.cDEFAULT) {
                       return Container(
                         width: double.infinity,
                         child: PrimaryButton(
@@ -335,13 +355,15 @@ class _DetailTransactionApparelState extends State<DetailTransactionApparel> {
                           },
                         ),
                       );
-                    } else if (buttonState.selectedCode.trans.status == "1") {
+                    } else if (buttonState.selectedCode.trans.status == TransactionStatus.cWAITING_PAYMENT) {
                       return Container(
                         width: double.infinity,
                         child: PrimaryButton(
                           label: "Ganti Metode Pembayaran",
                           onPressed: () {
-                            context.bloc<TransactionBloc>().add(ChangePayment(bankChoice: selectedBank));
+                            context
+                                .bloc<TransactionBloc>()
+                                .add(ChangePayment(bankChoice: selectedBank, context: context));
                           },
                         ),
                       );
@@ -350,9 +372,9 @@ class _DetailTransactionApparelState extends State<DetailTransactionApparel> {
                           width: double.infinity,
                           child: Center(
                               child: Text(
-                                "Silahkan lakukan pembayaran",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )));
+                            "Silahkan lakukan pembayaran",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )));
                     }
                   } else {
                     return Center(

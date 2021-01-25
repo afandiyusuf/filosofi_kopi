@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
+import 'package:flutter/cupertino.dart';
 
 class TransactionEvent extends Equatable{
   List<Object> get props => [];
@@ -22,6 +23,8 @@ class SelectPayment extends TransactionEvent{
 }
 
 class ChangePayment extends TransactionEvent{
+  //need to get context for proceed to snap;
+  final BuildContext context;
   final String bankChoice;
-  ChangePayment({this.bankChoice});
+  ChangePayment({this.bankChoice,this.context});
 }

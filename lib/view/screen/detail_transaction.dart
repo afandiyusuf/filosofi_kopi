@@ -20,7 +20,7 @@ class DetailTransaction extends StatefulWidget {
   _DetailTransactionState createState() => _DetailTransactionState();
 }
 
-class _DetailTransactionState extends State<DetailTransaction> {
+class _DetailTransactionState extends State<DetailTransaction> with WidgetsBindingObserver {
   String selectedBank = "bca";
   List<String> _allBanks = [Banks.BCA,Banks.MANDIRI,Banks.BRI,Banks.CIMB,Banks.BNI,Banks.PERMATA_VA,Banks.GOPAY,Banks.ALFAMART,Banks.CREDIT_CARD];
   Transaction _transaction;
@@ -32,7 +32,20 @@ class _DetailTransactionState extends State<DetailTransaction> {
       _transaction = transactionState.selectedCode;
       context.bloc<TransactionBloc>().add(GetTransactionDetail(_transaction));
     }
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      context.bloc<TransactionBloc>().add(GetTransactionDetail(_transaction));
+    }
   }
 
   @override
@@ -178,7 +191,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                                                         onPressed: () {
                                                           context
                                                               .bloc<TransactionBloc>()
-                                                              .add(ChangePayment(bankChoice: selectedBank));
+                                                              .add(ChangePayment(bankChoice: selectedBank,context: context));
                                                         },
                                                       ),
                                                     );
@@ -344,7 +357,7 @@ class _DetailTransactionState extends State<DetailTransaction> {
                         child: PrimaryButton(
                           label: "Ganti Metode Pembayaran",
                           onPressed: () {
-                            context.bloc<TransactionBloc>().add(ChangePayment(bankChoice: selectedBank));
+                            context.bloc<TransactionBloc>().add(ChangePayment(bankChoice: selectedBank,context: context));
                           },
                         ),
                       );

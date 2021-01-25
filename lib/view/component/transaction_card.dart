@@ -1,4 +1,5 @@
 import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
+import 'package:filkop_mobile_apps/utils/transaction_status.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -68,7 +69,7 @@ class _TransactionCardState extends State<TransactionCard> {
                             width: 5,
                           ),
                           Text(
-                            "${widget.transaction.trans.status}",
+                            "${TransactionStatus.getStringStatus(widget.transaction.trans.status)}",
                             style: TextStyle(
                                 fontSize: 10, fontWeight: FontWeight.bold),
                           )

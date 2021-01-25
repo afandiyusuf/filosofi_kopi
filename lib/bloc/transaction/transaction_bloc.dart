@@ -5,6 +5,8 @@ import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/utils/banks.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
   Transaction selectedTransaction;
@@ -27,13 +29,18 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
       print(event.bankChoice);
       var bank = event.bankChoice;
       var transCode = selectedTransaction.trans.code;
-      if(bank == "bca" || bank == "mandiri" || bank == "bri"){
+      if(bank == Banks.BCA || bank == Banks.MANDIRI || bank == Banks.BRI){
         await ApiService().createPaymentXendit(bank, transCode);
-      }else if(bank == "cimb" || bank == "bri"){
+      }else if(bank == Banks.CIMB || bank == Banks.BNI){
         await ApiService().createPaymentIpay(bank, transCode);
       }else {
-        print("simulate wait");
-        await Future.delayed(Duration(seconds: 2));
+        String urlMidtrans = getUrlMidtrans(bank,transCode);
+        if(await canLaunch(urlMidtrans)){
+          await launch(urlMidtrans);
+          print("HEREEE");
+        }else{
+          Fluttertoast.showToast(msg: "Payment not valid");
+        }
       }
       transactionDetailResult =  await ApiService().getTransactionDetail(transCode,(selectedTransaction.type == Type.APPAREL));
       GetTransactionsResponse getTransactionResult;
@@ -53,8 +60,14 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
       }else if(bank == Banks.CIMB || bank == Banks.BRI){
         await ApiService().createPaymentIpay(bank, transCode);
       }else {
-        print("simulate wait");
-        await Future.delayed(Duration(seconds: 2));
+        String urlMidtrans = getUrlMidtrans(bank,transCode);
+        if(await canLaunch(urlMidtrans)){
+          await launch(urlMidtrans);
+          print("HEREEE");
+        }else{
+          Fluttertoast.showToast(msg: "Payment not valid");
+        }
+//        await Future.delayed(Duration(seconds: 2));
       }
       transactionDetailResult =  await ApiService().getTransactionDetail(transCode,selectedTransaction.type == Type.APPAREL);
       GetTransactionsResponse getTransactionResult = await ApiService().getAllTransactions();

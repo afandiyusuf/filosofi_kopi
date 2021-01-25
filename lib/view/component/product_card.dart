@@ -35,7 +35,9 @@ class ProductCard extends StatelessWidget {
                         child: CachedNetworkImage(
                           height: MediaQuery.of(context).size.width * 0.4,
                           imageUrl: image,
-                          placeholder: (context, url) => Image.asset("images/placeholder.png"),
+                          placeholder: (context, url) => Container(
+                              height: MediaQuery.of(context).size.width * 0.4,
+                              child: Image.asset("images/placeholder.png")),
                           errorWidget: (context, url, error) => Icon(Icons.error)
                         ),
                       ),

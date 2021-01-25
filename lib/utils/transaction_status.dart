@@ -4,7 +4,7 @@ class TransactionStatus{
   static const String cPAID = "2";
   static const String cSENT = "3";
   static const String cCANCEL = "4";
-  static const String cREFUND = "5";
+  static const String cCANCELLED = "5";
   static const String cDEFAULT = "6";
 
   static const String sIN_CART = "In Cart";
@@ -12,8 +12,8 @@ class TransactionStatus{
   static const String sPAID = "Menunggu Pengiriman";
   static const String sCANCEL = "Dibatalkan";
   static const String sSENT = "Dikirim";
-  static const String sREFUND = "Refund";
-  static const String sDEFAULT = "Default";
+  static const String sCANCELLED = "Dibatalkan";
+  static const String sDEFAULT = "Pilih Metode Pembayaran";
 
   static String getStringStatus(String status){
     switch(status){
@@ -32,11 +32,10 @@ class TransactionStatus{
       case cCANCEL:
         return sCANCEL;
         break;
-      case cREFUND:
-        return sREFUND;
+      case cCANCELLED:
+        return sCANCELLED;
         break;
       default:
-        print ("got default status,shouldn't use this $sDEFAULT");
         return sDEFAULT;
         break;
     }

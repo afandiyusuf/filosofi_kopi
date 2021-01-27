@@ -16,9 +16,7 @@ import 'package:filkop_mobile_apps/model/subdistrict.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
-import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
-import 'package:filkop_mobile_apps/view/screen/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -52,7 +50,6 @@ class _AddressFormState extends State<AddressForm> {
   TextEditingController _detailedAddress = TextEditingController();
   TextEditingController _addressName = TextEditingController();
 
-  void _onMapCreated(GoogleMapController controller) {}
 
   void initState() {
     _detailedAddress.text = widget.address.address;

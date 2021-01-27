@@ -8,10 +8,12 @@ class OrderBox extends StatelessWidget {
   final int stateButton;
   final Function onPressedAmbilSendiri;
   final Function onPressedDikirim;
-  OrderBox({this.onPressed, this.location = "Pilih kedai kami", this.stateButton = 0, this.onPressedAmbilSendiri, this.onPressedDikirim});
+  OrderBox({this.onPressed, this.location = "Pilih kedai kami", this.stateButton, this.onPressedAmbilSendiri, this.onPressedDikirim});
 
   @override
   Widget build(BuildContext context) {
+
+    print("STATE IS $stateButton");
     return  Container(
       margin: EdgeInsets.only(top: 0, left: 30, right: 30,bottom: 0),
       width: MediaQuery.of(context).size.width * 0.8,
@@ -51,7 +53,8 @@ class OrderBox extends StatelessWidget {
                 color: (stateButton == OrderBoxModel.AMBIL_SENDIRI) ? Colors.black : Colors.grey,
                 child: InkWell(
                   onTap: () {
-                    onPressedAmbilSendiri();
+
+                   onPressedAmbilSendiri();
                   },
                   child: Container(
                     child: Padding(

@@ -1,10 +1,7 @@
-import 'package:filkop_mobile_apps/service/api_service.dart';
-import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:filkop_mobile_apps/view/theme/style.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   static final String tag = '/on-boarding';

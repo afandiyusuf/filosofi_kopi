@@ -4,7 +4,7 @@ import 'package:filkop_mobile_apps/model/product_model.dart';
 class OrderBoxModel{
   static const int AMBIL_SENDIRI = 0;
   static const int DIKIRIM = 1;
-  int stateButton;
+  int stateButton = DIKIRIM;
   String location;
   int storeId;
   String state = "default";

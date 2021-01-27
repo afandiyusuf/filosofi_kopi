@@ -1,4 +1,3 @@
-import 'package:filkop_mobile_apps/view/component/detail_thumbnail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/flutter_placeholder_textlines.dart';
 class DetailScreenLoading extends StatelessWidget {

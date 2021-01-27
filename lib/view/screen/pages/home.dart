@@ -16,6 +16,7 @@ import 'package:filkop_mobile_apps/view/theme/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomePage extends StatefulWidget {
   HomePage();
@@ -179,6 +180,8 @@ class _HomePageState extends State<HomePage> {
                                     stateButton: OrderBoxModel.DIKIRIM));
                           },
                           onPressedAmbilSendiri: () {
+                            Fluttertoast.showToast(msg: "Maaf fitur ini masih belum tersedia");
+                            return;
                             context.bloc<OrderBoxBloc>().add(
                                 OrderBoxUpdateStateButton(
                                     stateButton: OrderBoxModel.AMBIL_SENDIRI));

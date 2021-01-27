@@ -8,7 +8,6 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
-import 'package:filkop_mobile_apps/model/delivery_response.dart';
 import 'package:filkop_mobile_apps/model/detail_aparel_response.dart';
 import 'package:filkop_mobile_apps/service/api_service.dart';
 import 'package:filkop_mobile_apps/view/component/add_note_button.dart';
@@ -292,7 +291,6 @@ class _DetailApparelScreenState extends State<DetailApparelScreen> {
                                 if (cartState is CartUpdated) {
 
                                   if (_total > 0) {
-                                    CartItem cartItem = cartState.cartModel.getCartItemByApparel(apparel);
 
                                     return InkWell(
                                       onTap: () {

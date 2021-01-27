@@ -4,7 +4,6 @@ import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
 import 'package:filkop_mobile_apps/view/component/profile_button.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
-import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/signin_screen.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +98,8 @@ class _ProfileState extends State<Profile> {
               border: Border(
                   top: BorderSide(color: Colors.black26)),
               onTap: () {
+                Fluttertoast.showToast(msg: "Maaf fitur ini masih belum tersedia");
+                return;
                 Navigator.pushNamed(context, ReferralCodeScreen.tag);
               },
             ),

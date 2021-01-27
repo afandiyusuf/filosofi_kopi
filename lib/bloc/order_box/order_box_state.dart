@@ -6,7 +6,7 @@ abstract class OrderBoxState extends Equatable{
 }
 
 class OrderBoxDefault extends OrderBoxState{
-  final OrderBoxModel orderBox = OrderBoxModel(stateButton: OrderBoxModel.AMBIL_SENDIRI, location: "Pilih kedai kami");
+  final OrderBoxModel orderBox = OrderBoxModel(stateButton: OrderBoxModel.DIKIRIM, location: "Pilih kedai kami");
   @override
   List<Object> get props => [];
 }

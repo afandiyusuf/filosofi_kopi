@@ -145,6 +145,7 @@ class ApiService {
 
     final response =
         await client.post("$baseUrl/restApi/add_to_cart_fnb", body: body);
+    print("FNB IS");
     print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
@@ -165,7 +166,6 @@ class ApiService {
 
   Future<bool> addToCartApparel(
       String productId, String total, String notes, String store, String size) async {
-    print("CALL FROM HERE");
     SharedPreferences pref = await _prefs;
     final body = {
       'token': pref.getString('token'),
@@ -177,11 +177,10 @@ class ApiService {
       body['size'] = size;
     }
 
-    print(body);
 
     final response =
     await client.post("$baseUrl/restApi/add_to_cart_apparel", body: body);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
@@ -206,7 +205,7 @@ class ApiService {
 
     final response =
         await client.post("$baseUrl/restApi/get_cart_fnb", body: body);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
@@ -231,7 +230,7 @@ class ApiService {
     print(body);
     final response =
     await client.post("$baseUrl/restApi/get_cart_apparel", body: body);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success'] == true) {
@@ -255,7 +254,7 @@ class ApiService {
 
     final response =
         await client.post("$baseUrl/restApi/remove_cart_fnb", body: body);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success']) {
@@ -274,7 +273,7 @@ class ApiService {
 
     final response =
     await client.post("$baseUrl/restApi/remove_cart_apparel", body: body);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success']) {
@@ -295,7 +294,7 @@ class ApiService {
 
     final response =
     await client.post("$baseUrl/restApi/remove_cart_apparel", body: body);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success']) {
@@ -545,7 +544,6 @@ class ApiService {
 
 
   Future<GetTransactionDetailResult> getTransactionDetail(String code,bool isApparel) async{
-    SharedPreferences pref = await _prefs;
     var body = {
       "code" : code
     };

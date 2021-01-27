@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_event.dart';
 import 'package:filkop_mobile_apps/bloc/apparel/apparel_state.dart';
@@ -12,7 +10,6 @@ import 'package:filkop_mobile_apps/bloc/category_apparel/category_apparel_state.
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
-import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/category_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
 import 'package:filkop_mobile_apps/repository/category_apparel_repository.dart';
@@ -23,7 +20,6 @@ import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_apparel_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_placeholder_textlines/placeholder_lines.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApparelPage extends StatefulWidget {
@@ -154,10 +150,6 @@ class _ApparelPageState extends State<ApparelPage> {
                     context.bloc<CartApparelBloc>().add(FetchCart(location: orderBox.location));
                   }
                   if(context.bloc<CartApparelBloc>().state is CartUpdated){
-                    CartUpdated state = context.bloc<CartApparelBloc>().state;
-                    CartApparelModel cm = state.cartModel;
-
-//                    apparels.sortByBought(cm);
                   }else{
                     print("not sort");
                   }
@@ -180,9 +172,6 @@ class _ApparelPageState extends State<ApparelPage> {
                                 CartApparelState>(builder: (context, state) {
                               var total = 0;
                               if (state is CartUpdated) {
-                                CartApparelModel cartModel = state.cartModel;
-//                                total =
-//                                    cartModel.getTotalItemsByIndex(_apparel.id);
                                 print("TOTAL IS $total");
                               }
                               return ProductCard(

@@ -29,6 +29,7 @@ import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -62,7 +63,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
   void fetchGosend()async{
     Future<SharedPreferences> pref = SharedPreferences.getInstance();
     SharedPreferences _pref = await pref;
-    String location = await _pref.getString('location');
+    String location =  _pref.getString('location');
 
     context.bloc<GosendBloc>().add(
         FetchGosend(
@@ -104,6 +105,8 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                           location: state.orderBox.location,
                           stateButton: state.orderBox.stateButton,
                           onPressedAmbilSendiri: () {
+                            Fluttertoast.showToast(msg: "Maaf fitur ini masih belum tersedia");
+                            return;
                             context.bloc<OrderBoxBloc>().add(
                                 OrderBoxUpdateStateButton(
                                     stateButton: OrderBoxModel.AMBIL_SENDIRI));
@@ -182,6 +185,8 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                         CustomTextField(
                                           label: "No. Telp",
                                           controller: _telpTxt,
+                                          keyboardType: TextInputType.number,
+                                          textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
                                           validator: (String value) {
                                             if (value.isEmpty) {
                                               return "Tidak boleh kosong";
@@ -348,7 +353,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 20, vertical: 20),
                                           child: Text(
-                                              "Alamat tidak mendukung pengiriman, silakan pilih/ganti alamat yang lebih dekat")));
+                                              "Alamat tidak mendukung pengiriman\n(maks 40km), silakan pilih/ganti alamat yang lebih dekat")));
                                 }
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -419,7 +424,7 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                           cartModel.allProductItems.map((e) {
                         return ListTileOrder(
                           name: e.name,
-                          total: e.total,
+                          total: e.qty.toString(),
                           price: rupiah(double.parse(e.menuPrice)),
                           image: e.photo,
                           onTap: () {
@@ -564,8 +569,8 @@ class _ConfirmOrderState extends State<ConfirmOrder> {
                         margin: EdgeInsets.only(bottom: 10, top: 10));
                   }
                   return Container(
-                      margin: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text("Silakan pilih metode pengiriman"));
+                      margin: EdgeInsets.only(top: 10, bottom: 20),
+                      child: Text("Silakan pilih metode pengiriman terlebih dahulu"));
                 });
               } else {
                 return Padding(

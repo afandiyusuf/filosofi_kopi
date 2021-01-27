@@ -7,7 +7,6 @@ import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_event.dart';
 import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_state.dart';
 import 'package:filkop_mobile_apps/bloc/gosend/gosend_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/gosend/gosend_event.dart';
-import 'package:filkop_mobile_apps/bloc/gosend/gosend_state.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
@@ -24,15 +23,14 @@ import 'package:filkop_mobile_apps/view/component/address_card.dart';
 import 'package:filkop_mobile_apps/view/component/custom_app_bar.dart';
 import 'package:filkop_mobile_apps/view/component/custom_text_field.dart';
 import 'package:filkop_mobile_apps/view/component/list_tile_order.dart';
-import 'package:filkop_mobile_apps/view/component/order_box.dart';
 import 'package:filkop_mobile_apps/view/component/primary_button.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_placeholder_textlines/flutter_placeholder_textlines.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -71,7 +69,7 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
   void fetchGosend() async {
     Future<SharedPreferences> pref = SharedPreferences.getInstance();
     SharedPreferences _pref = await pref;
-    String location = await _pref.getString('location');
+    String location =  _pref.getString('location');
 
     context.bloc<GosendBloc>().add(
         FetchGosend(
@@ -116,34 +114,6 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
                     },
                   ),
                   //end Button dikirim diambil
-
-                  //Estimasi pesanan selesai
-                  /*
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.only(top: 5),
-                    color: Colors.grey.shade200,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                            margin: EdgeInsets.only(top: 15),
-                            child: Text(
-                              "ESTIMASI PESANANMU SELESAI PADA PUKUL",
-                              style: TextStyle(
-                                  fontSize: 12, color: Colors.grey.shade500),
-                            )),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15, top: 10),
-                          child: Text(
-                            "10 : 20",
-                            style: TextStyle(
-                                fontSize: 32, color: Colors.grey.shade700),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  */
                   //end Estimasi pesanan selesai
 
                   //Alamat Pengiriman
@@ -175,6 +145,8 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
                                           CustomTextField(
                                             label: "No. Telp",
                                             controller: _telpTxt,
+                                            keyboardType: TextInputType.number,
+                                            textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
                                             validator: (String value) {
                                               if (value.isEmpty) {
                                                 return "Tidak boleh kosong";
@@ -325,94 +297,6 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
                                         ),
                                       )),
                                 ),
-
-//                                BlocBuilder<GosendBloc, GosendState>(
-//                                    builder: (context, gosendState) {
-//                                      if (gosendState is GosendUpdated) {
-//                                        currentGosend = gosendState.selectedGosend;
-//                                        return InkWell(
-//                                          onTap: () {
-//                                            _showBottomSheet(context,);
-//                                          },
-//                                          child: Container(
-//                                              decoration: BoxDecoration(
-//                                                  color: Colors.white,
-//                                                  borderRadius:
-//                                                  BorderRadius.circular(20)),
-//                                              child: Padding(
-//                                                padding: const EdgeInsets.symmetric(
-//                                                    horizontal: 20, vertical: 20),
-//                                                child: Row(
-//                                                  mainAxisAlignment:
-//                                                  MainAxisAlignment.spaceBetween,
-//                                                  children: <Widget>[
-//                                                    Text("Pilih metode pengiriman"),
-//                                                    Icon(Icons.arrow_forward_ios),
-//                                                  ],
-//                                                ),
-//                                              )),
-//                                        );
-//                                      }
-//                                      if (gosendState is GosendPicked) {
-//                                        currentGosend = gosendState.selectedGosend;
-//                                        return InkWell(
-//                                          onTap: () {
-//                                            _showBottomSheet(context);
-//                                          },
-//                                          child: Container(
-//                                              decoration: BoxDecoration(
-//                                                  color: Colors.white,
-//                                                  borderRadius:
-//                                                  BorderRadius.circular(20)),
-//                                              child: Padding(
-//                                                padding: const EdgeInsets.symmetric(
-//                                                    horizontal: 20, vertical: 20),
-//                                                child: Row(
-//                                                  children: [
-//                                                    Expanded(
-//                                                      child: ListTile(
-//                                                        title: Text(
-//                                                          "Gosend ${gosendState.selectedGosend
-//                                                              .shipmentMethod} - ${gosendState.selectedGosend
-//                                                              .shipmentMethodDescription}",
-//                                                          style: TextStyle(
-//                                                              fontWeight:
-//                                                              FontWeight.bold),
-//                                                        ),
-//                                                        subtitle: Text(
-//                                                            "Gosend ${gosendState.selectedGosend
-//                                                                .distance} Km -  ${rupiah(double.parse(
-//                                                                gosendState.selectedGosend.price.toString()))}"),
-//                                                      ),
-//                                                    ),
-//                                                    Icon(Icons.arrow_forward_ios)
-//                                                  ],
-//                                                ),
-//                                              )),
-//                                        );
-//                                      }
-//                                      if (gosendState is GosendError) {
-//                                        return Container(
-//                                            decoration: BoxDecoration(
-//                                                color: Colors.white,
-//                                                borderRadius:
-//                                                BorderRadius.circular(20)),
-//                                            child: Padding(
-//                                                padding: const EdgeInsets.symmetric(
-//                                                    horizontal: 20, vertical: 20),
-//                                                child: Text(
-//                                                    "Alamat tidak mendukung pengiriman, silakan pilih/ganti alamat yang lebih dekat")));
-//                                      }
-//                                      return Container(
-//                                          decoration: BoxDecoration(
-//                                              color: Colors.white,
-//                                              borderRadius:
-//                                              BorderRadius.circular(20)),
-//                                          child: Padding(
-//                                              padding: const EdgeInsets.symmetric(
-//                                                  horizontal: 20, vertical: 20),
-//                                              child: PlaceholderLines(count: 1,)));
-//                                    }),
                               ],
                             );
                           } else {
@@ -574,25 +458,29 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
             BlocBuilder<OrderBoxBloc, OrderBoxState>(
                 builder: (context, orderBoxState) {
                   if (orderBoxState is OrderBoxUpdated) {
-                    return BlocBuilder<GosendBloc, GosendState>(
-                        builder: (context, gosendState) {
-                          if (gosendState is GosendPicked ||
-                              orderBoxState.orderBox.stateButton ==
-                                  OrderBoxModel.AMBIL_SENDIRI) {
-                            return PrimaryButton(
-                                onPressed: () {
-                                  confirmTransaction(context);
-                                },
-                                label: "Pesan Sekarang",
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.8,
-                                margin: EdgeInsets.only(bottom: 10, top: 10));
+                    return BlocBuilder<CartApparelBloc, CartApparelState>(
+                        builder: (context, cartApparelState) {
+                          if (cartApparelState is CartUpdated ) {
+                            if(selectedDelivery != null) {
+                              return PrimaryButton(
+                                  onPressed: () {
+                                    confirmTransaction(context);
+                                  },
+                                  label: "Pesan Sekarang",
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 0.8,
+                                  margin: EdgeInsets.only(bottom: 20, top: 20));
+                            }else{
+                              return Container(
+                                  margin: EdgeInsets.only(top: 10, bottom: 20),
+                                  child: Text("Silakan pilih metode pengiriman terlebih dahulu"));
+                            }
                           }
                           return Container(
                               margin: EdgeInsets.only(top: 10, bottom: 10),
-                              child: Text("Silakan pilih metode pengiriman"));
+                              child: Text("Silakan pilih metode pengiriman terlebih dahulu"));
                         });
                   } else {
                     return Padding(
@@ -764,84 +652,7 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
               }
             },);
           });
-//          return Container(
-//            height: 300,
-//            child: BlocBuilder<GosendBloc, GosendState>(
-//              builder: (context, state) {
-//                if (state is GosendUpdated ) {
-//                  List<Gosend> datas = state.datas;
-//
-//                  print("DATAS IS");
-//                  print(datas);
-//                  return ListView.builder(
-//                      itemCount: datas.length,
-//                      itemBuilder: (context, index) {
-//                        Widget secondItem;
-//                        if (state is GosendUpdated) {
-//                          secondItem = Container(
-//                            width: 100,
-//                            child: PrimaryButton(
-//                              label: "Pilih",
-//                              onPressed: () {
-//                                context.bloc<GosendBloc>().add(
-//                                    PickGosend(datas[index].shipmentMethod));
-//                                context.bloc<CartApparelBloc>().add(
-//                                    UpdateDeliveryMethodCart(
-//                                        deliverySelected: datas[index]));
-//                                Navigator.pop(context);
-//                              },
-//                            ),
-//                          );
-//                        }
-//
-//                        if (state is GosendPicked) {
-//                          print("GOSEND PICKED");
-//                          if (state.selectedGosend.shipmentMethod ==
-//                              datas[index].shipmentMethod) {
-//                            secondItem = Container(
-//                                width: 100,
-//                                child: Center(child: Icon(Icons.check)));
-//                          } else {
-//                            secondItem = Container(
-//                              width: 100,
-//                              child: PrimaryButton(
-//                                  label: "Pilih",
-//                                  onPressed: () {
-//                                    context.bloc<GosendBloc>().add(PickGosend(
-//                                        datas[index].shipmentMethod));
-//                                    context.bloc<CartApparelBloc>().add(
-//                                        UpdateDeliveryMethodCart(
-//                                            deliverySelected: datas[index]));
-//                                  }),
-//                            );
-//                          }
-//                        }
-//                        print("BOTTOM");
-//                        return Padding(
-//                          padding: const EdgeInsets.all(8.0),
-//                          child: Row(
-//                            children: [
-//                              Expanded(
-//                                child: ListTile(
-//                                  title: Text(
-//                                    "Gosend ${datas[index].shipmentMethod} - ${datas[index].shipmentMethodDescription}",
-//                                    style:
-//                                    TextStyle(fontWeight: FontWeight.bold),
-//                                  ),
-//                                  subtitle: Text(
-//                                      "Gosend ${datas[index].distance} Km -  ${rupiah(double.parse(datas[index].price.toString()))}"),
-//                                ),
-//                              ),
-//                              secondItem
-//                            ],
-//                          ),
-//                        );
-//                      });
-//                }
-//                return CircularProgressIndicator();
-//              },
-//            ),
-//          );
+
         });
   }
 

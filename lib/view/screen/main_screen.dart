@@ -11,7 +11,6 @@ import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/product/product_event.dart';
-import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart' as CartApparelModel;
 import 'package:filkop_mobile_apps/model/cart_product_model.dart';
 import 'package:filkop_mobile_apps/model/product_model.dart';
@@ -44,7 +43,6 @@ class _MainScreenState extends State<MainScreen> {
   PageController _pageController = PageController();
   List<Widget> screens;
   int _pageIndex = 0;
-  String _cartId;
   @override
   void initState() {
     super.initState();
@@ -510,7 +508,6 @@ class _MainScreenState extends State<MainScreen> {
         if (state.cartModel != null) {
           //get total menu
           total = state.cartModel.getTotalByCartId(apparel.cartId);
-          CartApparelModel.CartApparelModel cartModel = state.cartModel;
 
           context.bloc<OrderBoxBloc>().add(OrderBoxSelectApparel(selectedApparel: apparel.convertToApparel(),total: total, cartId: apparel.cartId));
           Navigator.pushNamed(context, DetailApparelScreen.tag);

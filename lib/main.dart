@@ -31,6 +31,7 @@ import 'package:filkop_mobile_apps/view/screen/login_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/on_boarding_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/update_account.dart';
 import 'package:filkop_mobile_apps/view/screen/verify_phone_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/vouchers/detail_voucher_page.dart';
 import 'package:filkop_mobile_apps/view/screen/vouchers/main_voucher_screen.dart';
@@ -114,6 +115,7 @@ class _MainAppState extends State<MainApp> {
           debugShowCheckedModeBanner: false,
           initialRoute: BeforeLoginScreen.tag,
           routes: {
+            UpdateAccountScreen.tag : (context) => UpdateAccountScreen(),
             BeforeLoginScreen.tag : (context) => BeforeLoginScreen(),
             OnBoardingScreen.tag : (context) => OnBoardingScreen(),
             AddressPage.tag : (context) => AddressPage(),

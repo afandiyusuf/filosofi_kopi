@@ -606,6 +606,26 @@ class ApiService {
     }
   }
 
+  Future<bool> updateUser({String password, String email, String phoneNumber, String fullName}) async{
+    SharedPreferences pref = await _prefs;
+    var body = {
+      "token": pref.getString("token"),
+      "email" : email,
+      "first_name" : fullName,
+      "phone":phoneNumber
+    };
+    if(password != null && password.isNotEmpty){
+      body["password"] = password;
+    }
+
+    var response = await client.post("$baseUrl/restApi/edit_user", body: body);
+    if(response.statusCode == 200) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   Future<DetailApparelResponse> getDetailApparel(String id) async{
     var body = {
       "id":id

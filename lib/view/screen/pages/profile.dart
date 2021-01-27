@@ -6,6 +6,7 @@ import 'package:filkop_mobile_apps/view/component/profile_button.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/referral_code_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/signin_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/update_account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/flutter_placeholder_textlines.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -80,11 +81,12 @@ class _ProfileState extends State<Profile> {
                       }
                     ),
                     PrimaryButton(
-                      label: (!isEdit)?"Edit":"Submit",
-                      onPressed: (){
-                        setState(() {
-                          isEdit = !isEdit;
-                        });
+                      label:"Edit",
+                      onPressed: () async {
+                       await Navigator.of(context).pushNamed(UpdateAccountScreen.tag);
+                       setState(() {
+                         _getUserResult = ApiService().getUser();
+                       });
                       },
                     )
                   ],

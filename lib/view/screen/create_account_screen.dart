@@ -400,6 +400,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       child: Text("PIN (6 digit)",
                           style: TextStyle(fontWeight: FontWeight.bold))),
                   TextFormField(
+                    maxLength: 6,
                     controller: _pinTxt,
                     keyboardType: TextInputType.number,
                     decoration: CustomTextFieldDecoration.create(),

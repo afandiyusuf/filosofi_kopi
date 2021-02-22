@@ -38,10 +38,13 @@ class _HomePageState extends State<HomePage> {
     print("running");
 
     _getTransactionsResponse = await ApiService().getAllTransactions();
-   _allTransactionLocal.addAll(_getTransactionsResponse.data.data);
-    setState(() {
-      _allTransactions = Future.value(_allTransactionLocal);
-    });
+    if(_getTransactionsResponse.data != null) {
+      _allTransactionLocal.addAll(_getTransactionsResponse.data.data);
+      setState(() {
+        _allTransactions = Future.value(_allTransactionLocal);
+      });
+
+    }
     await Future.delayed(Duration(seconds: 5));
     _refreshTransaction();
   }

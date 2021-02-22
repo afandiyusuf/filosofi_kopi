@@ -49,9 +49,9 @@ class VoucherThumbnail extends StatelessWidget {
                               height: 50,
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(
+                                      colors:[Colors.black, Colors.transparent],
                                       begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [Colors.black, Colors.transparent])),
+                                      end: Alignment.topCenter)),
                             ),
                           ),
                           Positioned(

@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:package_info/package_info.dart';
 
 class HomePage extends StatefulWidget {
   HomePage();
@@ -29,6 +30,9 @@ class _HomePageState extends State<HomePage> {
   GetTransactionsResponse _getTransactionsResponse;
   Future<List<Transaction>> _allTransactions;
   bool _running = false;
+  String versionString = "";
+  PackageInfo packageInfo;
+
   void _refreshTransaction() async {
     List<Transaction> _allTransactionLocal = [];
     if(_running == false){
@@ -53,7 +57,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _running = true;
     _refreshTransaction();
+    getPackageInfo();
     super.initState();
+  }
+  getPackageInfo() async{
+    packageInfo = await PackageInfo.fromPlatform();
+
+    setState(() {
+      versionString = "v ${packageInfo.version}";
+    });
   }
 
   @override
@@ -86,8 +98,7 @@ class _HomePageState extends State<HomePage> {
                         child: Image.asset('images/logo-font.png')),
                   ),
                 ),
-                Expanded(
-                  child: Padding(
+                Expanded( child: Padding(
                     padding: const EdgeInsets.only(left: 30.0, right: 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,6 +221,13 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                   }),
+                  SizedBox(height: 5,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:40.0),
+                    child: Container(
+                        alignment: Alignment.centerRight,
+                        child: Text("$versionString",style: TextStyle(fontSize: 10,color: Colors.grey),)),
+                  ),
                   SizedBox(
                     height: 20,
                   ),

@@ -349,6 +349,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         controller: _passwordTxt,
                         decoration: CustomTextFieldDecoration.create(),
                         validator: (value) {
+                          setState(() {
+                          });
+
                           print(value.length);
                           if (value.length <= 5) {
                             return "password must be 6 character or more";
@@ -377,6 +380,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         controller: _cPasswordTxt,
                         decoration: CustomTextFieldDecoration.create(),
                         validator: (value) {
+                          print("0000:");
+                          print(_passwordTxt.text);
                           if (value != _passwordTxt.text) {
                             return "password confirmation must be same with your password";
                           }

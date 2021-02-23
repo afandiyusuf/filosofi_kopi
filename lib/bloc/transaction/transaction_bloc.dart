@@ -26,6 +26,7 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
     }
 
     if(event is SelectPayment){
+      print("BANK CHOICE IS");
       print(event.bankChoice);
       var bank = event.bankChoice;
       var transCode = selectedTransaction.trans.code;
@@ -57,7 +58,7 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
       await ApiService().deletePayment(transCode);
       if(bank == Banks.BCA || bank == Banks.MANDIRI || bank == Banks.BRI){
         await ApiService().createPaymentXendit(bank, transCode);
-      }else if(bank == Banks.CIMB || bank == Banks.BRI){
+      }else if(bank == Banks.CIMB || bank == Banks.BNI){
         await ApiService().createPaymentIpay(bank, transCode);
       }else {
         String urlMidtrans = getUrlMidtrans(bank,transCode);

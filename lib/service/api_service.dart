@@ -329,6 +329,7 @@ class ApiService {
       'pin': pin
     };
     final response = await client.post("$baseUrl/restApi/register", body: body);
+    print(response.body);
     if (response.statusCode == 200) {
       final parsed = json.decode(response.body);
       if (parsed['success']) {
@@ -566,7 +567,7 @@ class ApiService {
       "code": transactionCode,
       "bank": bankCode
     };
-
+    print(body);
     var response = await client.post("$baseUrl/restApi/create_ipay", body: body);
     print(response.body);
     return true;

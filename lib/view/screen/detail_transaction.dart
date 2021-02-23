@@ -157,6 +157,7 @@ class _DetailTransactionState extends State<DetailTransaction> with WidgetsBindi
                                                   onChanged: (value) {
                                                     setState(() {
                                                       selectedBank = value;
+                                                      print("selected bank is $selectedBank");
                                                     });
                                                   },
                                                 )),

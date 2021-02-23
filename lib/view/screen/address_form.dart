@@ -45,6 +45,7 @@ class _AddressFormState extends State<AddressForm> {
   String subdistrictId;
   String subdistrictName;
   String realCityValue;
+  int selectedCityId;
   Subdistrict subdistrictSelected;
 
   TextEditingController _detailedAddress = TextEditingController();
@@ -199,6 +200,7 @@ class _AddressFormState extends State<AddressForm> {
                                       setState(() {
                                         provinceValue = newValue;
                                         cityValue = null;
+                                        selectedCityId = null;
                                         subdistrictSelected = null;
                                         context.bloc<CityBloc>().add(FetchCity(provinceId: selectedProvince.id));
                                         context.bloc<SubDistrictBloc>().add(SelectSubDistrict(null));
@@ -232,14 +234,17 @@ class _AddressFormState extends State<AddressForm> {
                                         );
                                       }
                                       if (state is CityLoading) {
+
                                         return Container(child: Center(child: CircularProgressIndicator()));
                                       }
                                       if (state is CityReady) {
                                         List<City> citiesData = state.cities;
 
-                                        List<DropdownMenuItem<String>> dropDownItem = citiesData.map<DropdownMenuItem<String>>((City city) {
-                                          return DropdownMenuItem<String>(
-                                            value: city.name,
+
+                                        List<DropdownMenuItem<int>> dropDownItem = citiesData.map<DropdownMenuItem<int>>((City city) {
+                                         print(city.name);
+                                          return DropdownMenuItem<int>(
+                                            value: int.parse(city.id),
                                             child: Text(city.name),
                                           );
                                         }).toList();
@@ -247,19 +252,25 @@ class _AddressFormState extends State<AddressForm> {
 
                                         cityValue = state.selectedCities;
                                         realCityValue = citiesData[0].realCityName;
-
-                                        return DropdownButton<String>(
-                                          onChanged: (String newValue) {
+                                        if(selectedCityId == null){
+                                          selectedCityId = int.parse(citiesData[0].id);
+                                          context.bloc<SubDistrictBloc>().add(FetchSubDistrict(cityId: selectedCityId.toString()));
+                                        }
+                                        return DropdownButton<int>(
+                                          onChanged: (int newValue) {
                                             _unfocusText(context);
                                             setState(() {
-                                              cityValue = newValue;
-                                              realCityValue = citiesData.firstWhere((city) => city.name == newValue).realCityName;
+                                              City selectedCity = citiesData.where((element) => int.parse(element.id) == newValue).first;
+                                              selectedCityId = newValue;
+                                              cityValue = selectedCity.name;
+                                              selectedCity = selectedCity;
+                                              realCityValue =selectedCity.realCityName;
                                               subdistrictSelected = null;
-                                              context.bloc<CityBloc>().add(SelectCity(newValue, realCityValue));
-                                              context.bloc<SubDistrictBloc>().add(FetchSubDistrict(cityId: citiesData[0].id));
+                                              context.bloc<CityBloc>().add(SelectCity(cityValue, realCityValue));
+                                              context.bloc<SubDistrictBloc>().add(FetchSubDistrict(cityId: selectedCityId.toString()));
                                             });
                                           },
-                                          value: cityValue,
+                                          value: selectedCityId,
                                           icon: Icon(Icons.arrow_drop_down),
                                           iconSize: 24,
                                           items: dropDownItem,
@@ -284,7 +295,10 @@ class _AddressFormState extends State<AddressForm> {
                                       if (state is SubDistrictEmpty) {
                                         return Container(
                                           child: Center(
-                                            child: Text("Pilih Kota terlebih dahulu"),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(20.0),
+                                              child: Text("Pilih Kota terlebih dahulu"),
+                                            ),
                                           ),
                                         );
                                       }

@@ -123,7 +123,9 @@ class _ApparelPageState extends State<ApparelPage> {
                         }),
                   );
                 }
-                return Container();
+                return Container(
+                  margin: EdgeInsets.only(top: 10, bottom: 0),
+                  height: 30,);
               }),
               BlocBuilder<ApparelBloc, ApparelState>(
                   builder: (context, apparelState) {
@@ -135,8 +137,13 @@ class _ApparelPageState extends State<ApparelPage> {
                       .add(FetchApparel(store: orderBox.location));
                 }
                 if (apparelState is ApparelDataLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
                   );
                 }
 
@@ -198,9 +205,11 @@ class _ApparelPageState extends State<ApparelPage> {
                   );
                 }
 
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return
+                  Expanded(child:  Center(
+                    child: CircularProgressIndicator(),
+                  ));
+
               })
             ],
           ),

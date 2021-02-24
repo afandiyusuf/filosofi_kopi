@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
 import 'package:filkop_mobile_apps/bloc/transaction/transaction_state.dart';
 import 'package:filkop_mobile_apps/model/get_transaction_detail_result.dart';
@@ -74,6 +76,18 @@ class TransactionBloc extends Bloc<TransactionEvent,TransactionState>{
       GetTransactionsResponse getTransactionResult = await ApiService().getAllTransactions();
 
       selectedTransaction = getTransactionResult.data.data.firstWhere((element) => element.trans.code == selectedTransaction.trans.code);
+    }
+
+    if(event is SelectTransactionByCode){
+      yield TransactionUpdating();
+      String code = event.transCode;
+      Type type = event.type;
+      print("CODE IS $code");
+      transactionDetailResult = await ApiService().getTransactionDetail(code, type == Type.APPAREL);
+      GetTransactionsResponse getTransactionResult = await ApiService().getAllTransactions();
+      selectedTransaction = getTransactionResult.data.data.firstWhere((element) => element.trans.code == transactionDetailResult.data.transaction[0].code);
+      print("DETAIL RESULT IS");
+      print(json.encode(transactionDetailResult));
     }
 
     yield TransactionUpdated(selectedCode: selectedTransaction, transactionDetail: transactionDetailResult);

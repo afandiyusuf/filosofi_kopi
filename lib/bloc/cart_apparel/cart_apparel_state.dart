@@ -24,7 +24,10 @@ class CartUpdateError extends CartApparelState{
 
 class AddingTransaction extends CartApparelState{}
 
-class AddTransactionSuccess extends CartApparelState{}
+class AddTransactionSuccess extends CartApparelState{
+  final String transCode;
+  AddTransactionSuccess(this.transCode);
+}
 
 class AddTransactionError extends CartApparelState{
   final String message;

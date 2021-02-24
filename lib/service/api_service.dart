@@ -439,12 +439,8 @@ class ApiService {
           await client.post("$baseUrl/restApi/proceed_fnb", body: body);
       print(response.body);
       if (response.statusCode == 200) {
-        final parsed = json.decode(response.body);
-        if(parsed['success'] == true){
-          return 'success';
-        }else{
-          return parsed['msg'];
-        }
+
+        return response.body;
       } else {
         return 'connection error';
       }
@@ -493,7 +489,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final parsed = json.decode(response.body);
         if(parsed['success'] == true){
-          return 'success';
+          return response.body;
         }else{
           return parsed['msg'];
         }

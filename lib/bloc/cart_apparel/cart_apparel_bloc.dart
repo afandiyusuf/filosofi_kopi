@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_event.dart';
 import 'package:filkop_mobile_apps/bloc/cart_apparel/cart_apparel_state.dart';
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
@@ -122,13 +124,12 @@ class CartApparelBloc extends Bloc<CartApparelEvent, CartApparelState> {
           event.voucher,
           event.latitude,
           event.longitude);
-      if(response == 'success'){
-        yield AddTransactionSuccess();
-        return;
+      final parsed = json.decode(response);
+      if(parsed['success'] == true){
+
+        yield AddTransactionSuccess(parsed["data"]);
       }else{
-        print("ADD TRANSACTION ERROR FROM BLOC");
         yield AddTransactionError(response);
-        return;
       }
     }
 

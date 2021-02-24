@@ -53,7 +53,7 @@ class _TransactionCardState extends State<TransactionCard> {
                       ),
                       Row(
                         children: [
-                          Text("Kode Transaksi", style: TextStyle(fontSize: 10),),
+                          Text("Kode", style: TextStyle(fontSize: 10),),
                           SizedBox(width: 10,),
                           Text("${widget.transaction.trans.code}", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),)
                         ],
@@ -62,16 +62,19 @@ class _TransactionCardState extends State<TransactionCard> {
                         children: [
 
                           Text(
-                            "Status transaksi:",
+                            "Status:",
                             style: TextStyle(fontSize: 10),
                           ),
                           SizedBox(
                             width: 5,
                           ),
-                          Text(
-                            "${TransactionStatus.getStringStatus(widget.transaction.trans.status)}",
-                            style: TextStyle(
-                                fontSize: 10, fontWeight: FontWeight.bold),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.42,
+                            child: Text(
+                              "${widget.transaction.trans.status_text}",
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
                           )
                         ],
                       ),

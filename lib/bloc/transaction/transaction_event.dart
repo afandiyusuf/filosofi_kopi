@@ -12,6 +12,12 @@ class SelectTransaction extends TransactionEvent{
   SelectTransaction(this.transaction);
 }
 
+class SelectTransactionByCode extends TransactionEvent{
+  final String transCode;
+  final Type type;
+  SelectTransactionByCode(this.transCode,this.type);
+}
+
 class GetTransactionDetail extends TransactionEvent{
   final Transaction transaction;
   GetTransactionDetail(this.transaction);

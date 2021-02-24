@@ -52,63 +52,68 @@ class _AddressPageState extends State<AddressPage> {
           appBar: CustomAppBar(
             titleText: 'Manage Address',
           ),
-          body: Container(
-              child: Column(
-                children: [
-                  AddNewAddressCard(onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => AddressPick(userAddress: null,)
-                    ));
-                  },)
-                  ,
-                  BlocBuilder<AddressBloc, AddressState>(
-                      builder: (context, state) {
-                        if (state is AddressUpdating) {
-                          print("UPDATING");
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
+          body: GestureDetector(
+            onTap: (){
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Container(
+                child: Column(
+                  children: [
+                    AddNewAddressCard(onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => AddressPick(userAddress: null,)
+                      ));
+                    },)
+                    ,
+                    BlocBuilder<AddressBloc, AddressState>(
+                        builder: (context, state) {
+                          if (state is AddressUpdating) {
+                            print("UPDATING");
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
 
-                        if (state is AddressInit) {
-                          context.bloc<AddressBloc>().add(FetchAddress());
-                        }
+                          if (state is AddressInit) {
+                            context.bloc<AddressBloc>().add(FetchAddress());
+                          }
 
-                        if (state is AddressUpdated) {
-                          print("UPDATED");
-                          UserAddressModel addressModel = state.addressModel;
-                          return Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: ListView.builder(
-                                  itemCount: addressModel.allAddress.length,
-                                  itemBuilder: (context, index) {
-                                    UserAddress userAddress = addressModel
-                                        .allAddress[index];
-                                    return AddressCard(
-                                      userAddress: userAddress, onSelect: () {
-                                      context.bloc<AddressBloc>().add(
-                                          SelectAddress(userAddress.id));
-                                    }, onEdit: () {
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddressPick(
-                                                userAddress: userAddress,)
-                                      ));
-                                    }, onDelete: () {
-                                      context.bloc<AddressBloc>().add(
-                                          RemoveAddress(address: userAddress));
-                                    },);
-                                  }),
-                            ),
-                          );
-                        }
+                          if (state is AddressUpdated) {
+                            print("UPDATED");
+                            UserAddressModel addressModel = state.addressModel;
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: ListView.builder(
+                                    itemCount: addressModel.allAddress.length,
+                                    itemBuilder: (context, index) {
+                                      UserAddress userAddress = addressModel
+                                          .allAddress[index];
+                                      return AddressCard(
+                                        userAddress: userAddress, onSelect: () {
+                                        context.bloc<AddressBloc>().add(
+                                            SelectAddress(userAddress.id));
+                                      }, onEdit: () {
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddressPick(
+                                                  userAddress: userAddress,)
+                                        ));
+                                      }, onDelete: () {
+                                        context.bloc<AddressBloc>().add(
+                                            RemoveAddress(address: userAddress));
+                                      },);
+                                    }),
+                              ),
+                            );
+                          }
 
 
-                        return Container();
-                      }),
-                ],
-              )),
+                          return Container();
+                        }),
+                  ],
+                )),
+          ),
         );
       }
     );

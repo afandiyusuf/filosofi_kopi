@@ -22,15 +22,20 @@ class DetailTransaction extends StatefulWidget {
 
 class _DetailTransactionState extends State<DetailTransaction> with WidgetsBindingObserver {
   String selectedBank = "bca";
-  List<String> _allBanks = [Banks.BCA,Banks.MANDIRI,Banks.BRI,Banks.CIMB,Banks.BNI,Banks.PERMATA_VA,Banks.GOPAY,Banks.ALFAMART,Banks.CREDIT_CARD];
+  List<String> _allBanks = [Banks.BCA,Banks.MANDIRI,Banks.BRI];
   Transaction _transaction;
-
+  int firsTime = 0;
   @override
   void initState() {
     var transactionState = context.bloc<TransactionBloc>().state;
     if (transactionState is TransactionUpdated) {
       _transaction = transactionState.selectedCode;
+
       context.bloc<TransactionBloc>().add(GetTransactionDetail(_transaction));
+      setState(() {
+        firsTime = 1;
+      });
+
     }
     WidgetsBinding.instance.addObserver(this);
     super.initState();
@@ -88,6 +93,7 @@ class _DetailTransactionState extends State<DetailTransaction> with WidgetsBindi
                             total: e.qty,
                             usingDelete: false,
                           )));
+
                       return Container(
                         height: MediaQuery.of(context).size.height,
                         child: SingleChildScrollView(

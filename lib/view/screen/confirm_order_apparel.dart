@@ -10,10 +10,13 @@ import 'package:filkop_mobile_apps/bloc/gosend/gosend_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_event.dart';
 import 'package:filkop_mobile_apps/bloc/order_box/order_box_state.dart';
+import 'package:filkop_mobile_apps/bloc/transaction/transaction_bloc.dart';
+import 'package:filkop_mobile_apps/bloc/transaction/transaction_event.dart';
 import 'package:filkop_mobile_apps/model/address_model.dart';
 import 'package:filkop_mobile_apps/model/apparel_model.dart';
 import 'package:filkop_mobile_apps/model/cart_apparel_model.dart';
 import 'package:filkop_mobile_apps/model/delivery_response.dart';
+import 'package:filkop_mobile_apps/model/get_transaction_response.dart';
 import 'package:filkop_mobile_apps/model/get_user_result.dart';
 import 'package:filkop_mobile_apps/model/gosend_model.dart';
 import 'package:filkop_mobile_apps/model/order_box_model.dart';
@@ -27,6 +30,8 @@ import 'package:filkop_mobile_apps/view/component/primary_button.dart';
 import 'package:filkop_mobile_apps/view/component/rupiah.dart';
 import 'package:filkop_mobile_apps/view/screen/address_screen.dart';
 import 'package:filkop_mobile_apps/view/screen/detail_product_screen.dart';
+import 'package:filkop_mobile_apps/view/screen/detail_transaction.dart';
+import 'package:filkop_mobile_apps/view/screen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,317 +89,301 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
       appBar: CustomAppBar(
         titleText: "Confirm Order",
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.all(12),
-                children: <Widget>[
-                  /*
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 15),
-                      child: Text("Detail Pesanan kamu")),
-                  Divider(
-                    height: 30,
-                  ),
-                  */
-                  //Button dikirim diambil
-                  BlocBuilder<OrderBoxBloc, OrderBoxState>(
-                    builder: (context, state) {
-                      if (state is OrderBoxUpdated) {
-                        currentOrderBox = state.orderBox;
+      body: GestureDetector(
+        onTap: (){
+          print("UNFOCUS");
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.all(12),
+                  children: <Widget>[
+                    /*
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.only(top: 15),
+                        child: Text("Detail Pesanan kamu")),
+                    Divider(
+                      height: 30,
+                    ),
+                    */
+                    //Button dikirim diambil
+                    BlocBuilder<OrderBoxBloc, OrderBoxState>(
+                      builder: (context, state) {
+                        if (state is OrderBoxUpdated) {
+                          currentOrderBox = state.orderBox;
 
+                          return Container();
+                        }
                         return Container();
-                      }
-                      return Container();
-                    },
-                  ),
-                  //end Button dikirim diambil
-                  //end Estimasi pesanan selesai
+                      },
+                    ),
+                    //end Button dikirim diambil
+                    //end Estimasi pesanan selesai
 
-                  //Alamat Pengiriman
-                  Container(
-                    margin: EdgeInsets.only(top: 30, bottom: 20),
-                    child: BlocBuilder<OrderBoxBloc, OrderBoxState>(
-                        builder: (context, state) {
-                          if (state is OrderBoxUpdated) {
-                            return Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        children: [
-                                          CustomTextField(
-                                            label: "Penerima",
-                                            controller: _nameTxt,
-                                            validator: (String value) {
-                                              if (value.isEmpty) {
-                                                return 'Tidak boleh kosong';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          CustomTextField(
-                                            label: "No. Telp",
-                                            controller: _telpTxt,
-                                            keyboardType: TextInputType.number,
-                                            textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
-                                            validator: (String value) {
-                                              if (value.isEmpty) {
-                                                return "Tidak boleh kosong";
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ],
+                    //Alamat Pengiriman
+                    Container(
+                      margin: EdgeInsets.only(top: 30, bottom: 20),
+                      child: BlocBuilder<OrderBoxBloc, OrderBoxState>(
+                          builder: (context, state) {
+                            if (state is OrderBoxUpdated) {
+                              return Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Form(
+                                        key: _formKey,
+                                        child: Column(
+                                          children: [
+                                            CustomTextField(
+                                              label: "Penerima",
+                                              controller: _nameTxt,
+                                              validator: (String value) {
+                                                if (value.isEmpty) {
+                                                  return 'Tidak boleh kosong';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            CustomTextField(
+                                              label: "No. Telp",
+                                              controller: _telpTxt,
+                                              keyboardType: TextInputType.number,
+                                              textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
+                                              validator: (String value) {
+                                                if (value.isEmpty) {
+                                                  return "Tidak boleh kosong";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                    alignment: Alignment.centerLeft,
-                                    margin: EdgeInsets.only(left: 15),
-                                    child: Text(
-                                      "Alamat Pengiriman",
-                                      style:
-                                      TextStyle(fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    )),
-                                Divider(
-                                  height: 30,
-                                ),
-                                BlocBuilder<AddressBloc, AddressState>(
-                                    builder: (context, addressState) {
-                                      if (addressState is AddressInit) {
-                                        context
-                                            .bloc<AddressBloc>()
-                                            .add(FetchAddress());
-                                      }
-                                      if (addressState is AddressUpdated) {
-                                        UserAddress userAddress =
-                                        addressState.addressModel.allAddress[0];
-                                        try {
-                                          currentUserAddress = addressState
-                                              .addressModel.allAddress
-                                              .firstWhere(
-                                                  (element) => element.selected == 1);
-                                        } catch (_) {
-                                          currentUserAddress =
-                                          addressState.addressModel.allAddress[0];
-                                        }
-
-                                        userAddress = currentUserAddress;
-                                        try {
-                                          currentLat =
-                                              double.parse(userAddress.latitude);
-                                        } catch (_) {
-                                          currentLat = 0;
-                                        }
-                                        try {
-                                          currentLong =
-                                              double.parse(userAddress.longitude);
-                                        } catch (_) {
-                                          currentLong = 0;
-                                        }
-
-                                        return BlocBuilder<CartApparelBloc,
-                                            CartApparelState>(
-                                            builder: (context, carBlocStateSec) {
-                                              if (carBlocStateSec is CartUpdated) {
-                                                currentCartModel =
-                                                    carBlocStateSec.cartModel;
-                                                totalWeight = currentCartModel.getTotalWeight();
-
-
-                                                return AddressCard(
-                                                  userAddress: userAddress,
-                                                  onSelect: () {
-                                                    Navigator.pushNamed(
-                                                        context, AddressPage.tag);
-                                                  },
-                                                  onEdit: () {},
-                                                  onDelete: () {},
-                                                  usingActionButton: false,
-                                                );
-                                              } else {
-                                                return Center(
-                                                    child: CircularProgressIndicator());
-                                              }
-                                            });
-                                      }
-                                      if (addressState is AddressEmpty) {
-                                        return AddNewAddressCard(
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                                context, AddressPage.tag);
-                                          },
-                                        );
-                                      }
-                                      print(addressState);
-                                      return Container();
-                                    }),
-                                (selectedDelivery == null) ?
-                                InkWell(
-                                  onTap: () {
-                                    _showBottomSheet(context, currentUserAddress.destination,
-                                        currentCartModel.getTotalWeight().toString());
-                                  },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                          BorderRadius.circular(20)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 20),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text("Pilih metode pengiriman"),
-                                            Icon(Icons.arrow_forward_ios),
-                                          ],
-                                        ),
-                                      )),
-                                ) : InkWell(
-                                  onTap: () {
-                                    _showBottomSheet(context, currentUserAddress.destination,
-                                        currentCartModel.getTotalWeight().toString());
-                                  },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                          BorderRadius.circular(20)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: ListTile(
-                                                title: Text(
-                                                  "${selectedResultDelivery.code.toUpperCase()} - ${selectedDelivery.service} - ${selectedDelivery.description}",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold, fontSize: 12),
-                                                ),
-                                                subtitle: Text(
-                                                    "${selectedDelivery.cost[0].etd} Days -  ${rupiah(
-                                                        double.parse(selectedDelivery.cost[0].value.toString()))}"),
-                                              ),
-                                            ),
-                                            Icon(Icons.arrow_forward_ios)
-                                          ],
-                                        ),
-                                      )),
-                                ),
-                              ],
-                            );
-                          } else {
-                            return Container();
-                          }
-                        }),
-                  ),
-
-                  BlocBuilder<CartApparelBloc, CartApparelState>(
-                      builder: (context, state) {
-                        if (state is CartInitState) {
-                          fetchCart(context);
-                        }
-
-                        if (state is CartEmptyState) {
-                          return Container(
-                            child: Center(child: Text("Cart Kosong")),
-                          );
-                        }
-                        print("$state");
-                        if (state is CartUpdated) {
-                          CartApparelModel cartModel = state.cartModel;
-                          print(state.cartModel.selectedDelivery);
-                          currentCartModel = cartModel;
-                          cartModel.calculateTotalWithDelivery();
-                          List<ListTileOrder> listOrder = List<ListTileOrder>.from(
-                              cartModel.allProductItems.map((e) {
-                                return ListTileOrder(
-                                  name: e.name,
-                                  total: e.amount.toString(),
-                                  price: rupiah(double.parse(e.total)),
-                                  image: e.photo,
-                                  onTap: () {
-                                    _goToDetail(e.convertToApparel(), context);
-                                  },
-                                  onDeleteTap: () async {
-                                    SharedPreferences pref =
-                                    await SharedPreferences.getInstance();
-                                    String location = pref.getString('location');
-                                    _showAlertDelete(
-                                        context, e.name, e.cartId, location);
-                                  },
-                                );
-                              }));
-                          return Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
                                   Container(
+                                      alignment: Alignment.centerLeft,
                                       margin: EdgeInsets.only(left: 15),
                                       child: Text(
-                                        "Pesanan kamu",
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        "Alamat Pengiriman",
+                                        style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                        textAlign: TextAlign.left,
                                       )),
                                   Divider(
-                                    height: 20,
+                                    height: 30,
                                   ),
-                                  Column(
-                                    children: listOrder,
+                                  BlocBuilder<AddressBloc, AddressState>(
+                                      builder: (context, addressState) {
+                                        if (addressState is AddressInit) {
+                                          context
+                                              .bloc<AddressBloc>()
+                                              .add(FetchAddress());
+                                        }
+                                        if (addressState is AddressUpdated) {
+                                          UserAddress userAddress =
+                                          addressState.addressModel.allAddress[0];
+                                          try {
+                                            currentUserAddress = addressState
+                                                .addressModel.allAddress
+                                                .firstWhere(
+                                                    (element) => element.selected == 1);
+                                          } catch (_) {
+                                            currentUserAddress =
+                                            addressState.addressModel.allAddress[0];
+                                          }
+
+                                          userAddress = currentUserAddress;
+                                          try {
+                                            currentLat =
+                                                double.parse(userAddress.latitude);
+                                          } catch (_) {
+                                            currentLat = 0;
+                                          }
+                                          try {
+                                            currentLong =
+                                                double.parse(userAddress.longitude);
+                                          } catch (_) {
+                                            currentLong = 0;
+                                          }
+
+                                          return BlocBuilder<CartApparelBloc,
+                                              CartApparelState>(
+                                              builder: (context, carBlocStateSec) {
+                                                if (carBlocStateSec is CartUpdated) {
+                                                  currentCartModel =
+                                                      carBlocStateSec.cartModel;
+                                                  totalWeight = currentCartModel.getTotalWeight();
+
+
+                                                  return AddressCard(
+                                                    userAddress: userAddress,
+                                                    onSelect: () {
+                                                      FocusScope.of(context).requestFocus(new FocusNode());
+                                                      Navigator.pushNamed(
+                                                          context, AddressPage.tag);
+                                                    },
+                                                    onEdit: () {},
+                                                    onDelete: () {},
+                                                    usingActionButton: false,
+                                                  );
+                                                } else {
+                                                  return Center(
+                                                      child: CircularProgressIndicator());
+                                                }
+                                              });
+                                        }
+                                        if (addressState is AddressEmpty) {
+                                          return AddNewAddressCard(
+                                            onTap: () {
+                                              FocusScope.of(context).requestFocus(new FocusNode());
+                                              Navigator.pushNamed(
+                                                  context, AddressPage.tag);
+                                            },
+                                          );
+                                        }
+                                        print(addressState);
+                                        return Container();
+                                      }),
+                                  (selectedDelivery == null) ?
+                                  InkWell(
+                                    onTap: () {
+                                      FocusScope.of(context).requestFocus(new FocusNode());
+                                      _showBottomSheet(context, currentUserAddress.destination,
+                                          currentCartModel.getTotalWeight().toString());
+                                    },
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                            BorderRadius.circular(20)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 20),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text("Pilih metode pengiriman"),
+                                              Icon(Icons.arrow_forward_ios),
+                                            ],
+                                          ),
+                                        )),
+                                  ) : InkWell(
+                                    onTap: () {
+                                      FocusScope.of(context).requestFocus(new FocusNode());
+                                      _showBottomSheet(context, currentUserAddress.destination,
+                                          currentCartModel.getTotalWeight().toString());
+                                    },
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                            BorderRadius.circular(20)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 20),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: ListTile(
+                                                  title: Text(
+                                                    "${selectedResultDelivery.code.toUpperCase()} - ${selectedDelivery.service} - ${selectedDelivery.description}",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                        FontWeight.bold, fontSize: 12),
+                                                  ),
+                                                  subtitle: Text(
+                                                      "${selectedDelivery.cost[0].etd} Days -  ${rupiah(
+                                                          double.parse(selectedDelivery.cost[0].value.toString()))}"),
+                                                ),
+                                              ),
+                                              Icon(Icons.arrow_forward_ios)
+                                            ],
+                                          ),
+                                        )),
                                   ),
-                                  Divider(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    child: Padding(
-                                      padding:
-                                      const EdgeInsets.symmetric(horizontal: 15),
-                                      child: Row(
-                                        children: [
-                                          Text("Subtotal:"),
-                                          Text(
-                                            "${rupiah(double.parse(cartModel.subtotal.toString()))}",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
-                                          )
-                                        ],
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                      ),
+                                ],
+                              );
+                            } else {
+                              return Container();
+                            }
+                          }),
+                    ),
+
+                    BlocBuilder<CartApparelBloc, CartApparelState>(
+                        builder: (context, state) {
+                          if (state is CartInitState) {
+                            fetchCart(context);
+                          }
+
+                          if (state is CartEmptyState) {
+                            return Container(
+                              child: Center(child: Text("Cart Kosong")),
+                            );
+                          }
+                          print("$state");
+                          if (state is CartUpdated) {
+                            CartApparelModel cartModel = state.cartModel;
+                            print(state.cartModel.selectedDelivery);
+                            currentCartModel = cartModel;
+                            cartModel.calculateTotalWithDelivery();
+                            List<ListTileOrder> listOrder = List<ListTileOrder>.from(
+                                cartModel.allProductItems.map((e) {
+                                  return ListTileOrder(
+                                    name: e.name,
+                                    total: e.amount.toString(),
+                                    price: rupiah(double.parse(e.total)),
+                                    image: e.photo,
+                                    onTap: () {
+                                      FocusScope.of(context).requestFocus(new FocusNode());
+                                      _goToDetail(e.convertToApparel(), context);
+                                    },
+                                    onDeleteTap: () async {
+                                      SharedPreferences pref =
+                                      await SharedPreferences.getInstance();
+                                      String location = pref.getString('location');
+                                      _showAlertDelete(
+                                          context, e.name, e.cartId, location);
+                                    },
+                                  );
+                                }));
+                            return Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                        margin: EdgeInsets.only(left: 15),
+                                        child: Text(
+                                          "Pesanan kamu",
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        )),
+                                    Divider(
+                                      height: 20,
                                     ),
-                                  ),
-                                  cartModel.selectedDelivery != null
-                                      ? Column(children: [
+                                    Column(
+                                      children: listOrder,
+                                    ),
                                     Divider(
                                       height: 20,
                                     ),
                                     Container(
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 15),
+                                        padding:
+                                        const EdgeInsets.symmetric(horizontal: 15),
                                         child: Row(
                                           children: [
-                                            Text("Biaya kirim:"),
+                                            Text("Subtotal:"),
                                             Text(
-                                              "${rupiah(
-                                                  double.parse(cartModel.selectedDelivery.cost[0].value.toString()))}",
+                                              "${rupiah(double.parse(cartModel.subtotal.toString()))}",
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
@@ -406,113 +395,147 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
                                         ),
                                       ),
                                     ),
-                                  ])
-                                      : Container(),
-                                  Divider(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    child: Padding(
-                                      padding:
-                                      const EdgeInsets.symmetric(horizontal: 15),
-                                      child: Row(
-                                        children: [
-                                          Text("Total:"),
-                                          Text(
-                                            "${rupiah(double.parse(cartModel.total.toString()))}",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18),
-                                          )
-                                        ],
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    cartModel.selectedDelivery != null
+                                        ? Column(children: [
+                                      Divider(
+                                        height: 20,
+                                      ),
+                                      Container(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15),
+                                          child: Row(
+                                            children: [
+                                              Text("Biaya kirim:"),
+                                              Text(
+                                                "${rupiah(
+                                                    double.parse(cartModel.selectedDelivery.cost[0].value.toString()))}",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15),
+                                              )
+                                            ],
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                          ),
+                                        ),
+                                      ),
+                                    ])
+                                        : Container(),
+                                    Divider(
+                                      height: 20,
+                                    ),
+                                    Container(
+                                      child: Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(horizontal: 15),
+                                        child: Row(
+                                          children: [
+                                            Text("Total:"),
+                                            Text(
+                                              "${rupiah(double.parse(cartModel.total.toString()))}",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18),
+                                            )
+                                          ],
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Divider(
-                                    height: 20,
-                                  ),
-                                ],
-                              ));
-                        }
+                                    Divider(
+                                      height: 20,
+                                    ),
+                                  ],
+                                ));
+                          }
 
-                        if (state is CartUpdating) {
+                          if (state is CartUpdating) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (state is CartEmptyState) {
+                            return Container();
+                          }
+
                           return Center(
                             child: CircularProgressIndicator(),
                           );
-                        }
-
-                        if (state is CartEmptyState) {
-                          return Container();
-                        }
-
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }),
-                ],
+                        }),
+                  ],
+                ),
               ),
-            ),
-            BlocBuilder<OrderBoxBloc, OrderBoxState>(
-                builder: (context, orderBoxState) {
-                  if (orderBoxState is OrderBoxUpdated) {
-                    return BlocBuilder<CartApparelBloc, CartApparelState>(
-                        builder: (context, cartApparelState) {
-                          if (cartApparelState is CartUpdated ) {
-                            if(selectedDelivery != null) {
-                              return PrimaryButton(
-                                  onPressed: () {
-                                    confirmTransaction(context);
-                                  },
-                                  label: "Pesan Sekarang",
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.8,
-                                  margin: EdgeInsets.only(bottom: 20, top: 20));
-                            }else{
-                              return Container(
-                                  margin: EdgeInsets.only(top: 10, bottom: 20),
-                                  child: Text("Silakan pilih metode pengiriman terlebih dahulu"));
+              BlocBuilder<OrderBoxBloc, OrderBoxState>(
+                  builder: (context, orderBoxState) {
+                    if (orderBoxState is OrderBoxUpdated) {
+                      return BlocBuilder<CartApparelBloc, CartApparelState>(
+                          builder: (context, cartApparelState) {
+                            if (cartApparelState is CartUpdated ) {
+                              if(selectedDelivery != null) {
+                                return PrimaryButton(
+                                    onPressed: () {
+                                      confirmTransaction(context);
+                                    },
+                                    label: "Pesan Sekarang",
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.8,
+                                    margin: EdgeInsets.only(bottom: 20, top: 20));
+                              }else{
+                                return Container(
+                                    margin: EdgeInsets.only(top: 10, bottom: 20),
+                                    child: Text("Silakan pilih metode pengiriman terlebih dahulu"));
+                              }
                             }
-                          }
-                          return Container(
-                              margin: EdgeInsets.only(top: 10, bottom: 10),
-                              child: Text("Silakan pilih metode pengiriman terlebih dahulu"));
-                        });
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
+                            return Container(
+                                margin: EdgeInsets.only(top: 10, bottom: 10),
+                                child: Text("Silakan pilih metode pengiriman terlebih dahulu"));
+                          });
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                  }),
+              BlocListener<CartApparelBloc, CartApparelState>(
+                listener: (context, stateCart) {
+                  if (stateCart is CartEmptyState) {
+                    // Navigator.pop(context);
                   }
-                }),
-            BlocListener<CartApparelBloc, CartApparelState>(
-              listener: (context, stateCart) {
-                if (stateCart is CartEmptyState) {
-                  Navigator.pop(context);
-                }
-                if (stateCart is AddTransactionSuccess) {
-                  Fluttertoast.showToast(
-                      msg: "Add Transaction Success",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.black,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
-                  context
-                      .bloc<CartApparelBloc>()
-                      .add(FetchCart(location: currentOrderBox.location));
-                } else if (stateCart is AddTransactionError) {
-                  _showAlertValidation(stateCart.message, context);
-                }
-              },
-              child: Container(),
-            ),
-          ],
+                  if (stateCart is AddTransactionSuccess) {
+                    Fluttertoast.showToast(
+                        msg: "Add Transaction Success",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    context
+                        .bloc<CartApparelBloc>()
+                        .add(FetchCart(location: currentOrderBox.location));
+
+
+                    context.bloc<TransactionBloc>().add(
+                        SelectTransactionByCode(stateCart.transCode,Type.APPAREL));
+                    Navigator.pushNamed(
+                        context, DetailTransaction.tag);
+                    Navigator.pushNamedAndRemoveUntil(context,DetailTransaction.tag,ModalRoute.withName(MainScreen.tag));
+                  } else if (stateCart is AddTransactionError) {
+                    _showAlertValidation(stateCart.message, context);
+                  }
+                },
+                child: Container(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -534,6 +557,7 @@ class _ConfirmOrderApparelState extends State<ConfirmOrderApparel> {
     context
         .bloc<OrderBoxBloc>()
         .add(OrderBoxSelectApparel(selectedApparel: product, total: total));
+    FocusScope.of(context).requestFocus(new FocusNode());
     Navigator.pushNamed(context, DetailProductScreen.tag);
   }
 

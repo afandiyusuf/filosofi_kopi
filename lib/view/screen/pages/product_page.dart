@@ -124,7 +124,9 @@ class _ProductPageState extends State<ProductPage> {
                         }),
                   );
                 }
-                return Container();
+                return Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 0),
+                    height: 30,);
               }),
               BlocBuilder<ProductBloc, ProductState>(builder: (context, productState) {
                 print("PRODUCT STATE IS $productState");
@@ -137,8 +139,10 @@ class _ProductPageState extends State<ProductPage> {
                       .add(FetchProduct(store: orderBox.location));
                 }
                 if(productState is ProductDataLoading){
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 }
 

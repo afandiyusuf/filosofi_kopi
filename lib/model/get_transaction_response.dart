@@ -133,11 +133,12 @@ class Trans {
   Trans({
     this.code,
     this.status,
+    this.status_text,
     this.createdDate,
     this.totalHargaProduk,
     this.totalBelanja,
   });
-
+  final String status_text;
   final String code;
   final String status;
   final DateTime createdDate;
@@ -150,6 +151,7 @@ class Trans {
     createdDate: json["created_date"] == null ? null : DateTime.parse(json["created_date"]),
     totalHargaProduk: json["total_harga_produk"] == null ? null : json["total_harga_produk"],
     totalBelanja: json["total_belanja"] == null ? null : json["total_belanja"],
+      status_text: json["status_text"] == null ? null : json["status_text"]
   );
 
   Map<String, dynamic> toJson() => {

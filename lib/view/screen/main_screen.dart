@@ -29,6 +29,7 @@ import 'package:filkop_mobile_apps/view/screen/pick_our_stores_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:minimize_app/minimize_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supercharged/supercharged.dart';
 
@@ -98,113 +99,119 @@ class _MainScreenState extends State<MainScreen> {
                 },
                 child: BlocBuilder<MainPageBloc, int>(
                   builder: (context, state) {
-                    return Scaffold(
-                      body: Stack(
-                        children: [
-                          SafeArea(
-                            child: PageView(
-                              controller: _pageController,
-                              physics: NeverScrollableScrollPhysics(),
-                              onPageChanged: (index) {
-                                setState(() {
-                                  _pageIndex = index;
-                                });
-                                context.bloc<MainPageBloc>().add(index);
-                              },
-                              children: screens,
+                    return WillPopScope(
+                      onWillPop: (){
+                        MinimizeApp.minimizeApp();
+                        return;
+                      },
+                      child: Scaffold(
+                        body: Stack(
+                          children: [
+                            SafeArea(
+                              child: PageView(
+                                controller: _pageController,
+                                physics: NeverScrollableScrollPhysics(),
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    _pageIndex = index;
+                                  });
+                                  context.bloc<MainPageBloc>().add(index);
+                                },
+                                children: screens,
+                              ),
                             ),
-                          ),
 
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Column(
-                              children: [
-                                Visibility(
-                                  visible: (_pageIndex == 2)? true:false,
-                                  child: BlocBuilder<CartApparelBloc, CartApparelState.CartApparelState>(
-                                      builder: (context, state) {
-                                        if (state is CartApparelState.CartInitState) {
-                                          fetchCartApparel(context);
-                                        }
-                                        if (state is CartApparelState.CartUpdated) {
-                                          int totalItems = state.cartModel.getTotalItems();
-                                          int totalPrice = state.cartModel.getTotalPrice();
-                                          return Container(
-                                            child: CartBottom(
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Column(
+                                children: [
+                                  Visibility(
+                                    visible: (_pageIndex == 2)? true:false,
+                                    child: BlocBuilder<CartApparelBloc, CartApparelState.CartApparelState>(
+                                        builder: (context, state) {
+                                          if (state is CartApparelState.CartInitState) {
+                                            fetchCartApparel(context);
+                                          }
+                                          if (state is CartApparelState.CartUpdated) {
+                                            int totalItems = state.cartModel.getTotalItems();
+                                            int totalPrice = state.cartModel.getTotalPrice();
+                                            return Container(
+                                              child: CartBottom(
+                                                total: "$totalItems",
+                                                price: "${rupiah(totalPrice.toDouble())}",
+                                                onPressed: () {
+                                                  _showBottomSheetApparel(context);
+                                                },
+                                              ),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        }),
+                                  ),
+
+                                  //FNB CART
+                                  Visibility(
+                                    visible: (_pageIndex == 1)? true:false,
+                                    child: BlocBuilder<CartProductBloc, CartProductState>(
+                                        builder: (context, state) {
+                                          if (state is CartInitState) {
+                                            fetchCart(context);
+                                          }
+                                          if (state is CartUpdated) {
+                                            int totalItems = state.cartModel.getTotalItems();
+                                            int totalPrice = state.cartModel.getTotalPrice();
+                                            return CartBottom(
                                               total: "$totalItems",
                                               price: "${rupiah(totalPrice.toDouble())}",
                                               onPressed: () {
-                                                _showBottomSheetApparel(context);
+                                                _showBottomSheetProduct(context);
                                               },
-                                            ),
-                                          );
-                                        } else {
-                                          return Container();
-                                        }
-                                      }),
-                                ),
-
-                                //FNB CART
-                                Visibility(
-                                  visible: (_pageIndex == 1)? true:false,
-                                  child: BlocBuilder<CartProductBloc, CartProductState>(
-                                      builder: (context, state) {
-                                        if (state is CartInitState) {
-                                          fetchCart(context);
-                                        }
-                                        if (state is CartUpdated) {
-                                          int totalItems = state.cartModel.getTotalItems();
-                                          int totalPrice = state.cartModel.getTotalPrice();
-                                          return CartBottom(
-                                            total: "$totalItems",
-                                            price: "${rupiah(totalPrice.toDouble())}",
-                                            onPressed: () {
-                                              _showBottomSheetProduct(context);
-                                            },
-                                          );
-                                        } else {
-                                          return Container();
-                                        }
-                                      }),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      bottomNavigationBar: BottomNavigationBar(
-                        unselectedLabelStyle: TextStyle(fontSize: 9),
-                        type: BottomNavigationBarType.fixed,
-                        selectedItemColor: Colors.black,
-                        selectedLabelStyle: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        }),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
                         ),
-                        currentIndex: state,
-                        onTap: (index) {
-                          context.bloc<MainPageBloc>().add(index);
-                          _onItemTapped(context, index);
-                        },
-                        items: [
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.home),
-                            label: "Home",
+                        bottomNavigationBar: BottomNavigationBar(
+                          unselectedLabelStyle: TextStyle(fontSize: 9),
+                          type: BottomNavigationBarType.fixed,
+                          selectedItemColor: Colors.black,
+                          selectedLabelStyle: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.restaurant_menu),
-                            label: "Menu",
-                          ),
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.show_chart),
-                            label: "Apparel",
-                          ),
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.menu),
-                            label: "Profile",
-                          ),
-                        ],
+                          currentIndex: state,
+                          onTap: (index) {
+                            context.bloc<MainPageBloc>().add(index);
+                            _onItemTapped(context, index);
+                          },
+                          items: [
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.home),
+                              label: "Home",
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.restaurant_menu),
+                              label: "Menu",
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.show_chart),
+                              label: "Apparel",
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.menu),
+                              label: "Profile",
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -228,8 +235,9 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  void _goToConfirmButton(context, String destination) {
-    Navigator.pushNamed(context,destination);
+  void _goToConfirmButton(context, String destination) async {
+   await Navigator.pushNamed(context,destination);
+   Navigator.pop(context);
   }
 
   void fetchCart(BuildContext context) async {

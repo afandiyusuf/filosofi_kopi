@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
+
 Subdistrict subdistrictFromJson(String str) => Subdistrict.fromJson(json.decode(str));
 
 String subdistrictToJson(Subdistrict data) => json.encode(data.toJson());
 
-class Subdistrict {
+class Subdistrict extends Equatable{
   Subdistrict({
     this.subdistrictId,
     this.provinceId,
@@ -42,4 +44,8 @@ class Subdistrict {
     "type": type == null ? null : type,
     "subdistrict_name": subdistrictName == null ? null : subdistrictName,
   };
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [this.subdistrictId];
 }

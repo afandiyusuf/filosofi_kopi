@@ -1,4 +1,6 @@
-class Province{
+import 'package:equatable/equatable.dart';
+
+class Province extends Equatable{
   final String id;
   final String name;
 
@@ -9,4 +11,8 @@ class Province{
       name: map['province']
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [this.id];
 }

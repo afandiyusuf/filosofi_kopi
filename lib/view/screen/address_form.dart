@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:filkop_mobile_apps/bloc/adress/address_bloc.dart';
 import 'package:filkop_mobile_apps/bloc/adress/address_event.dart';
 import 'package:filkop_mobile_apps/bloc/city/city_bloc.dart';
@@ -264,6 +266,11 @@ class _AddressFormState extends State<AddressForm> {
                                             selectedCityId = int.parse(citiesData[0].id);
                                             context.bloc<SubDistrictBloc>().add(FetchSubDistrict(cityId: selectedCityId.toString()));
                                           }
+                                          var found = citiesData.where((element) => element.id == selectedCityId.toString()).toList();
+                                          if(found.length == 0){
+                                            selectedCityId = int.parse(citiesData[0].id);
+                                            context.bloc<SubDistrictBloc>().add(FetchSubDistrict(cityId: selectedCityId.toString()));
+                                          }
                                           return DropdownButton<int>(
                                             onChanged: (int newValue) {
                                               _unfocusText(context);
@@ -321,12 +328,14 @@ class _AddressFormState extends State<AddressForm> {
                                           if(subdistrictSelected == null){
                                             subdistrictSelected = subdistrictDatas[0];
                                           }
-                                          var selectedVal = subdistrictDatas.firstWhere((element) => element.subdistrictId == subdistrictSelected.subdistrictId,orElse: null);
-                                          if(selectedVal == null){
+                                          var selectedVal = subdistrictDatas.where((element) => element.subdistrictId == subdistrictSelected.subdistrictId).toList();
+                                          if(selectedVal.length == 0){
                                             subdistrictSelected = subdistrictDatas[0];
-                                          }else{
-                                            subdistrictSelected = selectedVal;
                                           }
+                                          print("0000: SELECTED IS");
+                                          print(subdistrictSelected.subdistrictId);
+                                          print("0000: Data is");
+                                          print(jsonEncode(subdistrictDatas));
                                           List<DropdownMenuItem<Subdistrict>> dropDownItem =
                                           subdistrictDatas.map<DropdownMenuItem<Subdistrict>>((Subdistrict subdistrict) {
                                             return DropdownMenuItem<Subdistrict>(
